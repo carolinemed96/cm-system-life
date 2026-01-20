@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CM LIFE SYSTEM - Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Importação de Fonte Elegante -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --chocolate: #3E2723;
+            --chocolate-light: #5D4037;
+            --gold: #C5A059;
+            --gold-light: #E0C080;
+            --off-white: #FDFBF7;
+        }
+
+        body {
+            background-color: var(--off-white);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Montserrat', sans-serif;
+            color: var(--chocolate);
+        }
+
+        h1, .sigla-cm {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .glass-card {
+            background: #FFFFFF;
+            border-radius: 1.5rem;
+            box-shadow: 0 20px 40px rgba(62, 39, 35, 0.1);
+            border: 1px solid rgba(197, 160, 89, 0.2);
+        }
+
+        .btn-primary {
+            background-color: var(--chocolate);
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--chocolate-light);
+            transform: translateY(-1px);
+        }
+
+        .input-field {
+            border: 1px solid rgba(62, 39, 35, 0.1);
+            background-color: var(--off-white);
+            transition: all 0.3s ease;
+        }
+
+        .input-field:focus {
+            border-color: var(--gold);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(197, 160, 89, 0.2);
+        }
+
+        .gold-text { color: var(--gold); }
+        
+        .logo-container {
+            border-bottom: 1px solid rgba(197, 160, 89, 0.1);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="glass-card p-10 w-full max-w-md m-4">
+        <!-- Logo e Título -->
+        <div class="text-center mb-10 logo-container pb-6">
+            <div class="sigla-cm text-5xl font-bold gold-text mb-2">CM</div>
+            <h1 class="text-2xl font-bold tracking-widest uppercase text-gray-800">Life System</h1>
+            <p class="text-xs gold-text mt-1 tracking-widest uppercase">Caroline Medeiros</p>
+        </div>
+
+        <div class="text-center mb-8">
+            <h2 id="auth-title" class="text-xl font-semibold text-gray-700">Bem-vinda</h2>
+            <p id="auth-subtitle" class="text-sm text-gray-500 italic">Acesse sua experiência exclusiva</p>
+        </div>
+
+        <form id="auth-form" class="space-y-6">
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-gray-600 mb-1">E-mail</label>
+                <input type="email" id="email" placeholder="exemplo@cmlife.com" required 
+                    class="input-field w-full px-4 py-3 rounded-lg text-sm">
+            </div>
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-gray-600 mb-1">Senha</label>
+                <input type="password" id="password" placeholder="••••••••" required 
+                    class="input-field w-full px-4 py-3 rounded-lg text-sm">
+            </div>
+            
+            <button type="submit" id="btn-main" class="btn-primary w-full font-bold py-4 rounded-lg shadow-md uppercase tracking-widest text-xs">
+                Entrar
+            </button>
+        </form>
+
+        <div class="mt-8 text-center">
+            <button id="btn-toggle" class="text-xs font-semibold gold-text hover:text-gray-800 transition-colors uppercase tracking-widest">
+                Não tem uma conta? Solicitar Cadastro
+            </button>
+        </div>
+
+        <div id="message-box" class="mt-6 p-3 rounded-lg text-xs hidden text-center font-medium"></div>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        // CONFIGURAÇÃO DO SEU FIREBASE (CM PLANNER)
+        const firebaseConfig = {
+            apiKey: "AIzaSyBdw18PXbqdO0jqSBNKSTxBKVZzVlweMC0",
+            authDomain: "cm-planner-84079.firebaseapp.com",
+            projectId: "cm-planner-84079",
+            storageBucket: "cm-planner-84079.firebasestorage.app",
+            messagingSenderId: "109535738114",
+            appId: "1:109535738114:web:19f07eae3077a496312a1b"
+        };
+
+        // Inicializar Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        const authForm = document.getElementById('auth-form');
+        const btnMain = document.getElementById('btn-main');
+        const btnToggle = document.getElementById('btn-toggle');
+        const authTitle = document.getElementById('auth-title');
+        const authSubtitle = document.getElementById('auth-subtitle');
+        const messageBox = document.getElementById('message-box');
+
+        let isLogin = true;
+
+        // Alternar entre Login e Cadastro
+        btnToggle.addEventListener('click', () => {
+            isLogin = !isLogin;
+            authTitle.innerText = isLogin ? "Bem-vinda" : "Novo Cadastro";
+            authSubtitle.innerText = isLogin ? "Acesse sua experiência exclusiva" : "Crie seu acesso ao CM Life System";
+            btnMain.innerText = isLogin ? "Entrar" : "Criar Conta";
+            btnToggle.innerText = isLogin ? "Não tem uma conta? Solicitar Cadastro" : "Já tem conta? Fazer Login";
+            messageBox.classList.add('hidden');
+        });
+
+        function showMessage(text, isError = true) {
+            messageBox.innerText = text;
+            if (isError) {
+                messageBox.style.backgroundColor = '#FDEDEC';
+                messageBox.style.color = '#C0392B';
+                messageBox.style.border = '1px solid #F5B7B1';
+            } else {
+                messageBox.style.backgroundColor = '#F4FAF3';
+                messageBox.style.color = '#27AE60';
+                messageBox.style.border = '1px solid #ABEBC6';
+            }
+            messageBox.classList.remove('hidden');
+        }
+
+        // Lógica de Autenticação
+        authForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            btnMain.disabled = true;
+            btnMain.innerText = isLogin ? "VALIDANDO..." : "CRIANDO...";
+
+            try {
+                if (isLogin) {
+                    await signInWithEmailAndPassword(auth, email, password);
+                    showMessage("Acesso autorizado. Bem-vinda ao sistema!", false);
+                } else {
+                    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                    const user = userCredential.user;
+
+                    await setDoc(doc(db, "users", user.uid), {
+                        email: email,
+                        system: "CM Life System",
+                        createdAt: new Date().toISOString(),
+                        uid: user.uid
+                    });
+
+                    showMessage("Cadastro concluído com sucesso!", false);
+                    setTimeout(() => {
+                        isLogin = true;
+                        btnToggle.click();
+                    }, 2000);
+                }
+            } catch (error) {
+                console.error(error);
+                let erroTraduzido = "Erro ao processar o pedido.";
+                if (error.code === 'auth/weak-password') erroTraduzido = "A senha deve conter pelo menos 6 caracteres.";
+                if (error.code === 'auth/email-already-in-use') erroTraduzido = "Este e-mail já está cadastrado no sistema.";
+                if (error.code === 'auth/invalid-credential') erroTraduzido = "E-mail ou senha incorretos.";
+                if (error.code === 'auth/user-not-found') erroTraduzido = "Usuário não encontrado.";
+                
+                showMessage(erroTraduzido);
+            } finally {
+                btnMain.disabled = false;
+                btnMain.innerText = isLogin ? "Entrar" : "Criar Conta";
+            }
+        });
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                console.log("Sessão ativa:", user.email);
+            }
+        });
+    </script>
+</body>
+</html>
