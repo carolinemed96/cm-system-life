@@ -3,33 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CM LIFE SYSTEM - Login</title>
+    <title>Login - CM LIFE</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        :root { --chocolate: #3E2723; --gold: #C5A059; --off-white: #FDFBF7; }
-        body { background-color: var(--off-white); min-height: 100vh; display: flex; align-items: center; justify-content: center; font-family: 'Montserrat', sans-serif; }
-        .glass-card { background: #FFFFFF; border-radius: 1.5rem; box-shadow: 0 20px 40px rgba(0,0,0,0.1); border: 1px solid rgba(197, 160, 89, 0.2); width: 100%; max-width: 400px; padding: 40px; }
-        .btn-primary { background-color: var(--chocolate); color: white; padding: 15px; border-radius: 8px; font-weight: bold; width: 100%; cursor: pointer; border: none; transition: 0.3s; }
-        .input-field { border: 1px solid #ddd; width: 100%; padding: 12px; border-radius: 8px; margin-top: 5px; margin-bottom: 15px; }
+        body { background-color: #FDFBF7; font-family: 'Montserrat', sans-serif; height: 100vh; display: flex; align-items: center; justify-content: center; margin: 0; }
+        .card { background: white; padding: 40px; border-radius: 24px; box-shadow: 0 10px 25px rgba(62, 39, 35, 0.1); border: 1px solid rgba(197, 160, 89, 0.2); width: 100%; max-width: 350px; text-align: center; }
+        .gold-text { color: #C5A059; font-family: 'Playfair Display', serif; }
+        .btn { background-color: #3E2723; color: white; width: 100%; padding: 12px; border-radius: 8px; font-weight: 600; margin-top: 20px; cursor: pointer; border: none; }
+        input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; margin-top: 10px; }
     </style>
 </head>
 <body>
-    <div class="glass-card">
-        <div class="text-center mb-6">
-            <div style="font-family: 'Playfair Display'; font-size: 3rem; color: var(--gold);">CM</div>
-            <h1 style="font-family: 'Playfair Display'; font-weight: bold; text-transform: uppercase; color: var(--chocolate);">Life System</h1>
-        </div>
-        <form id="form-login">
-            <label class="text-xs font-bold uppercase text-gray-500">E-mail</label>
-            <input type="email" id="user-email" value="caroline.a.med.m@gmail.com" required class="input-field">
-            
-            <label class="text-xs font-bold uppercase text-gray-500">Senha</label>
-            <input type="password" id="user-pass" placeholder="Sua senha secreta" required class="input-field">
-            
-            <button type="submit" id="btn-entrar" class="btn-primary">ENTRAR</button>
-        </form>
-        <p id="msg-erro" class="mt-4 text-center text-red-500 text-xs hidden">Acesso negado: Verifique seus dados no Firebase.</p>
+    <div class="card">
+        <h1 class="gold-text text-4xl mb-2">CM</h1>
+        <p class="text-xs uppercase tracking-widest mb-6 font-bold text-[#3E2723]">Life System</p>
+        
+        <input type="email" id="email" value="caroline.a.med.m@gmail.com" required>
+        <input type="password" id="password" placeholder="Sua senha" required>
+        
+        <button id="loginBtn" class="btn">ENTRAR</button>
+        <p id="errorMsg" class="text-red-500 text-xs mt-4 hidden">Senha incorreta ou erro de conexão.</p>
     </div>
 
     <script type="module">
@@ -46,25 +40,28 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
 
+        // Se já estiver logada, vai para o index
         onAuthStateChanged(auth, (user) => {
-            if (user) window.location.href = "index.html"; 
+            if (user) { window.location.href = "index.html"; }
         });
 
-        document.getElementById('form-login').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('user-email').value.trim();
-            const pass = document.getElementById('user-pass').value;
-            const btn = document.getElementById('btn-entrar');
+        document.getElementById('loginBtn').onclick = async () => {
+            const email = document.getElementById('email').value;
+            const pass = document.getElementById('password').value;
+            const btn = document.getElementById('loginBtn');
+            const err = document.getElementById('errorMsg');
+
             btn.innerText = "VERIFICANDO...";
-            
+            err.classList.add('hidden');
+
             try {
                 await signInWithEmailAndPassword(auth, email, pass);
                 window.location.href = "index.html";
-            } catch (err) {
+            } catch (error) {
                 btn.innerText = "ENTRAR";
-                document.getElementById('msg-erro').classList.remove('hidden');
+                err.classList.remove('hidden');
             }
-        });
+        };
     </script>
 </body>
 </html>
