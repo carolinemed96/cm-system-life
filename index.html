@@ -77,4 +77,39 @@
         });
     </script>
 </body>
+    <div style="position: fixed; top: 10px; right: 10px; z-index: 10000;">
+    <button id="sair-sistema" style="background: #3E2723; color: #C5A059; border: 1px solid #C5A059; padding: 5px 15px; border-radius: 20px; font-size: 10px; font-weight: bold; cursor: pointer;">
+        SAIR
+    </button>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyBdw18PXbqdO0jqSBNKSTxBKVZzVlweMC0",
+        authDomain: "cm-planner-84079.firebaseapp.com",
+        projectId: "cm-planner-84079",
+        appId: "1:109535738114:web:19f07eae3077a496312a1b"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // SEGURANÇA: Se não houver ninguém logado, volta para o login.html
+    onAuthStateChanged(auth, (user) => {
+        if (!user) {
+            window.location.href = "login.html";
+        }
+    });
+
+    // Função para deslogar
+    document.getElementById('sair-sistema').onclick = () => {
+        signOut(auth).then(() => {
+            window.location.href = "login.html";
+        });
+    };
+</script>
 </html>
+
