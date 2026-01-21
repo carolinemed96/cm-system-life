@@ -10,29 +10,29 @@
         :root { --chocolate: #3E2723; --gold: #C5A059; --off-white: #FDFBF7; }
         body { background-color: var(--off-white); min-height: 100vh; display: flex; align-items: center; justify-content: center; font-family: 'Montserrat', sans-serif; color: var(--chocolate); }
         .sigla-cm { font-family: 'Playfair Display', serif; }
-        .glass-card { background: #FFFFFF; border-radius: 1.5rem; box-shadow: 0 20px 40px rgba(0,0,0,0.1); border: 1px solid rgba(197, 160, 89, 0.2); width: 100%; max-width: 400px; padding: 40px; }
-        .btn-primary { background-color: var(--chocolate); color: white; padding: 15px; border-radius: 8px; font-weight: bold; width: 100%; margin-top: 20px; cursor: pointer; border: none; }
-        .input-field { border: 1px solid #ddd; background-color: #fff; width: 100%; padding: 12px; border-radius: 8px; margin-top: 5px; }
+        .glass-card { background: #FFFFFF; border-radius: 1.5rem; box-shadow: 0 20px 40px rgba(62, 39, 35, 0.1); border: 1px solid rgba(197, 160, 89, 0.2); width: 100%; max-width: 400px; padding: 40px; }
+        .btn-primary { background-color: var(--chocolate); color: white; padding: 15px; border-radius: 8px; font-weight: bold; width: 100%; margin-top: 20px; cursor: pointer; border: none; width: 100%; }
+        .input-field { border: 1px solid rgba(62, 39, 35, 0.1); background-color: var(--off-white); width: 100%; padding: 12px; border-radius: 8px; margin-top: 5px; }
     </style>
 </head>
 <body>
     <div class="glass-card">
-        <div class="text-center mb-8">
+        <div class="text-center mb-8 pb-4 border-b">
             <div class="sigla-cm text-5xl font-bold" style="color: var(--gold);">CM</div>
             <h1 class="text-xl font-bold tracking-widest uppercase">Life System</h1>
         </div>
         <form id="login-form">
             <div>
-                <label class="text-xs font-bold uppercase">E-mail</label>
-                <input type="email" id="email-input" placeholder="seu@email.com" required class="input-field">
+                <label class="text-xs font-bold uppercase text-gray-600">E-mail</label>
+                <input type="email" id="email" value="caroline.a.med.m@gmail.com" required class="input-field">
             </div>
             <div class="mt-4">
-                <label class="text-xs font-bold uppercase">Senha</label>
-                <input type="password" id="pass-input" placeholder="••••••••" required class="input-field">
+                <label class="text-xs font-bold uppercase text-gray-600">Senha</label>
+                <input type="password" id="password" placeholder="Sua senha secreta" required class="input-field">
             </div>
-            <button type="submit" id="btn-entrar" class="btn-primary">ENTRAR</button>
+            <button type="submit" id="btn-entrar" class="btn-primary">ENTRAR NO SISTEMA</button>
         </form>
-        <p id="erro" class="mt-4 text-center text-red-500 text-xs hidden">E-mail ou senha incorretos!</p>
+        <p id="mensagem" class="mt-4 text-center text-xs hidden font-bold"></p>
     </div>
 
     <script type="module">
@@ -40,34 +40,37 @@
         import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
         const firebaseConfig = {
-            apiKey: "AIzaSyBdw18PXbqdO0jqSBNKSTxBKVZzVlweMC0",
-            authDomain: "cm-planner-84079.firebaseapp.com",
-            projectId: "cm-planner-84079",
-            appId: "1:109535738114:web:19f07eae3077a496312a1b"
+            apiKey: \"AIzaSyBdw18PXbqdO0jqSBNKSTxBKVZzVlweMC0\",
+            authDomain: \"cm-planner-84079.firebaseapp.com\",
+            projectId: \"cm-planner-84079\",
+            appId: \"1:109535738114:web:19f07eae3077a496312a1b\"
         };
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
 
-        // Se já estiver logada, vai direto para o index.html
-        onAuthStateChanged(auth, (user) => {
-            if (user) window.location.href = "index.html";
-        });
+        // Se já estiver logada, pula o login
+        onAuthStateChanged(auth, (user) => { if (user) window.location.href = "index.html"; });
 
         document.getElementById('login-form').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const email = document.getElementById('email-input').value;
-            const senha = document.getElementById('pass-input').value;
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
             const btn = document.getElementById('btn-entrar');
-            
+            const msg = document.getElementById('mensagem');
+
             btn.innerText = "VERIFICANDO...";
-            
+            msg.classList.add('hidden');
+
             try {
-                await signInWithEmailAndPassword(auth, email, senha);
+                await signInWithEmailAndPassword(auth, email, password);
                 window.location.href = "index.html";
-            } catch (err) {
-                document.getElementById('erro').classList.remove('hidden');
-                btn.innerText = "ENTRAR";
+            } catch (error) {
+                console.error(error);
+                msg.innerText = "Acesso Negado. Verifique a senha.";
+                msg.style.color = "red";
+                msg.classList.remove('hidden');
+                btn.innerText = "ENTRAR NO SISTEMA";
             }
         });
     </script>
