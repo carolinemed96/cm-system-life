@@ -10,7 +10,7 @@
         :root { --chocolate: #3E2723; --gold: #C5A059; --off-white: #FDFBF7; }
         body { background-color: var(--off-white); min-height: 100vh; display: flex; align-items: center; justify-content: center; font-family: 'Montserrat', sans-serif; }
         .glass-card { background: #FFFFFF; border-radius: 1.5rem; box-shadow: 0 20px 40px rgba(0,0,0,0.1); border: 1px solid rgba(197, 160, 89, 0.2); width: 100%; max-width: 400px; padding: 40px; }
-        .btn-primary { background-color: var(--chocolate); color: white; padding: 15px; border-radius: 8px; font-weight: bold; width: 100%; cursor: pointer; border: none; }
+        .btn-primary { background-color: var(--chocolate); color: white; padding: 15px; border-radius: 8px; font-weight: bold; width: 100%; cursor: pointer; border: none; transition: 0.3s; }
         .input-field { border: 1px solid #ddd; width: 100%; padding: 12px; border-radius: 8px; margin-top: 5px; margin-bottom: 15px; }
     </style>
 </head>
@@ -18,18 +18,18 @@
     <div class="glass-card">
         <div class="text-center mb-6">
             <div style="font-family: 'Playfair Display'; font-size: 3rem; color: var(--gold);">CM</div>
-            <h1 style="font-family: 'Playfair Display'; font-weight: bold; text-transform: uppercase;">Life System</h1>
+            <h1 style="font-family: 'Playfair Display'; font-weight: bold; text-transform: uppercase; color: var(--chocolate);">Life System</h1>
         </div>
         <form id="form-login">
-            <label class="text-xs font-bold uppercase">E-mail</label>
+            <label class="text-xs font-bold uppercase text-gray-500">E-mail</label>
             <input type="email" id="user-email" value="caroline.a.med.m@gmail.com" required class="input-field">
             
-            <label class="text-xs font-bold uppercase">Senha</label>
-            <input type="password" id="user-pass" placeholder="Sua senha" required class="input-field">
+            <label class="text-xs font-bold uppercase text-gray-500">Senha</label>
+            <input type="password" id="user-pass" placeholder="Sua senha secreta" required class="input-field">
             
             <button type="submit" id="btn-entrar" class="btn-primary">ENTRAR</button>
         </form>
-        <p id="msg-erro" class="mt-4 text-center text-red-500 text-xs hidden">Senha incorreta ou erro de acesso!</p>
+        <p id="msg-erro" class="mt-4 text-center text-red-500 text-xs hidden">Acesso negado: Verifique seus dados no Firebase.</p>
     </div>
 
     <script type="module">
@@ -46,7 +46,6 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
 
-        // Se já estiver logada, vai direto para o index.html
         onAuthStateChanged(auth, (user) => {
             if (user) window.location.href = "index.html"; 
         });
@@ -56,7 +55,6 @@
             const email = document.getElementById('user-email').value.trim();
             const pass = document.getElementById('user-pass').value;
             const btn = document.getElementById('btn-entrar');
-            
             btn.innerText = "VERIFICANDO...";
             
             try {
@@ -65,7 +63,6 @@
             } catch (err) {
                 btn.innerText = "ENTRAR";
                 document.getElementById('msg-erro').classList.remove('hidden');
-                console.error("Erro:", err.code);
             }
         });
     </script>
