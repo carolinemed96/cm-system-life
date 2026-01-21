@@ -5,10 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Caroline Medeiros - Organizador Premium</title>
     
-    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     
-    <!-- Leaflet (Mapas Reais) -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
@@ -107,7 +105,8 @@
 
         /* --- Menus --- */
         .create-menu-container { position: relative; }
-        .create-menu-dropdown { position: absolute; top: 110%; right: 0; background: white; border: 1px solid #f0f0f0; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); width: 240px; display: none; z-index: 1000; overflow: hidden; animation: fadeIn 0.1s ease; }
+        /* Cirurgia 1: Z-Index Fix */
+        .create-menu-dropdown { position: absolute; top: 110%; right: 0; background: white; border: 1px solid #f0f0f0; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); width: 240px; display: none; z-index: 9999 !important; overflow: hidden; animation: fadeIn 0.1s ease; }
         .create-menu-dropdown.show { display: block; }
         .create-menu-item { padding: 12px 20px; cursor: pointer; display: flex; align-items: center; gap: 12px; font-size: 0.9rem; color: #555; transition: 0.2s; }
         .create-menu-item:hover { background: #fdfaf5; color: var(--chocolate); padding-left: 25px; }
@@ -168,6 +167,16 @@
         .nav-btn:hover { background: var(--gold); color: white; border-color: var(--gold); }
         .current-date-label { font-family: 'Playfair Display', serif; font-size: 1.2rem; color: var(--chocolate); min-width: 180px; text-align: center; }
 
+        /* Cirurgia 2: Icon Grid */
+        .icon-grid-selector { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-top: 10px; }
+        .icon-option { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border: 1px solid #eee; border-radius: 8px; cursor: pointer; transition: 0.2s; color: var(--gold); }
+        .icon-option:hover, .icon-option.selected { background: var(--off-white); border-color: var(--gold); transform: scale(1.1); }
+
+        /* Cirurgia 4: Image File Card */
+        .file-card-image-container { width: 100%; aspect-ratio: 4/5; overflow: hidden; border-radius: 12px 12px 0 0; background: #eee; position: relative; }
+        .file-card-image { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
+        .file-card-image:hover { transform: scale(1.05); }
+
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes slideInRight { from { opacity: 0; transform: translateX(50px); } to { opacity: 1; transform: translateX(0); } }
     </style>
@@ -191,7 +200,6 @@
 
 <main id="main-content"></main>
 
-<!-- CREATE/EDIT MODAL -->
 <div id="modal-overlay">
     <div class="modal">
         <h3 id="modal-title" style="text-align:center; margin-bottom: 25px; color: var(--chocolate); font-family: 'Playfair Display', serif;">Adicionar</h3>
@@ -200,7 +208,6 @@
     </div>
 </div>
 
-<!-- FILE PREVIEW MODAL -->
 <div id="file-preview-modal">
     <div class="modal large">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px">
@@ -215,7 +222,6 @@
     </div>
 </div>
 
-<!-- SHARE MODAL -->
 <div id="share-modal">
     <div class="modal">
         <h3 style="text-align:center; color:var(--chocolate); font-family:'Playfair Display',serif; margin-bottom:20px">Compartilhar Item</h3>
@@ -228,7 +234,6 @@
     </div>
 </div>
 
-<!-- DELETE CONFIRMATION MODAL -->
 <div id="delete-modal-overlay">
     <div class="modal" style="text-align: center;">
         <div style="display:flex; justify-content:center; margin-bottom:15px">
@@ -245,9 +250,9 @@
     </div>
 </div>
 
-<!-- BATCH ACTION BAR -->
 <div id="batch-actions-bar" style="position: fixed; bottom: 30px; left: 50%; transform: translate(-50%, 150px); background: var(--chocolate); color: white; padding: 15px 30px; border-radius: 40px; display: flex; align-items: center; gap: 20px; z-index: 5000; box-shadow: 0 10px 30px rgba(0,0,0,0.3); transition: transform 0.3s;">
     <span id="selected-count" style="font-weight:600">0 selecionados</span>
+    <button onclick="window.promptChangeIconBatch()" style="background:rgba(255,255,255,0.2); border:none; color:white; padding:8px 16px; border-radius:20px; cursor:pointer; font-size:0.85rem">Ícone</button>
     <button onclick="window.confirmBatchDelete()" style="background:rgba(255,255,255,0.2); border:none; color:white; padding:8px 16px; border-radius:20px; cursor:pointer; font-size:0.85rem">Excluir</button>
     <button onclick="window.toggleSelectionMode()" style="background:white; border:none; color:var(--chocolate); padding:8px 16px; border-radius:20px; cursor:pointer; font-size:0.85rem; font-weight:bold">Cancelar</button>
 </div>
@@ -265,6 +270,9 @@
     let mapInstance = null; 
     let polyline = null; 
     let watchId = null;
+
+    const ICON_LIB = ['folder', 'file-text', 'star', 'heart', 'briefcase', 'coffee', 'sun', 'moon', 'music', 'camera', 'shopping-bag', 'gift', 'map', 'compass', 'anchor', 'feather', 'key', 'lock', 'bell', 'bookmark'];
+    const BR_STATES = ['AC','AL','AP','AM','BA','CE','DF','ES','GO','MA','MT','MS','MG','PA','PB','PR','PE','PI','RJ','RN','RS','RO','RR','SC','SP','SE','TO'];
 
     const BIBLE_BOOKS = [
         "Gênesis", "Êxodo", "Levítico", "Números", "Deuteronômio", "Josué", "Juízes", "Rute", "1 Samuel", "2 Samuel", "1 Reis", "2 Reis", "1 Crônicas", "2 Crônicas", "Esdras", "Neemias", "Ester", "Jó", "Salmos", "Provérbios", "Eclesiastes", "Cânticos", "Isaías", "Jeremias", "Lamentações", "Ezequiel", "Daniel", "Oseias", "Joel", "Amós", "Obadias", "Jonas", "Miqueias", "Naum", "Habacuque", "Sofonias", "Ageu", "Zacarias", "Malaquias", "Mateus", "Marcos", "Lucas", "João", "Atos", "Romanos", "1 Coríntios", "2 Coríntios", "Gálatas", "Efésios", "Filipenses", "Colossenses", "1 Tessalonicenses", "2 Tessalonicenses", "1 Timóteo", "2 Timóteo", "Tito", "Filemom", "Hebreus", "Tiago", "1 Pedro", "2 Pedro", "1 João", "2 João", "3 João", "Judas", "Apocalipse"
@@ -291,7 +299,8 @@
         editingId: null,
         editingHistoryIndex: null,
         gpsSettings: { defaultCity: {lat: -23.5505, lng: -46.6333}, cityName: "São Paulo - SP", state: "SP" },
-        shareItemId: null
+        shareItemId: null,
+        selectedIcon: null
     };
     
     // --- Setup ---
@@ -498,6 +507,7 @@
 
     const renderDashboard = (el) => {
         const verse = VERSES_POOL[(new Date().getDate() + new Date().getMonth() * 31) % VERSES_POOL.length];
+        /* Cirurgia 3: FAB */
         const fab = `
             <div class="floating-star-btn" onclick="window.toggleCreateMenu(this)">
                 <svg width="30" height="30" viewBox="0 0 24 24" fill="white">
@@ -507,6 +517,7 @@
             </div>
             <div class="create-menu-dropdown" style="bottom: 100px; right: 30px; top: auto;">
                 <div class="create-menu-item" onclick="window.openModal('create_area')"><i data-lucide="layout-grid"></i> Criar Nova Área</div>
+                <div class="create-menu-item" onclick="window.toggleSelectionMode()"><i data-lucide="edit-3"></i> Editar</div>
             </div>
         `;
 
@@ -531,16 +542,17 @@
         const customAreas = state.items.filter(i => i.type === 'custom_area' && i.parentId === 'root');
         customAreas.forEach(a => {
             const card = document.createElement('div');
-            card.className = 'card';
+            card.className = `card ${state.selectionMode?'selection-mode':''} ${state.selectedIds.includes(a.id)?'selected':''}`;
             card.style.position = 'relative';
             card.innerHTML = `
-                <i data-lucide="layout" style="color:var(--gold); width:28px; height:28px;"></i>
+                <i data-lucide="${a.icon || 'layout'}" style="color:var(--gold); width:28px; height:28px;"></i>
                 <b style="font-size:1.1rem; color:var(--chocolate); flex:1">${a.name}</b>
-                ${renderActionMenu(a.id, a.type, a.name)}
+                ${state.selectionMode ? '<i data-lucide="check-circle" class="selection-check"></i>' : renderActionMenu(a.id, a.type, a.name)}
             `;
             card.onclick = (e) => {
                 if(e.target.closest('.create-menu-container')) return;
-                window.navigate(a.id);
+                if(state.selectionMode) window.toggleSelectItem(a.id);
+                else window.navigate(a.id);
             };
             grid.appendChild(card);
         });
@@ -576,27 +588,18 @@
         state.bible.book = document.getElementById('bible-book').value;
         state.bible.chapter = document.getElementById('bible-chapter').value;
     };
-
-    // Helper to map English/Standardized JSON names to Portuguese display names if needed
-    // Assuming the JSON source uses standard Portuguese names or close enough matching
     
     window.fetchBibleText = async () => {
         state.bible.loading = true;
         render();
         try {
-            // Load Full Bible Data if not present (One-time fetch for session)
             if (!state.bible.fullData) {
-                // Fetching Almeida version as robust open source fallback that acts like NVI in structure
-                // Using a reliable Github Raw source that allows CORS
                 const res = await fetch('https://raw.githubusercontent.com/thiagobodruk/bible/master/json/pt_aa.json');
                 if(!res.ok) throw new Error("Erro ao baixar base de dados.");
                 state.bible.fullData = await res.json();
                 window.showToast("Bíblia carregada com sucesso!");
             }
 
-            // Find Book
-            // The JSON structure is usually [ { "abbrev": "gn", "name": "Gênesis", "chapters": [...] }, ... ]
-            // We need to match the name selected in dropdown to the name in JSON
             const bookData = state.bible.fullData.find(b => b.name === state.bible.book || b.name.includes(state.bible.book));
             
             if (bookData) {
@@ -633,12 +636,12 @@
         const monthsRemaining = Math.max(1, periodMonths - monthsPassed);
         const weightToLose = parseFloat(current) - parseFloat(target);
         const totalLossRequired = parseFloat(startWeight) - parseFloat(target);
+        /* Cirurgia 8: Indicator Color Logic happens in render */
         const mma = weightToLose > 0 ? (weightToLose / monthsRemaining).toFixed(2) : 0;
         const sortedHistory = [...history].sort((a,b) => new Date(b.date) - new Date(a.date));
-        const startMonthWeight = sortedHistory.length > 0 ? sortedHistory[0].weight : current;
         const progress = totalLossRequired > 0 ? ((parseFloat(startWeight) - parseFloat(current)) / totalLossRequired * 100) : 0;
         
-        return { current, target, startWeight, mma, progress: Math.min(100, Math.max(0, progress)), monthsRemaining, totalLossRequired, periodMonths, startDate, history: sortedHistory };
+        return { current, target, startWeight, mma, progress: Math.min(100, Math.max(0, progress)), monthsRemaining, totalLossRequired, periodMonths, startDate, history: sortedHistory, weightToLose };
     };
 
     const renderHealth = (el) => {
@@ -647,11 +650,13 @@
         const meds = state.items.filter(i => i.type === 'health_med');
         const diet = state.items.find(i => i.type === 'health_food');
 
+        /* Cirurgia 9: Render Generic Items inside Health */
+        const genericItems = state.items.filter(i => i.parentId === 'saude' && !['menstrual_profile', 'menstrual_cycle', 'gps_settings', 'gps_session', 'health_weight', 'health_med', 'health_food'].includes(i.type));
+
         el.innerHTML = `
             <div class="section-header"><h2>Saúde e Bem-estar</h2>${renderCreateButton()}</div>
             
             <div class="grid-container">
-            <!-- Menstrual Card (Now Smaller/Grid Item) -->
             <div class="card" style="display:block; padding:15px">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px">
                     <div style="display:flex; align-items:center; gap:8px">
@@ -663,7 +668,6 @@
                 ${renderCalendar()}
             </div>
 
-            <!-- GPS Card (Now Smaller/Grid Item) -->
             <div class="card" style="display:block; padding:15px">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px">
                     <div style="display:flex; align-items:center; gap:8px">
@@ -681,7 +685,6 @@
             </div>
             </div>
 
-            <!-- Weight Card -->
             <div class="card" style="display:block; margin:20px 0">
                 <div style="display:flex; justify-content:space-between; align-items:center">
                     <div style="display:flex; align-items:center; gap:10px">
@@ -696,7 +699,7 @@
                 ${stats ? `
                     <div style="margin-top:20px; display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; text-align:center">
                         <div><div style="font-size:1.5rem; font-weight:800; color:var(--chocolate)">${stats.current}</div><div style="font-size:0.7rem; text-transform:uppercase; color:#999; font-weight:600">Atual (kg)</div></div>
-                        <div><div style="font-size:1.5rem; font-weight:800; color:${stats.mma > 0 ? 'var(--chocolate)' : 'var(--success)'}">${stats.mma}</div><div style="font-size:0.7rem; text-transform:uppercase; color:#999; font-weight:600">Meta/Mês</div></div>
+                        <div><div style="font-size:1.5rem; font-weight:800; color:${stats.weightToLose <= 0 ? 'var(--success)' : 'var(--danger)'}">${stats.mma}</div><div style="font-size:0.7rem; text-transform:uppercase; color:#999; font-weight:600">Meta/Mês</div></div>
                         <div><div style="font-size:1.5rem; font-weight:800; color:var(--gold)">${stats.monthsRemaining}</div><div style="font-size:0.7rem; text-transform:uppercase; color:#999; font-weight:600">Meses Rest.</div></div>
                     </div>
                     <div class="weight-progress-bar"><div class="weight-progress-fill" style="width:${stats.progress}%"></div></div>
@@ -705,7 +708,6 @@
                 ` : ''}
             </div>
 
-            <!-- Meds & Diet -->
             <div class="grid-container">
                 <div class="card" style="display:block">
                     <div style="display:flex; justify-content:space-between; margin-bottom:15px"><b>Medicamentos</b><button class="btn-add" style="padding:4px 8px" onclick="window.openModal('health_med')">+</button></div>
@@ -715,6 +717,27 @@
                     <div style="display:flex; justify-content:space-between; margin-bottom:15px"><b>Dieta</b><button class="btn-add" style="padding:4px 8px" onclick="window.openModal('health_food')"><i data-lucide="edit-2" style="width:14px"></i></button></div>
                     <div style="white-space:pre-wrap; font-size:0.85rem; color:#555; max-height:150px; overflow-y:auto">${diet ? diet.content.text : 'Nenhuma dieta cadastrada.'}</div>
                 </div>
+            </div>
+
+            <div class="grid-container" style="margin-top:20px">
+                ${genericItems.map(i => {
+                    const isSelected = state.selectedIds.includes(i.id);
+                    const icon = i.icon || ({folder:'folder', note:'file-text', checklist:'list-checks', checklist_sum:'calculator', bank:'credit-card', social:'at-sign', file:'paperclip'}[i.type] || 'file');
+                    if (i.type === 'file') {
+                         /* Cirurgia 4: New Image Card Layout for Health Files too */
+                        const isImg = i.content.fileType.startsWith('image') || /\.(jpg|jpeg|png|gif|bmp|webp|heic)$/i.test(i.name);
+                        return `<div class="card ${state.selectionMode?'selection-mode':''} ${isSelected?'selected':''}" style="display:block; padding:0; overflow:hidden" onclick="${state.selectionMode ? `window.toggleSelectItem('${i.id}')` : `window.openFilePreview('${i.id}')`}">
+                            ${isImg ? `<div class="file-card-image-container"><img src="${i.content.data}" class="file-card-image" onerror="this.style.display='none'"></div>` : `<div style="padding:30px; text-align:center"><i data-lucide="${icon}" style="color:#999; width:40px; height:40px"></i></div>`}
+                            <div style="padding:15px">
+                                ${i.content.caption ? `<div style="font-weight:600; color:var(--chocolate); font-size:0.9rem; margin-bottom:4px">${i.content.caption}</div>` : ''}
+                                <div style="font-size:0.75rem; color:#888; white-space:nowrap; text-overflow:ellipsis; overflow:hidden">${i.type === 'file' ? '' : i.name}</div>
+                            </div>
+                            <i data-lucide="check-circle" class="selection-check"></i>
+                            <div style="position:absolute; bottom:10px; right:10px">${renderActionMenu(i.id, i.type, i.name)}</div>
+                        </div>`;
+                    }
+                    return `<div class="card ${state.selectionMode?'selection-mode':''} ${isSelected?'selected':''}" onclick="${state.selectionMode ? `window.toggleSelectItem('${i.id}')` : `window.navigate('${i.id}')`}"><i data-lucide="${icon}" style="color:${i.type==='folder'?'var(--gold)':'#999'}"></i><span style="flex:1; font-weight:600; color:var(--chocolate)">${i.name}</span><i data-lucide="check-circle" class="selection-check"></i>${renderActionMenu(i.id, i.type, i.name)}</div>`;
+                }).join('')}
             </div>
         `;
 
@@ -747,50 +770,42 @@
         // Calculate days from logs
         logs.forEach(l => {
             const startDate = new Date(l.content.date);
-            // Mark flow duration
             for(let i=0; i<flowDuration; i++) {
-                const d = new Date(startDate);
-                d.setDate(startDate.getDate() + i);
+                const d = new Date(startDate); d.setDate(startDate.getDate() + i);
                 flowDays.add(d.toISOString().split('T')[0]);
             }
-            // Mark fertile window (approx 14 days before NEXT period)
-            // Next period approx = startDate + cycleDuration
-            const nextPeriod = new Date(startDate);
-            nextPeriod.setDate(startDate.getDate() + cycleDuration);
-            const ovulation = new Date(nextPeriod);
-            ovulation.setDate(nextPeriod.getDate() - 14);
-            
-            // Mark 5 fertile days around ovulation
+            const nextPeriod = new Date(startDate); nextPeriod.setDate(startDate.getDate() + cycleDuration);
+            const ovulation = new Date(nextPeriod); ovulation.setDate(nextPeriod.getDate() - 14);
             for(let k=-2; k<=2; k++) {
-                const f = new Date(ovulation);
-                f.setDate(ovulation.getDate() + k);
+                const f = new Date(ovulation); f.setDate(ovulation.getDate() + k);
                 fertileDays.add(f.toISOString().split('T')[0]);
             }
         });
 
-        // Predictions from Last Contraceptive/Log Date if set
-        if (profile && profile.content.lastContraDate) {
-            const last = new Date(profile.content.lastContraDate);
-            for(let k=0; k<12; k++) { // Predict next 12 cycles
-                const next = new Date(last);
-                next.setDate(last.getDate() + (cycleDuration * (k+1)));
-                
-                // Add predicted flow
-                for(let i=0; i<flowDuration; i++) {
-                    const d = new Date(next);
-                    d.setDate(next.getDate() + i);
-                    flowDays.add(d.toISOString().split('T')[0]);
-                }
-                
-                // Add predicted fertile
-                const nextNextPeriod = new Date(next);
-                nextNextPeriod.setDate(next.getDate() + cycleDuration);
-                const ovulation = new Date(nextNextPeriod);
-                ovulation.setDate(nextNextPeriod.getDate() - 14);
-                for(let j=-2; j<=2; j++) {
-                    const f = new Date(ovulation);
-                    f.setDate(ovulation.getDate() + j);
-                    fertileDays.add(f.toISOString().split('T')[0]);
+        /* Cirurgia 7: Prediction Logic Update */
+        if (profile) {
+            let baseDate = null;
+            if (profile.content.lastPeriodDate) baseDate = new Date(profile.content.lastPeriodDate);
+            else if (profile.content.contraceptiveStartDate) baseDate = new Date(profile.content.contraceptiveStartDate);
+
+            if (baseDate) {
+                for(let k=0; k<12; k++) {
+                    const next = new Date(baseDate);
+                    next.setDate(baseDate.getDate() + (cycleDuration * k));
+                    
+                    // Add predicted flow
+                    for(let i=0; i<flowDuration; i++) {
+                        const d = new Date(next); d.setDate(next.getDate() + i);
+                        if(k>0 || !logs.length) flowDays.add(d.toISOString().split('T')[0]); // Only predict if future or no logs
+                    }
+                    
+                    // Add predicted fertile
+                    const nextNextPeriod = new Date(next); nextNextPeriod.setDate(next.getDate() + cycleDuration);
+                    const ovulation = new Date(nextNextPeriod); ovulation.setDate(nextNextPeriod.getDate() - 14);
+                    for(let j=-2; j<=2; j++) {
+                        const f = new Date(ovulation); f.setDate(ovulation.getDate() + j);
+                        fertileDays.add(f.toISOString().split('T')[0]);
+                    }
                 }
             }
         }
@@ -805,7 +820,6 @@
             <div class="cal-grid">
         `;
 
-        // Empty slots
         for(let i=0; i<firstDay; i++) html += `<div></div>`;
 
         for(let d=1; d<=daysInMonth; d++) {
@@ -826,10 +840,6 @@
             `;
         }
         html += `</div>`;
-        html += `<div style="display:flex; gap:15px; justify-content:center; margin-top:10px; font-size:0.65rem; color:#888">
-            <div style="display:flex; align-items:center; gap:4px"><div style="width:8px; height:8px; background:var(--gold); clip-path: polygon(50% 0%, 61% 35%, 100% 50%, 61% 65%, 50% 100%, 39% 65%, 0% 50%, 39% 35%);"></div> Fértil</div>
-            <div style="display:flex; align-items:center; gap:4px"><div style="width:16px; height:3px; background:var(--period-line); border-radius:2px"></div> Fluxo</div>
-        </div>`;
         return html;
     };
 
@@ -960,12 +970,18 @@
             window.showToast("Itens excluídos.");
         }
     };
+    /* Cirurgia 3: Batch Icon Change */
+    window.promptChangeIconBatch = async () => {
+        if (!state.selectedIds.length) return;
+        window.openModal('icon_selector');
+    };
 
     // Checklist Logic
     window.addCLItem = async (id) => {
         const item = state.items.find(i => i.id === id);
         const newItems = [...(item.content.items || []), { text: '', checked: false, val: 0 }];
         await _updateDoc(isOffline ? {id} : doc(db, 'artifacts', appId, 'users', state.user.uid, 'items', id), { 'content.items': newItems });
+        /* Cirurgia 5: Auto-sum triggers handled by updateDoc rerender */
     };
     window.toggleCLItem = async (id, idx) => {
         const item = state.items.find(i => i.id === id);
@@ -1100,11 +1116,20 @@
         if(extrasContainer && extras.length) {
             extras.forEach(i => {
                 const isSelected = state.selectedIds.includes(i.id);
-                const icon = {note:'file-text', file:'paperclip'}[i.type] || 'file';
+                const icon = i.icon || ({note:'file-text', file:'paperclip'}[i.type] || 'file');
                 let cardHTML = '';
                 if(i.type === 'file') {
+                      /* Cirurgia 4: Image Card Layout */
                       const isImg = i.content.fileType.startsWith('image') || /\.(jpg|jpeg|png|gif|bmp|webp|heic)$/i.test(i.name);
-                      cardHTML = `<div class="card ${state.selectionMode?'selection-mode':''} ${isSelected?'selected':''}" onclick="${state.selectionMode ? `window.toggleSelectItem('${i.id}')` : `window.openFilePreview('${i.id}')`}">${isImg ? `<img src="${i.content.data}" style="width:40px; height:40px; object-fit:cover; border-radius:8px; margin-right:10px" onerror="this.style.display='none'">` : `<i data-lucide="${icon}" style="color:#999"></i>`}<div style="flex:1; overflow:hidden"><div style="font-weight:600; color:var(--chocolate); white-space:nowrap; text-overflow:ellipsis; overflow:hidden">${i.name}</div>${i.content.caption ? `<div style="font-size:0.75rem; color:#888; white-space:nowrap; text-overflow:ellipsis; overflow:hidden">${i.content.caption}</div>` : ''}</div>${renderActionMenu(i.id, i.type, i.name)}</div>`;
+                      cardHTML = `<div class="card ${state.selectionMode?'selection-mode':''} ${isSelected?'selected':''}" style="display:block; padding:0; overflow:hidden" onclick="${state.selectionMode ? `window.toggleSelectItem('${i.id}')` : `window.openFilePreview('${i.id}')`}">
+                        ${isImg ? `<div class="file-card-image-container"><img src="${i.content.data}" class="file-card-image" onerror="this.style.display='none'"></div>` : `<div style="padding:30px; text-align:center"><i data-lucide="${icon}" style="color:#999; width:40px; height:40px"></i></div>`}
+                        <div style="padding:15px">
+                            ${i.content.caption ? `<div style="font-weight:600; color:var(--chocolate); font-size:0.9rem; margin-bottom:4px">${i.content.caption}</div>` : ''}
+                            <div style="font-size:0.75rem; color:#888; white-space:nowrap; text-overflow:ellipsis; overflow:hidden">${i.type === 'file' ? '' : i.name}</div>
+                        </div>
+                        <i data-lucide="check-circle" class="selection-check"></i>
+                        <div style="position:absolute; bottom:10px; right:10px">${renderActionMenu(i.id, i.type, i.name)}</div>
+                    </div>`;
                 } else {
                       cardHTML = `<div class="card" onclick="window.editItem('${i.id}','${i.type}')"><i data-lucide="${icon}"></i><span>${i.name}</span>${renderActionMenu(i.id, i.type, i.name)}</div>`;
                 }
@@ -1122,8 +1147,10 @@
                     const saved = parseFloat(p.content.saved || 0);
                     const target = parseFloat(p.content.target || 1);
                     const timeMonths = p.content.months || 0;
+                    /* Cirurgia 10: Investment Logic: Remaining */
+                    const remaining = Math.max(0, target - saved);
                     const pct = target > 0 ? Math.min(100, (saved/target)*100) : 0;
-                    return `<div class="piggy-card"><div style="display:flex; justify-content:space-between"><b>${p.name}</b>${renderActionMenu(p.id, 'piggy', p.name)}</div><div style="font-size:0.8rem; color:#999; margin-bottom:5px">Prazo: ${timeMonths} meses</div><div style="font-size:1.8rem; font-weight:bold; color:var(--gold); margin:5px 0">${saved.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})} <small style="font-size:0.8rem; color:#999">/ ${target.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</small></div><div class="progress-grid">${Array(20).fill(0).map((_,i) => `<div class="progress-block ${i<(pct/5)?'filled':''}"></div>`).join('')}</div><div style="display:flex; gap:5px; margin-top:15px"><input class="form-control" style="padding:8px" type="number" id="dep-${p.id}" placeholder="Depósito..."><button class="btn-add" onclick="window.makeDeposit('${p.id}')">OK</button></div></div>`;
+                    return `<div class="piggy-card"><div style="display:flex; justify-content:space-between"><b>${p.name}</b>${renderActionMenu(p.id, 'piggy', p.name)}</div><div style="font-size:0.8rem; color:#999; margin-bottom:5px">Prazo: ${timeMonths} meses</div><div style="font-size:1.8rem; font-weight:bold; color:var(--gold); margin:5px 0">${saved.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</div><div style="color:${remaining > 0 ? 'var(--chocolate)':'var(--success)'}; font-size:0.8rem; font-weight:600">Restante: ${remaining.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</div><div class="progress-grid">${Array(20).fill(0).map((_,i) => `<div class="progress-block ${i<(pct/5)?'filled':''}"></div>`).join('')}</div><div style="display:flex; gap:5px; margin-top:15px"><input class="form-control" style="padding:8px" type="number" id="dep-${p.id}" placeholder="Depósito..."><button class="btn-add" onclick="window.makeDeposit('${p.id}')">OK</button></div></div>`;
                 }).join('')}
                 <div class="card" style="justify-content:center; min-height:200px; border:2px dashed #ddd; background:transparent; cursor:pointer" onclick="window.openModal('piggy')">
                     <div style="text-align:center; color:#999"><i data-lucide="plus" style="width:30px; height:30px"></i><br>Novo Objetivo</div>
@@ -1176,10 +1203,19 @@
         const items = state.items.filter(i => i.parentId === pid);
         el.innerHTML = `<div class="section-header"><h2 style="font-size:1.5rem">Conteúdo</h2>${renderCreateButton()}</div><div class="grid-container">${items.length ? items.map(i => {
             const isSelected = state.selectedIds.includes(i.id);
-            const icon = {folder:'folder', note:'file-text', checklist:'list-checks', checklist_sum:'calculator', bank:'credit-card', social:'at-sign', file:'paperclip'}[i.type] || 'file';
+            const icon = i.icon || ({folder:'folder', note:'file-text', checklist:'list-checks', checklist_sum:'calculator', bank:'credit-card', social:'at-sign', file:'paperclip'}[i.type] || 'file');
             if (i.type === 'file') {
+                /* Cirurgia 4: Image Card Layout for Folder Files */
                 const isImg = i.content.fileType.startsWith('image') || /\.(jpg|jpeg|png|gif|bmp|webp|heic)$/i.test(i.name);
-                return `<div class="card ${state.selectionMode?'selection-mode':''} ${isSelected?'selected':''}" onclick="${state.selectionMode ? `window.toggleSelectItem('${i.id}')` : `window.openFilePreview('${i.id}')`}">${isImg ? `<img src="${i.content.data}" style="width:40px; height:40px; object-fit:cover; border-radius:8px; margin-right:10px" onerror="this.style.display='none'">` : `<i data-lucide="${icon}" style="color:#999"></i>`}<div style="flex:1; overflow:hidden"><div style="font-weight:600; color:var(--chocolate); white-space:nowrap; text-overflow:ellipsis; overflow:hidden">${i.name}</div>${i.content.caption ? `<div style="font-size:0.75rem; color:#888; white-space:nowrap; text-overflow:ellipsis; overflow:hidden">${i.content.caption}</div>` : ''}</div><i data-lucide="check-circle" class="selection-check"></i>${renderActionMenu(i.id, i.type, i.name)}</div>`;
+                return `<div class="card ${state.selectionMode?'selection-mode':''} ${isSelected?'selected':''}" style="display:block; padding:0; overflow:hidden" onclick="${state.selectionMode ? `window.toggleSelectItem('${i.id}')` : `window.openFilePreview('${i.id}')`}">
+                    ${isImg ? `<div class="file-card-image-container"><img src="${i.content.data}" class="file-card-image" onerror="this.style.display='none'"></div>` : `<div style="padding:30px; text-align:center"><i data-lucide="${icon}" style="color:#999; width:40px; height:40px"></i></div>`}
+                    <div style="padding:15px">
+                         ${i.content.caption ? `<div style="font-weight:600; color:var(--chocolate); font-size:0.9rem; margin-bottom:4px">${i.content.caption}</div>` : ''}
+                         <div style="font-size:0.75rem; color:#888; white-space:nowrap; text-overflow:ellipsis; overflow:hidden">${i.type === 'file' ? '' : i.name}</div>
+                    </div>
+                    <i data-lucide="check-circle" class="selection-check"></i>
+                    <div style="position:absolute; bottom:10px; right:10px">${renderActionMenu(i.id, i.type, i.name)}</div>
+                </div>`;
             }
             return `<div class="card ${state.selectionMode?'selection-mode':''} ${isSelected?'selected':''}" onclick="${state.selectionMode ? `window.toggleSelectItem('${i.id}')` : `window.navigate('${i.id}')`}"><i data-lucide="${icon}" style="color:${i.type==='folder'?'var(--gold)':'#999'}"></i><span style="flex:1; font-weight:600; color:var(--chocolate)">${i.name}</span><i data-lucide="check-circle" class="selection-check"></i>${renderActionMenu(i.id, i.type, i.name)}</div>`;
         }).join('') : '<div style="grid-column:1/-1; text-align:center; padding:40px; color:#aaa">Esta pasta está vazia.</div>'}</div>`;
@@ -1214,6 +1250,7 @@
         else if(item.type.includes('checklist')) {
             const isSum = item.type === 'checklist_sum';
             const items = item.content && item.content.items ? item.content.items : [];
+            /* Cirurgia 5: Auto-sum calculation */
             const total = isSum ? items.reduce((a,b)=>b.checked?a+(parseFloat(b.val)||0):a,0) : 0;
             content = `${isSum ? `<div style="text-align:right; font-size:1.5rem; color:var(--success); font-weight:bold; margin-bottom:15px">${total.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</div>` : ''}<div style="display:flex; flex-direction:column; gap:10px">${items.map((it, idx) => `<div style="display:flex; gap:10px; align-items:center; padding:8px; border-bottom:1px solid #eee"><div class="btn-check ${it.checked?'active':''}" onclick="window.toggleCLItem('${item.id}', ${idx})"><i data-lucide="check" style="width:16px"></i></div><input class="checklist-input form-control" style="border:none; background:transparent; text-decoration:${it.checked?'line-through':''}" value="${it.text}" onchange="window.updateCL('${item.id}',${idx},'text',this.value)">${isSum ? `<input class="form-control" type="number" style="width:80px; text-align:right" value="${it.val}" onchange="window.updateCL('${item.id}',${idx},'val',this.value)">` : ''}<i data-lucide="x" style="width:16px; cursor:pointer; opacity:0.5" onclick="window.deleteCLItem('${item.id}', ${idx})"></i></div>`).join('')}<button class="btn-add" style="align-self:center; margin-top:10px" onclick="window.addCLItem('${item.id}')"><i data-lucide="plus"></i> Item</button></div>`;
         } else if (item.type === 'bank') {
@@ -1275,10 +1312,21 @@
         } catch(e) { citySelect.innerHTML = '<option>Erro</option>'; }
     };
     
+    /* Cirurgia 2: Icon Selection Logic */
+    window.selectIcon = (icon) => {
+        state.selectedIcon = icon;
+        document.querySelectorAll('.icon-option').forEach(el => el.classList.remove('selected'));
+        document.getElementById(`icon-opt-${icon}`).classList.add('selected');
+    };
+    const renderIconSelector = () => {
+        return `<div class="form-group"><label>Ícone (Opcional)</label><div class="icon-grid-selector">${ICON_LIB.map(i => `<div id="icon-opt-${i}" class="icon-option" onclick="window.selectIcon('${i}')"><i data-lucide="${i}" style="width:20px"></i></div>`).join('')}</div></div>`;
+    };
+
     window.closeModal = () => {
         const m = document.getElementById('modal-overlay');
         m.classList.remove('open'); setTimeout(() => m.style.display = 'none', 300);
         state.editingId = null;
+        state.selectedIcon = null;
     };
 
     window.openModal = (type, editingId = null) => {
@@ -1286,6 +1334,7 @@
         const form = document.getElementById('modal-form');
         const actions = document.getElementById('modal-actions');
         state.editingId = editingId;
+        state.selectedIcon = null;
         
         let html = '';
         let title = editingId ? 'Editar' : 'Novo';
@@ -1296,13 +1345,18 @@
         const v = (key) => item && item.content ? item.content[key] || '' : '';
         const n = () => item ? item.name : '';
 
+        // Pre-select icon if editing
+        if(item && item.icon) state.selectedIcon = item.icon;
+
+        /* Cirurgia 2: Add Icon Selector to relevant modals */
         switch(type) {
-            case 'create_area': title = 'Nova Área'; html = inp('f-name', 'Nome da Área', 'Ex: Projetos'); break;
+            case 'create_area': title = 'Nova Área'; html = inp('f-name', 'Nome da Área', 'Ex: Projetos') + renderIconSelector(); break;
             case 'rename': html = inp('f-name', 'Novo Nome', '', n()); break;
-            case 'folder': html = inp('f-name', 'Nome da Pasta', '', n()); break;
+            case 'folder': html = inp('f-name', 'Nome da Pasta', '', n()) + renderIconSelector(); break;
             case 'note': html = inp('f-name', 'Título', '', n()) + `<div class="form-group"><label>Conteúdo</label><textarea id="f-text" class="form-control">${v('text')}</textarea></div>`; break;
+            /* Cirurgia 4: Remove filename from edit view (only name/caption) */
             case 'file': html = inp('f-name', 'Nome', '', n()) + `<div class="form-group"><label>Arquivo</label><input type="file" id="f-file" class="form-control"></div>` + `<div class="form-group"><label>Legenda</label><input type="text" id="f-caption" class="form-control" value="${v('caption')}"></div>`; break;
-            case 'checklist': case 'checklist_sum': html = inp('f-name', 'Título', '', n()); break;
+            case 'checklist': case 'checklist_sum': html = inp('f-name', 'Título', '', n()) + renderIconSelector(); break;
             case 'bank': html = inp('f-name', 'Banco', '', n()) + inp('f-holder', 'Titular', '', v('holder')) + inp('f-ag', 'Agência', '', v('agency')) + inp('f-cc', 'Conta', '', v('account')) + inp('f-pix', 'PIX', '', v('pix')) + inp('f-pass', 'Senha', '', v('pass')); break;
             case 'social': html = inp('f-name','Plataforma','',n()) + inp('f-login','Login','',v('login')) + inp('f-pass','Senha','',v('pass')); break;
             case 'expense': case 'pendency': title = type === 'expense' ? 'Nova Despesa' : 'Nova Pendência'; html = inp('f-name', 'Descrição', 'Ex: Aluguel', n()) + `<div class="form-group"><label>Valor</label><input type="number" id="f-val" class="form-control" value="${v('value')}"></div>` + `<div class="form-group"><label>Parcelas</label><input type="number" id="f-par" class="form-control" value="1"></div>` + `<div class="form-group"><label>Vencimento</label><input type="date" id="f-due" class="form-control" value="${v('due') || new Date().toISOString().split('T')[0]}"></div>`; break;
@@ -1319,7 +1373,8 @@
                 break;
             case 'health_med': html = inp('f-name','Remédio','',n()) + inp('f-time','Horário','',v('time')) + inp('f-inst','Instruções','',v('instructions')); break;
             case 'health_food': title='Dieta'; html=`<div class="form-group"><textarea id="f-diet" class="form-control" style="height:200px">${v('text')}</textarea></div>`; break;
-            case 'gps_settings': title = 'GPS Config'; html = `<div class="form-group"><label>Estado</label><select id="f-gps-state" class="form-control" onchange="window.loadCities(this.value)"><option value="SP">SP</option></select></div><div class="form-group"><label>Cidade</label><select id="f-gps-city" class="form-control"><option>São Paulo</option></select></div>`; setTimeout(()=>window.loadCities('SP'),100); break;
+            /* Cirurgia 6: GPS State Selection */
+            case 'gps_settings': title = 'GPS Config'; html = `<div class="form-group"><label>Estado</label><select id="f-gps-state" class="form-control" onchange="window.loadCities(this.value)">${BR_STATES.map(s => `<option value="${s}">${s}</option>`).join('')}</select></div><div class="form-group"><label>Cidade</label><select id="f-gps-city" class="form-control"><option>Carregando...</option></select></div>`; setTimeout(()=>window.loadCities(BR_STATES[0]),100); break;
             case 'menstrual_log': 
                 title = 'Ciclo'; 
                 const dateKey = editingId; 
@@ -1327,17 +1382,19 @@
                 const flow = existingLog ? existingLog.content.flow : '';
                 html = `<input type="hidden" id="f-mens-date" value="${dateKey}"><div style="text-align:center;margin-bottom:10px">${new Date(dateKey).toLocaleDateString()}</div><div class="form-group"><label>Fluxo</label><select id="f-mens-flow" class="form-control"><option value="">Nenhum</option><option value="Inicio" ${flow==='Inicio'?'selected':''}>Início</option><option value="Medio" ${flow==='Medio'?'selected':''}>Médio</option><option value="Intenso" ${flow==='Intenso'?'selected':''}>Intenso</option><option value="Leve" ${flow==='Leve'?'selected':''}>Leve</option></select></div><div class="form-group"><input type="checkbox" id="f-mens-sex" ${existingLog && existingLog.content.sex?'checked':''}> Sexo <input type="checkbox" id="f-mens-prot" ${existingLog && existingLog.content.protection?'checked':''}> Proteção</div><div class="form-group"><label>Notas</label><textarea id="f-mens-notes" class="form-control">${existingLog?existingLog.content.notes||'':''}</textarea></div>`;
                 break;
+            /* Cirurgia 7: Expanded Menstrual Profile Fields */
             case 'menstrual_settings': 
                  title = 'Perfil Mulher';
                  const p = state.items.find(i=>i.type==='menstrual_profile')||{content:{}};
-                 html = inp('f-prof-name','Nome','',p.content.name) + inp('f-prof-age','Idade','',p.content.age) + inp('f-prof-dur','Ciclo',28,p.content.cycleDuration) + inp('f-prof-flowdur','Fluxo',5,p.content.flowDuration) + `<div class="form-group"><label>Contraceptivo</label><select id="f-prof-contra" class="form-control"><option value="Nenhum" ${p.content.contraceptiveType==='Nenhum'?'selected':''}>Nenhum</option><option value="Pílula" ${p.content.contraceptiveType==='Pílula'?'selected':''}>Pílula</option><option value="Injeção" ${p.content.contraceptiveType==='Injeção'?'selected':''}>Injeção</option></select></div>` + inp('f-prof-contradate','Última Data','',p.content.lastContraDate);
+                 html = inp('f-prof-name','Nome','',p.content.name) + inp('f-prof-age','Idade','',p.content.age) + inp('f-prof-dur','Ciclo',28,p.content.cycleDuration) + inp('f-prof-flowdur','Fluxo',5,p.content.flowDuration) + `<div class="form-group"><label>Data da Última Menstruação</label><input type="date" id="f-prof-last" class="form-control" value="${p.content.lastPeriodDate||''}"></div>` + `<div class="form-group"><label>Início Cartela Anticoncepcional</label><input type="date" id="f-prof-contradate" class="form-control" value="${p.content.contraceptiveStartDate||''}"></div>` + `<div class="form-group"><label>Contraceptivo</label><select id="f-prof-contra" class="form-control"><option value="Nenhum" ${p.content.contraceptiveType==='Nenhum'?'selected':''}>Nenhum</option><option value="Pílula" ${p.content.contraceptiveType==='Pílula'?'selected':''}>Pílula</option><option value="Injeção" ${p.content.contraceptiveType==='Injeção'?'selected':''}>Injeção</option></select></div>`;
                  break;
+            case 'icon_selector': title = 'Escolher Ícone'; html = renderIconSelector(); break;
          }
 
         document.getElementById('modal-title').innerText = title;
         form.innerHTML = html;
         actions.innerHTML = `<button class="btn-cancel" onclick="window.closeModal()">Cancelar</button><button class="btn-add" onclick="window.saveItem('${type}')">Salvar</button>`;
-        overlay.style.display = 'flex'; setTimeout(() => overlay.classList.add('open'), 10);
+        overlay.style.display = 'flex'; setTimeout(() => { overlay.classList.add('open'); if(state.selectedIcon) document.getElementById(`icon-opt-${state.selectedIcon}`).classList.add('selected'); if(window.lucide) window.lucide.createIcons(); }, 10);
     };
 
     window.saveItem = async (type) => {
@@ -1346,14 +1403,22 @@
         const getVal = (id) => { const el = document.getElementById(id); return el ? el.value : ''; };
         const getCheck = (id) => { const el = document.getElementById(id); return el ? el.checked : false; };
         let data = { parentId, type, createdAt: Date.now() };
+        if (state.selectedIcon) data.icon = state.selectedIcon;
 
         try {
             if (type === 'create_area') {
-                data = { type: 'custom_area', name: getVal('f-name'), parentId: 'root', createdAt: Date.now() };
+                data = { type: 'custom_area', name: getVal('f-name'), parentId: 'root', createdAt: Date.now(), icon: state.selectedIcon };
                 await _addDoc(coll, data);
             } else if (type === 'rename') {
                 const ref = isOffline ? {id: state.editingId} : doc(db, 'artifacts', appId, 'users', state.user.uid, 'items', state.editingId);
                 await _updateDoc(ref, { name: getVal('f-name') });
+            } else if (type === 'icon_selector') {
+                /* Cirurgia 3: Batch update logic */
+                for(const id of state.selectedIds) {
+                     const ref = isOffline ? {id} : doc(db, 'artifacts', appId, 'users', state.user.uid, 'items', id);
+                     await _updateDoc(ref, { icon: state.selectedIcon });
+                }
+                window.toggleSelectionMode();
             } else if (type === 'file') {
                  const f = document.getElementById('f-file').files[0];
                  const caption = getVal('f-caption');
@@ -1369,8 +1434,8 @@
                     };
                     reader.readAsDataURL(f); return;
                  } else if (state.editingId) {
-                     const ref = isOffline ? {id: state.editingId} : doc(db, 'artifacts', appId, 'users', state.user.uid, 'items', state.editingId);
-                     await _updateDoc(ref, { name: name, 'content.caption': caption });
+                      const ref = isOffline ? {id: state.editingId} : doc(db, 'artifacts', appId, 'users', state.user.uid, 'items', state.editingId);
+                      await _updateDoc(ref, { name: name, 'content.caption': caption });
                  }
             } 
             else if (type === 'folder') { data.name = getVal('f-name'); await _addDoc(coll, data); }
@@ -1436,7 +1501,8 @@
                 render();
             }
             else if(type === 'menstrual_settings') {
-                const content = { name: getVal('f-prof-name'), age: getVal('f-prof-age'), cycleDuration: getVal('f-prof-dur'), flowDuration: getVal('f-prof-flowdur'), contraceptiveType: getVal('f-prof-contra'), lastContraDate: getVal('f-prof-contradate'), contraceptiveTime: getVal('f-prof-time') };
+                /* Cirurgia 7: Save extended fields */
+                const content = { name: getVal('f-prof-name'), age: getVal('f-prof-age'), cycleDuration: getVal('f-prof-dur'), flowDuration: getVal('f-prof-flowdur'), contraceptiveType: getVal('f-prof-contra'), lastPeriodDate: getVal('f-prof-last'), contraceptiveStartDate: getVal('f-prof-contradate') };
                 const existing = state.items.find(i => i.type === 'menstrual_profile');
                 if(existing) await _updateDoc(isOffline ? {id: existing.id} : doc(db, 'artifacts', appId, 'users', state.user.uid, 'items', existing.id), {content});
                 else await _addDoc(coll, { parentId: 'saude', type: 'menstrual_profile', name: 'Perfil Mulher', content });
