@@ -7,33 +7,32 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        :root { --chocolate: #3E2723; --chocolate-light: #5D4037; --gold: #C5A059; --off-white: #FDFBF7; }
+        :root { --chocolate: #3E2723; --gold: #C5A059; --off-white: #FDFBF7; }
         body { background-color: var(--off-white); min-height: 100vh; display: flex; align-items: center; justify-content: center; font-family: 'Montserrat', sans-serif; color: var(--chocolate); }
-        h1, .sigla-cm { font-family: 'Playfair Display', serif; }
-        .glass-card { background: #FFFFFF; border-radius: 1.5rem; box-shadow: 0 20px 40px rgba(62, 39, 35, 0.1); border: 1px solid rgba(197, 160, 89, 0.2); width: 100%; max-width: 400px; padding: 40px; }
-        .btn-primary { background-color: var(--chocolate); color: white; transition: all 0.3s ease; border-radius: 0.5rem; width: 100%; padding: 15px; font-weight: bold; cursor: pointer; border: none; }
-        .input-field { border: 1px solid rgba(62, 39, 35, 0.1); background-color: var(--off-white); width: 100%; padding: 12px; border-radius: 8px; margin-top: 5px; }
-        .gold-text { color: var(--gold); }
+        .sigla-cm { font-family: 'Playfair Display', serif; }
+        .glass-card { background: #FFFFFF; border-radius: 1.5rem; box-shadow: 0 20px 40px rgba(0,0,0,0.1); border: 1px solid rgba(197, 160, 89, 0.2); width: 100%; max-width: 400px; padding: 40px; }
+        .btn-primary { background-color: var(--chocolate); color: white; padding: 15px; border-radius: 8px; font-weight: bold; width: 100%; margin-top: 20px; cursor: pointer; border: none; }
+        .input-field { border: 1px solid #ddd; background-color: #fff; width: 100%; padding: 12px; border-radius: 8px; margin-top: 5px; }
     </style>
 </head>
 <body>
     <div class="glass-card">
-        <div class="text-center mb-10 pb-6 border-b border-gray-100">
-            <div class="sigla-cm text-5xl font-bold gold-text mb-2">CM</div>
-            <h1 class="text-2xl font-bold tracking-widest uppercase text-gray-800">Life System</h1>
+        <div class="text-center mb-8">
+            <div class="sigla-cm text-5xl font-bold" style="color: var(--gold);">CM</div>
+            <h1 class="text-xl font-bold tracking-widest uppercase">Life System</h1>
         </div>
-        <form id="auth-form" class="space-y-6">
+        <form id="login-form">
             <div>
-                <label class="block text-xs font-semibold uppercase text-gray-600 mb-1">Nome de Usuário</label>
-                <input type="text" id="username" placeholder="Seu nome de acesso" required class="input-field">
+                <label class="text-xs font-bold uppercase">E-mail</label>
+                <input type="email" id="email-input" placeholder="seu@email.com" required class="input-field">
             </div>
-            <div>
-                <label class="block text-xs font-semibold uppercase text-gray-600 mb-1">Senha</label>
-                <input type="password" id="password" placeholder="••••••••" required class="input-field">
+            <div class="mt-4">
+                <label class="text-xs font-bold uppercase">Senha</label>
+                <input type="password" id="pass-input" placeholder="••••••••" required class="input-field">
             </div>
-            <button type="submit" id="btn-main" class="btn-primary uppercase text-xs tracking-widest">Entrar</button>
+            <button type="submit" id="btn-entrar" class="btn-primary">ENTRAR</button>
         </form>
-        <div id="message-box" class="mt-6 p-3 rounded-lg text-xs hidden text-center font-medium"></div>
+        <p id="erro" class="mt-4 text-center text-red-500 text-xs hidden">E-mail ou senha incorretos!</p>
     </div>
 
     <script type="module">
@@ -44,35 +43,31 @@
             apiKey: "AIzaSyBdw18PXbqdO0jqSBNKSTxBKVZzVlweMC0",
             authDomain: "cm-planner-84079.firebaseapp.com",
             projectId: "cm-planner-84079",
-            storageBucket: "cm-planner-84079.firebasestorage.app",
-            messagingSenderId: "109535738114",
             appId: "1:109535738114:web:19f07eae3077a496312a1b"
         };
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
 
-        // Se já estiver logada, pula o login automaticamente
-        onAuthStateChanged(auth, (user) => { if (user) window.location.href = "index.html"; });
+        // Se já estiver logada, vai direto para o index.html
+        onAuthStateChanged(auth, (user) => {
+            if (user) window.location.href = "index.html";
+        });
 
-        document.getElementById('auth-form').addEventListener('submit', async (e) => {
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const btn = document.getElementById('btn-main');
-            const msg = document.getElementById('message-box');
-            const username = document.getElementById('username').value.trim().toLowerCase();
-            const pass = document.getElementById('password').value;
-
+            const email = document.getElementById('email-input').value;
+            const senha = document.getElementById('pass-input').value;
+            const btn = document.getElementById('btn-entrar');
+            
             btn.innerText = "VERIFICANDO...";
             
             try {
-                // Aqui o código adiciona o @cmlife.com para que você logue só com nome
-                await signInWithEmailAndPassword(auth, username + "@cmlife.com", pass);
+                await signInWithEmailAndPassword(auth, email, senha);
                 window.location.href = "index.html";
-            } catch (error) {
-                msg.innerText = "Usuário ou senha incorretos.";
-                msg.style.color = "#C0392B";
-                msg.classList.remove('hidden');
-                btn.innerText = "Entrar";
+            } catch (err) {
+                document.getElementById('erro').classList.remove('hidden');
+                btn.innerText = "ENTRAR";
             }
         });
     </script>
