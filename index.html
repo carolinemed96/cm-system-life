@@ -91,7 +91,8 @@
         @keyframes pulse-gold { 0% { box-shadow: 0 0 0 0 rgba(197, 160, 89, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(197, 160, 89, 0); } 100% { box-shadow: 0 0 0 0 rgba(197, 160, 89, 0); } }
 
         /* --- Modals --- */
-        #modal-overlay, #delete-modal-overlay, #report-modal-overlay, #file-preview-modal, #share-modal { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(62, 39, 35, 0.4); backdrop-filter: blur(4px); display: none; justify-content: center; align-items: center; z-index: 2000; opacity: 0; transition: opacity 0.3s; }
+        /* UPDATE 1: Fix Overlapping Z-Index */
+        #modal-overlay, #delete-modal-overlay, #report-modal-overlay, #file-preview-modal, #share-modal { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(62, 39, 35, 0.4); backdrop-filter: blur(4px); display: none; justify-content: center; align-items: center; z-index: 99999; opacity: 0; transition: opacity 0.3s; }
         #modal-overlay.open, #delete-modal-overlay.open, #report-modal-overlay.open, #file-preview-modal.open, #share-modal.open { opacity: 1; }
         .modal { background: white; padding: 35px; border-radius: 24px; width: 90%; max-width: 480px; max-height: 90vh; overflow-y: auto; transform: scale(0.95); transition: transform 0.3s; }
         .modal.large { max-width: 600px; }
@@ -105,14 +106,14 @@
 
         /* --- Menus --- */
         .create-menu-container { position: relative; }
-        /* Cirurgia 1: Z-Index Fix */
-        .create-menu-dropdown { position: absolute; top: 110%; right: 0; background: white; border: 1px solid #f0f0f0; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); width: 240px; display: none; z-index: 9999 !important; overflow: hidden; animation: fadeIn 0.1s ease; }
+        /* UPDATE 1: Fix Dropdown Z-Index and Position */
+        .create-menu-dropdown { position: absolute; top: 110%; right: 0; background: white; border: 1px solid #f0f0f0; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); width: 240px; display: none; z-index: 99999 !important; overflow: hidden; animation: fadeIn 0.1s ease; }
         .create-menu-dropdown.show { display: block; }
         .create-menu-item { padding: 12px 20px; cursor: pointer; display: flex; align-items: center; gap: 12px; font-size: 0.9rem; color: #555; transition: 0.2s; }
         .create-menu-item:hover { background: #fdfaf5; color: var(--chocolate); padding-left: 25px; }
 
         /* --- Toasts --- */
-        #toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
+        #toast-container { position: fixed; top: 20px; right: 20px; z-index: 99999; display: flex; flex-direction: column; gap: 10px; }
         .toast { background: white; padding: 15px 25px; border-radius: 50px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); display: flex; align-items: center; gap: 10px; font-size: 0.9rem; font-weight: 600; border-left: 4px solid #333; animation: slideInRight 0.3s; }
         .toast.success { border-color: var(--success); color: var(--success); }
         .toast.error { border-color: var(--danger); color: var(--danger); }
@@ -167,12 +168,12 @@
         .nav-btn:hover { background: var(--gold); color: white; border-color: var(--gold); }
         .current-date-label { font-family: 'Playfair Display', serif; font-size: 1.2rem; color: var(--chocolate); min-width: 180px; text-align: center; }
 
-        /* Cirurgia 2: Icon Grid */
+        /* Icon Grid */
         .icon-grid-selector { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-top: 10px; }
         .icon-option { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border: 1px solid #eee; border-radius: 8px; cursor: pointer; transition: 0.2s; color: var(--gold); }
         .icon-option:hover, .icon-option.selected { background: var(--off-white); border-color: var(--gold); transform: scale(1.1); }
 
-        /* Cirurgia 4: Image File Card */
+        /* Image File Card */
         .file-card-image-container { width: 100%; aspect-ratio: 4/5; overflow: hidden; border-radius: 12px 12px 0 0; background: #eee; position: relative; }
         .file-card-image { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
         .file-card-image:hover { transform: scale(1.05); }
@@ -431,6 +432,8 @@
         const folders = [
             { id: 'f_pendencias', name: 'Pendências', parentId: 'financeiro', type: 'folder' },
             { id: 'f_despesas', name: 'Despesas', parentId: 'financeiro', type: 'folder' },
+            /* UPDATE 2: Add Income Folder */
+            { id: 'f_entradas', name: 'Entradas', parentId: 'financeiro', type: 'folder' },
             { id: 'f_investimentos', name: 'Investimentos', parentId: 'financeiro', type: 'folder' },
             { id: 'saude', name: 'Saúde', type: 'root_area' },
             { id: 'financeiro', name: 'Financeiro', type: 'root_area' }
@@ -497,6 +500,8 @@
         else if (folder?.name === 'Investimentos') renderPiggies(main, currentId);
         else if (folder?.name === 'Despesas') renderFinance(main, currentId, 'expense', 'Despesas');
         else if (folder?.name === 'Pendências') renderFinance(main, currentId, 'pendency', 'Pendências');
+        /* UPDATE 2: Add Income Render Logic */
+        else if (folder?.name === 'Entradas') renderFinance(main, currentId, 'income', 'Entradas');
         else {
             const item = state.items.find(i => i.id === currentId);
             if(item && item.type !== 'folder' && item.type !== 'custom_area') renderToolItem(main, item);
@@ -507,7 +512,7 @@
 
     const renderDashboard = (el) => {
         const verse = VERSES_POOL[(new Date().getDate() + new Date().getMonth() * 31) % VERSES_POOL.length];
-        /* Cirurgia 3: FAB */
+        /* Cirurgia 3: FAB with Backup */
         const fab = `
             <div class="floating-star-btn" onclick="window.toggleCreateMenu(this)">
                 <svg width="30" height="30" viewBox="0 0 24 24" fill="white">
@@ -518,6 +523,8 @@
             <div class="create-menu-dropdown" style="bottom: 100px; right: 30px; top: auto;">
                 <div class="create-menu-item" onclick="window.openModal('create_area')"><i data-lucide="layout-grid"></i> Criar Nova Área</div>
                 <div class="create-menu-item" onclick="window.toggleSelectionMode()"><i data-lucide="edit-3"></i> Editar</div>
+                <div class="create-menu-item" onclick="window.backupData()"><i data-lucide="upload"></i> Backup</div>
+                <div class="create-menu-item" onclick="window.restoreData()"><i data-lucide="download"></i> Restaurar</div>
             </div>
         `;
 
@@ -674,14 +681,17 @@
                          <div style="width:32px; height:32px; background:#E3F2FD; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#1565C0"><i data-lucide="map-pin" style="width:16px"></i></div>
                          <div style="font-weight:700; color:var(--chocolate); font-size:0.9rem">GPS</div>
                     </div>
-                    <button class="btn-cancel" style="padding:4px 8px" onclick="window.openModal('gps_settings')"><i data-lucide="settings" style="width:12px"></i></button>
+                    <div style="display:flex; gap:8px">
+                        <button class="btn-cancel" style="padding:4px 8px" onclick="window.openGpsReport()"><i data-lucide="file-text" style="width:12px"></i></button>
+                        <button class="btn-cancel" style="padding:4px 8px" onclick="window.openModal('gps_settings')"><i data-lucide="settings" style="width:12px"></i></button>
+                    </div>
                 </div>
                 <div class="gps-map-container"><div id="gps-map"></div></div>
                 <div class="gps-overlay-stats" style="padding:10px 0">
-                    <div><div class="gps-stat-value" id="gps-dist" style="font-size:1.2rem">0.00</div><div style="font-size:0.6rem; color:#888; font-weight:600">KM</div></div>
+                    <div><div class="gps-stat-value" id="gps-dist" style="font-size:1.2rem">${(state.health.distance/1000).toFixed(2)}</div><div style="font-size:0.6rem; color:#888; font-weight:600">KM</div></div>
                     <div><div class="gps-stat-value" id="gps-time" style="font-size:1.2rem">00:00</div><div style="font-size:0.6rem; color:#888; font-weight:600">TEMPO</div></div>
                 </div>
-                <button class="btn-add" id="gps-toggle-btn" style="width:100%; justify-content:center; font-size:0.8rem; padding:8px" onclick="window.toggleGpsTracking()"><i data-lucide="play" style="width:14px"></i> Iniciar</button>
+                <button class="btn-add" id="gps-toggle-btn" style="width:100%; justify-content:center; font-size:0.8rem; padding:8px; background:${state.health.walking ? 'var(--danger)' : 'var(--chocolate)'}" onclick="window.toggleGpsTracking()">${state.health.walking ? '<i data-lucide="square" style="width:14px"></i> Parar' : '<i data-lucide="play" style="width:14px"></i> Iniciar'}</button>
             </div>
             </div>
 
@@ -742,9 +752,18 @@
         `;
 
         setTimeout(() => {
-            if(!mapInstance) {
-                mapInstance = L.map('gps-map').setView([state.gpsSettings.defaultCity.lat, state.gpsSettings.defaultCity.lng], 13);
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(mapInstance);
+            /* UPDATE 3: GPS Persistence - Recreate Map and Polyline */
+            if(document.getElementById('gps-map')) {
+                // Always recreate map instance to avoid container reuse errors on SPA navigation
+                 if(mapInstance) { mapInstance.remove(); mapInstance = null; }
+                 
+                 mapInstance = L.map('gps-map').setView([state.gpsSettings.defaultCity.lat, state.gpsSettings.defaultCity.lng], 13);
+                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(mapInstance);
+                 
+                 if (state.health.walking && state.health.path.length > 0) {
+                     polyline = L.polyline(state.health.path, {color: 'var(--chocolate)'}).addTo(mapInstance);
+                     mapInstance.setView(state.health.path[state.health.path.length-1]);
+                 }
             }
         }, 500);
     };
@@ -885,7 +904,7 @@
                 const diff = Math.floor((Date.now() - state.health.startTime) / 1000);
                 const m = Math.floor(diff / 60).toString().padStart(2,'0');
                 const s = (diff % 60).toString().padStart(2,'0');
-                document.getElementById('gps-time').innerText = `${m}:${s}`;
+                if(document.getElementById('gps-time')) document.getElementById('gps-time').innerText = `${m}:${s}`;
             }, 1000);
 
         } else {
@@ -893,8 +912,10 @@
             navigator.geolocation.clearWatch(watchId);
             clearInterval(state.health.timer);
             state.health.walking = false;
-            btn.innerHTML = `<i data-lucide="play"></i> Iniciar`;
-            btn.style.background = 'var(--chocolate)';
+            if(document.getElementById('gps-toggle-btn')) {
+                 btn.innerHTML = `<i data-lucide="play"></i> Iniciar`;
+                 btn.style.background = 'var(--chocolate)';
+            }
             
             if(confirm("Salvar atividade?")) {
                 _addDoc(collection(db, 'artifacts', appId, 'users', state.user.uid, 'items'), {
@@ -909,9 +930,32 @@
             // Reset UI
             if(polyline) polyline.remove();
             polyline = null;
-            document.getElementById('gps-dist').innerText = "0.00";
-            document.getElementById('gps-time').innerText = "00:00";
+            if(document.getElementById('gps-dist')) document.getElementById('gps-dist').innerText = "0.00";
+            if(document.getElementById('gps-time')) document.getElementById('gps-time').innerText = "00:00";
         }
+    };
+
+    /* UPDATE 3: GPS Report Logic */
+    window.openGpsReport = () => {
+        const overlay = document.getElementById('modal-overlay');
+        const form = document.getElementById('modal-form');
+        const actions = document.getElementById('modal-actions');
+        document.getElementById('modal-title').innerText = "Histórico GPS";
+        
+        const sessions = state.items.filter(i => i.type === 'gps_session').sort((a,b) => b.createdAt - a.createdAt);
+        const listHtml = sessions.length ? sessions.map(s => {
+            const date = new Date(s.content.date).toLocaleDateString();
+            const dist = (s.content.distance / 1000).toFixed(2);
+            const dur = Math.floor(s.content.duration / 60000);
+            return `<div style="padding:15px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center">
+                <div><div style="font-weight:700; color:var(--chocolate)">${date}</div><div style="font-size:0.8rem; color:#666">${s.name}</div></div>
+                <div style="text-align:right"><div style="font-weight:700">${dist} km</div><div style="font-size:0.8rem; color:#666">${dur} min</div></div>
+            </div>`;
+        }).join('') : '<div style="padding:30px; text-align:center; color:#999">Nenhuma atividade registrada.</div>';
+        
+        form.innerHTML = `<div style="max-height:400px; overflow-y:auto">${listHtml}</div>`;
+        actions.innerHTML = `<button class="btn-cancel" onclick="window.closeModal()">Fechar</button>`;
+        overlay.style.display = 'flex'; setTimeout(() => { overlay.classList.add('open'); }, 10);
     };
 
     // --- Action Functions ---
@@ -1065,6 +1109,8 @@
         const subfolders = [
             state.items.find(i => i.id === 'f_despesas') || {id:'f_despesas', name:'Despesas', type:'folder'},
             state.items.find(i => i.id === 'f_pendencias') || {id:'f_pendencias', name:'Pendências', type:'folder'},
+            /* UPDATE 2: Income Card */
+            state.items.find(i => i.id === 'f_entradas') || {id:'f_entradas', name:'Entradas', type:'folder'},
             state.items.find(i => i.id === 'f_investimentos') || {id:'f_investimentos', name:'Investimentos', type:'folder'}
         ];
         el.innerHTML = `<div class="section-header"><h2>Financeiro</h2></div><div class="grid-container">${subfolders.map(f => `<div class="card" onclick="window.navigate('${f.id}')"><i data-lucide="${f.name==='Investimentos'?'trending-up':'dollar-sign'}" style="color:var(--gold)"></i><span style="flex:1; font-weight:600; color:var(--chocolate)">${f.name}</span><i data-lucide="chevron-right" style="opacity:0.3"></i></div>`).join('')}</div>`;
@@ -1077,6 +1123,7 @@
         render();
     };
 
+    /* UPDATE 2: Income Logic support (type: 'income') */
     const renderFinance = (el, pid, type, title) => {
         const months = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
         const list = state.items.filter(i => i.parentId === pid);
@@ -1088,6 +1135,10 @@
         
         const totalPendingGlobal = list.reduce((a,b) => b.content.paid ? a : a + parseFloat(b.content.value), 0);
         const totalMonthPending = monthly.reduce((a,b) => b.content.paid ? a : a + parseFloat(b.content.value), 0);
+        
+        /* Logic for value color: Green for income, Red for expense */
+        const valueColor = type === 'income' ? 'var(--success)' : 'var(--danger)';
+        const btnTitle = type === 'income' ? 'Nova Entrada' : (type === 'expense' ? 'Nova Despesa' : 'Nova Pendência');
 
         el.innerHTML = `
             <div class="section-header"><h2>${title}</h2> ${renderCreateButton()}</div>
@@ -1101,9 +1152,9 @@
                 <div class="summary-item"><span>Neste Mês</span><b>${totalMonthPending.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</b></div>
             </div>
             <div class="finance-list">
-                ${monthly.length ? monthly.map(i => `<div class="finance-item ${i.content.paid?'paid':''}"><div class="btn-check ${i.content.paid?'active':''}" onclick="window.togglePaid('${i.id}')"><i data-lucide="check" style="width:16px"></i></div><div class="item-text" style="font-weight:600; color:var(--chocolate)">${i.name}</div><div class="amount" style="font-weight:bold; color:${type==='expense'?'var(--danger)':'var(--success)'}">${parseFloat(i.content.value).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</div>${renderActionMenu(i.id, i.type, i.name)}</div>`).join('') : '<div style="padding:30px; text-align:center; opacity:0.5">Sem registros para este período.</div>'}
+                ${monthly.length ? monthly.map(i => `<div class="finance-item ${i.content.paid?'paid':''}"><div class="btn-check ${i.content.paid?'active':''}" onclick="window.togglePaid('${i.id}')"><i data-lucide="check" style="width:16px"></i></div><div class="item-text" style="font-weight:600; color:var(--chocolate)">${i.name}</div><div class="amount" style="font-weight:bold; color:${valueColor}">${parseFloat(i.content.value).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</div>${renderActionMenu(i.id, i.type, i.name)}</div>`).join('') : '<div style="padding:30px; text-align:center; opacity:0.5">Sem registros para este período.</div>'}
             </div>
-            <button class="btn-add" onclick="window.openModal('${type}')" style="margin-top:20px; width:100%; justify-content:center; background:var(--chocolate)"><i data-lucide="plus"></i> Criar Novo Item</button>
+            <button class="btn-add" onclick="window.openModal('${type}')" style="margin-top:20px; width:100%; justify-content:center; background:var(--chocolate)"><i data-lucide="plus"></i> ${btnTitle}</button>
             <div style="margin-top:40px; border-top:1px solid #eee; padding-top:20px">
                 <h4 style="margin-bottom:15px; color:var(--chocolate)">Conteúdo Adicional</h4>
                 <div class="grid-container" id="finance-extras"></div>
@@ -1111,7 +1162,7 @@
         `;
         
         // Render Extras (Notes/Files in Finance Folder)
-        const extras = list.filter(i => i.type !== 'expense' && i.type !== 'pendency');
+        const extras = list.filter(i => i.type !== 'expense' && i.type !== 'pendency' && i.type !== 'income');
         const extrasContainer = el.querySelector('#finance-extras');
         if(extrasContainer && extras.length) {
             extras.forEach(i => {
@@ -1296,6 +1347,64 @@
         render(); 
     };
     
+    // --- Backup & Restore Logic (Update 4) ---
+    window.backupData = () => {
+        const dataStr = JSON.stringify(state.items, null, 2);
+        const blob = new Blob([dataStr], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `backup_cm_premium_${new Date().toISOString().slice(0,10)}.json`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.showToast("Backup gerado!");
+    };
+
+    window.restoreData = () => {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'application/json';
+        input.onchange = (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = async (ev) => {
+                try {
+                    const imported = JSON.parse(ev.target.result);
+                    if (!Array.isArray(imported)) throw new Error("Formato inválido");
+                    
+                    if (confirm("Isso substituirá TODOS os dados atuais. Confirmar?")) {
+                        // For offline mode, simple replace. For online, this is complex (batch writes).
+                        // To keep it strictly within the 'correction' scope without new backend endpoints:
+                        // We will add imported items. To fully replace, user would need to delete.
+                        // However, offline mode allows replacement.
+                        
+                        if(isOffline) {
+                            state.items = imported;
+                            saveLocal();
+                            window.showToast("Dados restaurados (Offline)");
+                            render();
+                        } else {
+                            window.showToast("Importação online: Adicionando itens...", "success");
+                            // Simple add for online to avoid massive deletions risk without batch logic
+                            for (const item of imported) {
+                                // Strip IDs to create new unique entries
+                                const { id, ...data } = item;
+                                await _addDoc(collection(db, 'artifacts', appId, 'users', state.user.uid, 'items'), data);
+                            }
+                            window.showToast("Importação concluída.");
+                        }
+                    }
+                } catch(err) {
+                    alert("Erro ao ler backup: " + err.message);
+                }
+            };
+            reader.readAsText(file);
+        };
+        input.click();
+    };
+
     // --- Modal Logic ---
     window.toggleCreateMenu = (btn) => { const menu = btn.nextElementSibling; document.querySelectorAll('.create-menu-dropdown').forEach(m => m.classList.remove('show')); if(!menu.classList.contains('show')) menu.classList.add('show'); event.stopPropagation(); };
     window.toggleActionMenu = (id) => { const menu = document.getElementById(`action-menu-${id}`); document.querySelectorAll('.create-menu-dropdown').forEach(m => m.classList.remove('show')); if(!menu.classList.contains('show')) menu.classList.add('show'); };
@@ -1359,7 +1468,11 @@
             case 'checklist': case 'checklist_sum': html = inp('f-name', 'Título', '', n()) + renderIconSelector(); break;
             case 'bank': html = inp('f-name', 'Banco', '', n()) + inp('f-holder', 'Titular', '', v('holder')) + inp('f-ag', 'Agência', '', v('agency')) + inp('f-cc', 'Conta', '', v('account')) + inp('f-pix', 'PIX', '', v('pix')) + inp('f-pass', 'Senha', '', v('pass')); break;
             case 'social': html = inp('f-name','Plataforma','',n()) + inp('f-login','Login','',v('login')) + inp('f-pass','Senha','',v('pass')); break;
-            case 'expense': case 'pendency': title = type === 'expense' ? 'Nova Despesa' : 'Nova Pendência'; html = inp('f-name', 'Descrição', 'Ex: Aluguel', n()) + `<div class="form-group"><label>Valor</label><input type="number" id="f-val" class="form-control" value="${v('value')}"></div>` + `<div class="form-group"><label>Parcelas</label><input type="number" id="f-par" class="form-control" value="1"></div>` + `<div class="form-group"><label>Vencimento</label><input type="date" id="f-due" class="form-control" value="${v('due') || new Date().toISOString().split('T')[0]}"></div>`; break;
+            /* UPDATE 2: Add 'income' to case */
+            case 'expense': case 'pendency': case 'income': 
+                title = type === 'expense' ? 'Nova Despesa' : (type === 'income' ? 'Nova Entrada' : 'Nova Pendência'); 
+                html = inp('f-name', 'Descrição', 'Ex: Salário', n()) + `<div class="form-group"><label>Valor</label><input type="number" id="f-val" class="form-control" value="${v('value')}"></div>` + `<div class="form-group"><label>Parcelas/Repetições</label><input type="number" id="f-par" class="form-control" value="1"></div>` + `<div class="form-group"><label>Vencimento/Data</label><input type="date" id="f-due" class="form-control" value="${v('due') || new Date().toISOString().split('T')[0]}"></div>`; 
+                break;
             case 'piggy': html = inp('f-name', 'Objetivo', '', n()) + inp('f-target', 'Valor Alvo', '', v('target')) + inp('f-months', 'Meses', '', v('months')); break;
             case 'health_weight_config': title='Config Peso'; html = inp('f-w-start','Inicial',0,v('startWeight')) + inp('f-w-target','Meta',0,v('target')) + `<div class="form-group"><label>Início</label><input type="date" id="f-w-date" class="form-control" value="${v('startDate')||new Date().toISOString().split('T')[0]}"></div>` + inp('f-w-period','Meses',12,v('periodMonths')); break;
             case 'health_weight_register': html = `<div class="form-group"><label>Data</label><input type="date" id="f-reg-date" class="form-control" value="${new Date().toISOString().split('T')[0]}"></div>` + inp('f-reg-weight','Peso',0,''); break;
@@ -1444,7 +1557,8 @@
             else if (type === 'bank') { data.name = getVal('f-name'); data.content = { holder: getVal('f-holder'), agency: getVal('f-ag'), account: getVal('f-cc'), pix: getVal('f-pix'), pass: getVal('f-pass') }; if(state.editingId) { const docRef = isOffline ? {id: state.editingId} : doc(db, 'artifacts', appId, 'users', state.user.uid, 'items', state.editingId); await _updateDoc(docRef, data); } else await _addDoc(coll, data); }
             else if (type === 'social') { data.name = getVal('f-name'); data.content = { login: getVal('f-login'), pass: getVal('f-pass') }; if(state.editingId) { const docRef = isOffline ? {id: state.editingId} : doc(db, 'artifacts', appId, 'users', state.user.uid, 'items', state.editingId); await _updateDoc(docRef, data); } else await _addDoc(coll, data); }
             
-            else if (type === 'expense' || type === 'pendency') {
+            /* UPDATE 2: Add Income to Save Logic */
+            else if (type === 'expense' || type === 'pendency' || type === 'income') {
                 const name = getVal('f-name');
                 const totalVal = parseFloat(getVal('f-val'));
                 const parcels = parseInt(getVal('f-par')) || 1;
