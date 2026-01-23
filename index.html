@@ -24,9 +24,9 @@
             --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             --shadow: 0 10px 30px -5px rgba(62, 39, 35, 0.1);
             --shadow-hover: 0 15px 35px -5px rgba(197, 160, 89, 0.2);
-            --period-line: #5D4037; /* Marrom escuro para menstruação */
-            --heart-safe: #C5A059; /* Dourado */
-            --heart-unsafe: #5D4037; /* Marrom */
+            --period-line: #5D4037; 
+            --heart-safe: #C5A059; 
+            --heart-unsafe: #5D4037; 
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', 'Segoe UI', sans-serif; }
@@ -89,7 +89,6 @@
             align-items: center; 
             gap: 15px; 
             position: relative; 
-            /* Fix: Essencial para dropdowns */
             overflow: visible !important; 
             z-index: 1;
         }
@@ -106,15 +105,11 @@
         .finance-item:has(.create-menu-dropdown.show),
         .piggy-card:has(.create-menu-dropdown.show),
         div:has(> .create-menu-dropdown.show) {
-            z-index: 2147483647 !important; /* Max Int Z-Index */
-            transform: none !important; /* Remove contexto de empilhamento */
+            z-index: 2147483647 !important;
+            transform: none !important;
             filter: none !important;
             opacity: 1 !important;
-            perspective: none !important;
-            clip-path: none !important;
-            mask: none !important;
-            position: relative !important; /* Garante que filhos absolutos se ancorem aqui */
-            box-shadow: 0 20px 50px rgba(0,0,0,0.2) !important; /* Destaque visual */
+            position: relative !important;
             overflow: visible !important;
         }
         
@@ -136,16 +131,16 @@
             background: var(--chocolate);
             color: var(--gold);
             border: 1px solid var(--gold);
-            padding: 8px 20px;
+            padding: 12px 20px;
             border-radius: 30px;
-            font-size: 0.75rem;
-            font-weight: 600;
+            font-size: 0.85rem;
+            font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 1px;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 10px;
             width: 100%;
             transition: all 0.3s ease;
             box-shadow: 0 4px 10px rgba(62, 39, 35, 0.2);
@@ -160,6 +155,22 @@
             color: var(--danger);
             border-color: var(--danger);
         }
+        
+        .btn-gps-report {
+            background: transparent;
+            color: var(--chocolate);
+            border: 1px solid var(--chocolate);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn-gps-report:hover { background: #f5f5f5; }
 
         /* --- Floating Dashboard Button --- */
         .floating-star-btn { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; background: var(--gold); border-radius: 50%; box-shadow: 0 10px 30px rgba(197, 160, 89, 0.5); display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 1000; animation: pulse-gold 3s infinite; transition: transform 0.3s; }
@@ -224,10 +235,11 @@
         .progress-grid { display: grid; grid-template-columns: repeat(20, 1fr); gap: 3px; margin: 15px 0; }
         .progress-block { height: 8px; background: #f0f0f0; border-radius: 2px; }
         .progress-block.filled { background: var(--gold); }
-        .gps-map-container { width: 100%; height: 180px; background: #e0e0e0; border-radius: 16px; overflow: hidden; position: relative; z-index: 1; }
-        #gps-map { width: 100%; height: 100%; }
-        .gps-overlay-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 15px 0; text-align: center; }
-        .gps-stat-value { font-size: 1.5rem; font-weight: 800; color: var(--chocolate); }
+        .gps-map-container { width: 100%; height: 250px; background: #e0e0e0; border-radius: 16px; overflow: hidden; position: relative; z-index: 1; margin: 15px 0; border: 1px solid #eee; }
+        #gps-map, #report-map { width: 100%; height: 100%; }
+        .gps-overlay-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 15px 0; text-align: center; margin-bottom: 10px; }
+        .gps-stat-value { font-size: 2rem; font-weight: 800; color: var(--chocolate); line-height: 1.1; }
+        .gps-stat-label { font-size: 0.7rem; color: #888; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
         .weight-progress-bar { width: 100%; height: 8px; background: #eee; border-radius: 4px; overflow: hidden; margin-top: 8px; }
         .weight-progress-fill { height: 100%; background: var(--gold); width: 0%; transition: width 0.5s ease; }
         .weight-detail-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; margin: 15px 0; }
@@ -448,7 +460,7 @@
         selectedMonth: new Date().getMonth(),
         selectedYear: new Date().getFullYear(),
         bible: { book: 'Gênesis', chapter: 1, text: '', loading: false, fullData: null },
-        health: { walking: false, distance: 0, path: [], startTime: null, duration: 0 },
+        health: { walking: false, distance: 0, path: [], startTime: null, duration: 0, currentSessionId: null },
         weightExpanded: false,
         menstrualView: null,
         itemToDelete: null,
@@ -881,14 +893,16 @@
                     </div>
                     <div style="display:flex; gap:8px">
                         <button class="btn-gps" id="gps-toggle-btn" onclick="window.toggleGpsTracking()">${state.health.walking ? 'Parar' : 'Iniciar'}</button>
-                        <button class="btn-cancel" style="padding:4px 8px" onclick="window.openGpsReport()"><i data-lucide="file-text" style="width:12px"></i></button>
+                        <button class="btn-gps-report" onclick="window.openGpsReport()">
+                            <i data-lucide="file-text" style="width:16px"></i> Relatório
+                        </button>
                         <button class="btn-cancel" style="padding:4px 8px" onclick="window.openModal('gps_settings')"><i data-lucide="settings" style="width:12px"></i></button>
                     </div>
                 </div>
                 <div class="gps-map-container"><div id="gps-map"></div></div>
                 <div class="gps-overlay-stats" style="padding:10px 0">
-                    <div><div class="gps-stat-value" id="gps-dist" style="font-size:1.2rem">${(state.health.distance/1000).toFixed(2)}</div><div style="font-size:0.6rem; color:#888; font-weight:600">KM</div></div>
-                    <div><div class="gps-stat-value" id="gps-time" style="font-size:1.2rem">00:00</div><div style="font-size:0.6rem; color:#888; font-weight:600">TEMPO</div></div>
+                    <div><div class="gps-stat-value" id="gps-dist" style="font-size:1.2rem">${(state.health.distance/1000).toFixed(2)}</div><div class="gps-stat-label">KM</div></div>
+                    <div><div class="gps-stat-value" id="gps-time" style="font-size:1.2rem">00:00</div><div class="gps-stat-label">TEMPO</div></div>
                 </div>
             </div>
             </div>
@@ -949,6 +963,7 @@
         `;
 
         setTimeout(() => {
+            /* UPDATE 3: GPS Persistence - Recreate Map and Polyline */
             if(document.getElementById('gps-map')) {
                  if(mapInstance) { mapInstance.remove(); mapInstance = null; }
                  mapInstance = L.map('gps-map').setView([state.gpsSettings.defaultCity.lat, state.gpsSettings.defaultCity.lng], 13);
@@ -969,6 +984,7 @@
         const daysInMonth = new Date(year, month + 1, 0).getDate();
         const firstDay = new Date(year, month, 1).getDay();
 
+        // Profile Data
         const profile = state.items.find(i => i.type === 'menstrual_profile');
         const logs = state.items.filter(i => i.type === 'menstrual_cycle');
         
@@ -1107,9 +1123,11 @@
             state.health.startTime = Date.now();
             state.health.path = [];
             state.health.distance = 0;
-            btn.innerHTML = `<i data-lucide="square"></i> Parar`;
-            btn.style.background = 'var(--danger)';
-            btn.style.color = '#fff';
+            // Generate a session ID if needed, though we save at the end
+            if(btn) {
+                btn.innerHTML = `Parar`;
+                btn.classList.add('active');
+            }
             
             if(navigator.geolocation) {
                 watchId = navigator.geolocation.watchPosition((pos) => {
@@ -1151,10 +1169,10 @@
             if(watchId) navigator.geolocation.clearWatch(watchId);
             clearInterval(state.health.timer);
             state.health.walking = false;
-            if(document.getElementById('gps-toggle-btn')) {
+            
+            if(btn) {
                  btn.innerHTML = `Iniciar`;
-                 btn.style.background = 'var(--chocolate)';
-                 btn.style.color = 'var(--gold)';
+                 btn.classList.remove('active');
             }
             
             if(confirm("Salvar atividade?")) {
@@ -1163,7 +1181,7 @@
                     type: 'gps_session',
                     name: 'Caminhada',
                     createdAt: Date.now(),
-                    content: { date: new Date().toISOString(), distance: state.health.distance, duration: Date.now() - state.health.startTime }
+                    content: { date: new Date().toISOString(), distance: state.health.distance, duration: Date.now() - state.health.startTime, path: state.health.path }
                 });
             }
             
@@ -1178,22 +1196,83 @@
         const overlay = document.getElementById('modal-overlay');
         const form = document.getElementById('modal-form');
         const actions = document.getElementById('modal-actions');
-        document.getElementById('modal-title').innerText = "Histórico GPS";
+        document.getElementById('modal-title').innerText = "Relatório de Atividades";
         
         const sessions = state.items.filter(i => i.type === 'gps_session').sort((a,b) => b.createdAt - a.createdAt);
-        const listHtml = sessions.length ? sessions.map(s => {
-            const date = new Date(s.content.date).toLocaleDateString();
-            const dist = (s.content.distance / 1000).toFixed(2);
-            const dur = Math.floor(s.content.duration / 60000);
-            return `<div style="padding:15px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center">
-                <div><div style="font-weight:700; color:var(--chocolate)">${date}</div><div style="font-size:0.8rem; color:#666">${s.name}</div></div>
-                <div style="text-align:right"><div style="font-weight:700">${dist} km</div><div style="font-size:0.8rem; color:#666">${dur} min</div></div>
-            </div>`;
-        }).join('') : '<div style="padding:30px; text-align:center; color:#999">Nenhuma atividade registrada.</div>';
         
-        form.innerHTML = `<div style="max-height:400px; overflow-y:auto">${listHtml}</div>`;
+        let listHtml = '';
+        
+        if (sessions.length === 0) {
+            listHtml = '<div style="padding:30px; text-align:center; color:#999">Nenhuma atividade registrada.</div>';
+        } else {
+            listHtml = `<div style="max-height:400px; overflow-y:auto">`;
+            sessions.forEach(s => {
+                const date = new Date(s.content.date).toLocaleDateString('pt-BR');
+                const dist = (s.content.distance / 1000).toFixed(2);
+                const dur = Math.floor(s.content.duration / 60000); // minutes
+                // Simple list item
+                listHtml += `
+                <div onclick="window.viewSessionDetail('${s.id}')" style="padding:15px; border-bottom:1px solid #eee; cursor:pointer; display:flex; justify-content:space-between; align-items:center; transition: background 0.2s;" onmouseover="this.style.background='#f9f9f9'" onmouseout="this.style.background='transparent'">
+                    <div>
+                        <div style="font-weight:700; color:var(--chocolate)">${date}</div>
+                        <div style="font-size:0.8rem; color:#666">${s.name || 'Atividade'}</div>
+                    </div>
+                    <div style="text-align:right">
+                        <div style="font-weight:700">${dist} km</div>
+                        <div style="font-size:0.8rem; color:#666">${dur} min</div>
+                    </div>
+                </div>`;
+            });
+            listHtml += `</div>`;
+        }
+        
+        form.innerHTML = listHtml;
         actions.innerHTML = `<button class="btn-cancel" onclick="window.closeModal()">Fechar</button>`;
         overlay.style.display = 'flex'; setTimeout(() => { overlay.classList.add('open'); }, 10);
+    };
+
+    window.viewSessionDetail = (id) => {
+        const session = state.items.find(i => i.id === id);
+        if (!session) return;
+        
+        // Use the modal form to show detail
+        const form = document.getElementById('modal-form');
+        const actions = document.getElementById('modal-actions');
+        document.getElementById('modal-title').innerText = "Detalhe da Atividade";
+        
+        const date = new Date(session.content.date).toLocaleDateString('pt-BR');
+        const dist = (session.content.distance / 1000).toFixed(2);
+        const dur = Math.floor(session.content.duration / 60000);
+        
+        form.innerHTML = `
+            <div style="margin-bottom: 15px; display:flex; justify-content:space-between; align-items:flex-end;">
+                <div>
+                    <h2 style="color:var(--chocolate); margin:0;">${dist} <span style="font-size:1rem; color:#888">km</span></h2>
+                    <div style="color:#666; font-size:0.9rem;">${date}</div>
+                </div>
+                <div style="text-align:right;">
+                    <div style="font-size:1.2rem; font-weight:600;">${dur} min</div>
+                    <div style="font-size:0.8rem; color:#888;">DURAÇÃO</div>
+                </div>
+            </div>
+            <div id="detail-map" style="width:100%; height:300px; background:#e0e0e0; border-radius:12px;"></div>
+        `;
+        
+        actions.innerHTML = `<button class="btn-cancel" onclick="window.openGpsReport()">Voltar</button>`;
+        
+        // Initialize map after render
+        setTimeout(() => {
+            const detailMap = L.map('detail-map');
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(detailMap);
+            
+            if (session.content.path && session.content.path.length > 0) {
+                const poly = L.polyline(session.content.path, {color: 'var(--chocolate)', weight: 3}).addTo(detailMap);
+                detailMap.fitBounds(poly.getBounds());
+            } else {
+                // Fallback if no path recorded
+                 detailMap.setView([state.gpsSettings.defaultCity.lat, state.gpsSettings.defaultCity.lng], 13);
+            }
+        }, 100);
     };
 
     // --- Action Functions ---
@@ -1523,6 +1602,7 @@
         else if(item.type.includes('checklist')) {
             const isSum = item.type === 'checklist_sum';
             const items = item.content && item.content.items ? item.content.items : [];
+            /* Cirurgia 5: Auto-sum calculation */
             const total = isSum ? items.reduce((a,b)=>b.checked?a+(parseFloat(b.val)||0):a,0) : 0;
             content = `${isSum ? `<div style="text-align:right; font-size:1.5rem; color:var(--success); font-weight:bold; margin-bottom:15px">${total.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</div>` : ''}<div style="display:flex; flex-direction:column; gap:10px">${items.map((it, idx) => `<div style="display:flex; gap:10px; align-items:center; padding:8px; border-bottom:1px solid #eee"><div class="btn-check ${it.checked?'active':''}" onclick="window.toggleCLItem('${item.id}', ${idx})"><i data-lucide="check" style="width:16px"></i></div><input class="checklist-input form-control" style="border:none; background:transparent; text-decoration:${it.checked?'line-through':''}" value="${it.text}" onchange="window.updateCL('${item.id}',${idx},'text',this.value)">${isSum ? `<input class="form-control" type="number" style="width:80px; text-align:right" value="${it.val}" onchange="window.updateCL('${item.id}',${idx},'val',this.value)">` : ''}<i data-lucide="x" style="width:16px; cursor:pointer; opacity:0.5" onclick="window.deleteCLItem('${item.id}', ${idx})"></i></div>`).join('')}<button class="btn-add" style="align-self:center; margin-top:10px" onclick="window.addCLItem('${item.id}')"><i data-lucide="plus"></i> Item</button></div>`;
         } else if (item.type === 'bank') {
@@ -1715,8 +1795,8 @@
                 html = inp('f-name', 'Descrição', 'Ex: Salário', n()) + `<div class="form-group"><label>Valor</label><input type="number" id="f-val" class="form-control" value="${v('value')}"></div>` + `<div class="form-group"><label>Parcelas/Repetições</label><input type="number" id="f-par" class="form-control" value="1"></div>` + `<div class="form-group"><label>Vencimento/Data</label><input type="date" id="f-due" class="form-control" value="${v('due') || new Date().toISOString().split('T')[0]}"></div>`; 
                 break;
             case 'piggy': html = inp('f-name', 'Objetivo', '', n()) + inp('f-target', 'Valor Alvo', '', v('target')) + inp('f-months', 'Meses', '', v('months')); break;
-            case 'health_weight_config': title='Config Peso'; html = inp('f-w-start','Inicial',0,v('startWeight')) + inp('f-w-target','Meta',0,v('target')) + `<div class="form-group"><label>Início</label><input type="date" id="f-w-date" class="form-control" value="${v('startDate')||new Date().toISOString().split('T')[0]}"></div>` + inp('f-w-period','Meses',12,v('periodMonths')); break;
-            case 'health_weight_register': html = `<div class="form-group"><label>Data</label><input type="date" id="f-reg-date" class="form-control" value="${new Date().toISOString().split('T')[0]}"></div>` + inp('f-reg-weight','Peso',0,''); break;
+            case 'health_weight_config': title='Config Peso'; html = inp('f-w-start','Peso Inicial (kg)',0,v('startWeight')) + inp('f-w-height','Altura (m)', 'Ex: 1.70', v('height')) + inp('f-w-target','Meta (kg)',0,v('target')) + `<div class="form-group"><label>Início</label><input type="date" id="f-w-date" class="form-control" value="${v('startDate')||new Date().toISOString().split('T')[0]}"></div>` + inp('f-w-period','Prazo (Meses)',12,v('periodMonths')) + `<button class="btn-add" style="width:100%; background:var(--danger); justify-content:center; margin-top:15px;" onclick="window.resetWeightData()"><i data-lucide="trash-2" style="width:16px"></i> Resetar Dados</button>`; break;
+            case 'health_weight_register': html = `<div class="form-group"><label>Data</label><input type="date" id="f-reg-date" class="form-control" value="${new Date().toISOString().split('T')[0]}"></div>` + inp('f-reg-weight','Peso Atual (kg)',0,''); break;
             case 'weight_history_edit':
                 title = 'Editar Registro';
                 const wItem = state.items.find(i => i.type === 'health_weight');
@@ -1884,8 +1964,8 @@
             }
             else if(type === 'health_weight_config') {
                  const startW = getVal('f-w-start'); const targetW = getVal('f-w-target');
-                 if(state.editingId) await _updateDoc(isOffline?{id:state.editingId}:doc(db,'artifacts',appId,'users',state.user.uid,'items',state.editingId), { 'content.startWeight': startW, 'content.target': targetW, 'content.startDate': getVal('f-w-date'), 'content.periodMonths': getVal('f-w-period') });
-                 else await _addDoc(coll, { parentId: 'saude', type: 'health_weight', name: 'Peso', content: { current: startW, startWeight: startW, target: targetW, startDate: getVal('f-w-date'), periodMonths: getVal('f-w-period'), history: [] } });
+                 if(state.editingId) await _updateDoc(isOffline?{id:state.editingId}:doc(db,'artifacts',appId,'users',state.user.uid,'items',state.editingId), { 'content.startWeight': startW, 'content.target': targetW, 'content.startDate': getVal('f-w-date'), 'content.periodMonths': getVal('f-w-period'), 'content.height': getVal('f-w-height') });
+                 else await _addDoc(coll, { parentId: 'saude', type: 'health_weight', name: 'Peso', content: { current: startW, startWeight: startW, target: targetW, startDate: getVal('f-w-date'), periodMonths: getVal('f-w-period'), height: getVal('f-w-height'), history: [] } });
             }
             else if(type === 'health_weight_register') { 
                 const regW = parseFloat(getVal('f-reg-weight'));
