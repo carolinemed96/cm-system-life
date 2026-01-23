@@ -24,9 +24,9 @@
             --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             --shadow: 0 10px 30px -5px rgba(62, 39, 35, 0.1);
             --shadow-hover: 0 15px 35px -5px rgba(197, 160, 89, 0.2);
-            --period-line: #5D4037; /* Marrom escuro para menstruação */
-            --heart-safe: #C5A059; /* Dourado */
-            --heart-unsafe: #5D4037; /* Marrom */
+            --period-line: #5D4037; 
+            --heart-safe: #C5A059; 
+            --heart-unsafe: #5D4037;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', 'Segoe UI', sans-serif; }
@@ -89,7 +89,6 @@
             align-items: center; 
             gap: 15px; 
             position: relative; 
-            /* Fix: Essencial para dropdowns */
             overflow: visible !important; 
             z-index: 1;
         }
@@ -106,15 +105,11 @@
         .finance-item:has(.create-menu-dropdown.show),
         .piggy-card:has(.create-menu-dropdown.show),
         div:has(> .create-menu-dropdown.show) {
-            z-index: 2147483647 !important; /* Max Int Z-Index */
-            transform: none !important; /* Remove contexto de empilhamento */
+            z-index: 2147483647 !important;
+            transform: none !important;
             filter: none !important;
             opacity: 1 !important;
-            perspective: none !important;
-            clip-path: none !important;
-            mask: none !important;
-            position: relative !important; /* Garante que filhos absolutos se ancorem aqui */
-            box-shadow: 0 20px 50px rgba(0,0,0,0.2) !important; /* Destaque visual */
+            position: relative !important;
             overflow: visible !important;
         }
         
@@ -223,51 +218,6 @@
         .create-menu-dropdown.show { display: block; }
         .create-menu-item { padding: 12px 20px; cursor: pointer; display: flex; align-items: center; gap: 12px; font-size: 0.9rem; color: #555; transition: 0.2s; }
         .create-menu-item:hover { background: #fdfaf5; color: var(--chocolate); padding-left: 25px; }
-
-        /* --- Lock Screen --- */
-        #lock-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #FDFBF7;
-            z-index: 100000;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            transition: opacity 0.5s;
-        }
-        .lock-container {
-            text-align: center;
-            animation: fadeIn 0.5s ease-out;
-        }
-        .lock-input {
-            margin-top: 20px;
-            padding: 10px 15px;
-            font-size: 1.2rem;
-            letter-spacing: 5px;
-            text-align: center;
-            border: 1px solid var(--gold);
-            border-radius: 30px;
-            outline: none;
-            width: 200px;
-            background: white;
-            color: var(--chocolate);
-        }
-        .lock-btn {
-            margin-top: 15px;
-            background: var(--chocolate);
-            color: white;
-            border: none;
-            padding: 10px 30px;
-            border-radius: 30px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: 0.2s;
-        }
-        .lock-btn:hover { background: var(--chocolate-light); }
 
         /* --- Toasts --- */
         #toast-container { position: fixed; top: 20px; right: 20px; z-index: 99999; display: flex; flex-direction: column; gap: 10px; }
@@ -404,19 +354,7 @@
 </head>
 <body>
 
-<!-- LOCK SCREEN (Password 2405) -->
-<div id="lock-screen">
-    <div class="lock-container">
-        <div class="monogram" style="font-size: 3rem; margin-bottom: 10px;">CM</div>
-        <div class="brand-name" style="letter-spacing: 4px; font-size: 0.9rem;">ACESSO RESTRITO</div>
-        <input type="password" id="lock-pass" class="lock-input" placeholder="****" maxlength="4" />
-        <br>
-        <button class="lock-btn" onclick="window.checkPassword()">ENTRAR</button>
-        <div id="lock-error" style="color: var(--danger); margin-top: 10px; font-size: 0.8rem; display: none;">Senha Incorreta</div>
-    </div>
-</div>
-
-<div id="loading-screen" style="position:fixed; top:0; left:0; width:100%; height:100%; background:var(--off-white); z-index:9998; display:none; flex-direction:column; justify-content:center; align-items:center;">
+<div id="loading-screen" style="position:fixed; top:0; left:0; width:100%; height:100%; background:var(--off-white); z-index:9999; display:flex; flex-direction:column; justify-content:center; align-items:center;">
     <div class="monogram" style="font-size: 2rem;">CM</div>
     <div class="brand-name" style="margin-top:10px; opacity:0.6">Carregando...</div>
 </div>
@@ -433,7 +371,6 @@
 
 <main id="main-content"></main>
 
-<!-- Modals and Overlays remain the same -->
 <div id="modal-overlay">
     <div class="modal">
         <h3 id="modal-title" style="text-align:center; margin-bottom: 25px; color: var(--chocolate); font-family: 'Playfair Display', serif;">Adicionar</h3>
@@ -563,24 +500,6 @@
         if (contraStart) contraStart.style.display = isHormonal ? 'block' : 'none';
     }
 
-    // --- Password Logic ---
-    window.checkPassword = () => { 
-        const input = document.getElementById('lock-pass').value;
-        const errorMsg = document.getElementById('lock-error');
-        
-        if (input === "2405") { 
-            document.getElementById('lock-screen').style.opacity = '0';
-            setTimeout(() => {
-                 document.getElementById('lock-screen').style.display = 'none';
-                 document.getElementById('loading-screen').style.display = 'flex';
-                 initApp(); 
-            }, 500);
-        } else {
-            errorMsg.style.display = 'block';
-            document.getElementById('lock-pass').value = '';
-        }
-    };
-
     // --- Setup ---
     try {
         if(typeof __firebase_config !== 'undefined' && __firebase_config) {
@@ -688,6 +607,7 @@
             onAuthStateChanged(auth, (user) => {
                 state.user = user;
                 if (user) {
+                    document.getElementById('user-badge').innerText = user.uid.substring(0,8);
                     setupDataListener();
                 }
             });
@@ -1047,11 +967,32 @@
             /* UPDATE 3: GPS Persistence - Recreate Map and Polyline */
             if(document.getElementById('gps-map')) {
                  if(mapInstance) { mapInstance.remove(); mapInstance = null; }
+                 
+                 // Initialize map with a default view first (to ensure container is ready)
+                 // but immediately try to fly to real location
                  mapInstance = L.map('gps-map').setView([state.gpsSettings.defaultCity.lat, state.gpsSettings.defaultCity.lng], 13);
                  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(mapInstance);
+                 
                  if (state.health.walking && state.health.path.length > 0) {
+                     // If walking, center on last point
                      polyline = L.polyline(state.health.path, {color: 'var(--chocolate)'}).addTo(mapInstance);
                      mapInstance.setView(state.health.path[state.health.path.length-1]);
+                 } else {
+                     // If not walking, force real location
+                     if (navigator.geolocation) {
+                         navigator.geolocation.getCurrentPosition(
+                             (pos) => {
+                                 const { latitude, longitude } = pos.coords;
+                                 mapInstance.setView([latitude, longitude], 15);
+                                 // Optional: Update state city name via reverse geocoding if needed, but requirements just say center map.
+                             },
+                             (err) => {
+                                 console.warn("GPS init error: using default");
+                                 // Already at default from initialization
+                             },
+                             { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+                         );
+                     }
                  }
             }
         }, 500);
@@ -1093,51 +1034,55 @@
             }
         });
 
-        // Ovulation/Fertile logic disabled for hormonal users
-        if (!isHormonal) {
-            let baseDate = null;
-            const periodLogs = logs.filter(l => l.content.flow).sort((a,b) => new Date(b.content.date) - new Date(a.content.date));
-            
-            if (periodLogs.length > 0) {
-                 const parts = periodLogs[0].content.date.split('-');
-                 if(parts.length === 3) baseDate = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
-            } else if (profile?.content?.lastPeriodDate) {
-                 const parts = profile.content.lastPeriodDate.split('-');
-                 if(parts.length === 3) baseDate = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
-            }
+        // 2. Automatic Projections (Fertile Window Only - NO period lines)
+        let baseDate = null;
+        
+        // Find most recent period start for projection (using local string parsing)
+        const periodLogs = logs.filter(l => l.content.flow).sort((a,b) => new Date(b.content.date) - new Date(a.content.date));
+        if (periodLogs.length > 0) {
+            const [y, m, d] = periodLogs[0].content.date.split('-').map(Number);
+            baseDate = new Date(y, m - 1, d);
+        } else if (profile?.content?.lastPeriodDate) {
+            const [y, m, d] = profile.content.lastPeriodDate.split('-').map(Number);
+            baseDate = new Date(y, m - 1, d);
+        }
 
-            if (baseDate) {
-                for(let k=0; k<36; k++) {
-                    const cycleStart = new Date(baseDate);
-                    cycleStart.setDate(baseDate.getDate() + (cycleDuration * k));
-                    
-                    const nextPeriodStart = new Date(cycleStart);
-                    nextPeriodStart.setDate(cycleStart.getDate() + cycleDuration);
-                    
-                    const ovulation = new Date(nextPeriodStart);
-                    ovulation.setDate(nextPeriodStart.getDate() - 14);
-                    
-                    for(let f=-5; f<=0; f++) {
-                        const d = new Date(ovulation); 
-                        d.setDate(ovulation.getDate() + f);
-                        fertileDays.add(window.toLocalDateStr(d));
-                    }
+        if (baseDate && !isHormonal) {
+            // Project forward 36 cycles
+            for(let k=0; k<36; k++) {
+                const cycleStart = new Date(baseDate);
+                cycleStart.setDate(baseDate.getDate() + (cycleDuration * k));
+                
+                // Calculate NEXT period start (Theoretical)
+                const nextPeriodStart = new Date(cycleStart);
+                nextPeriodStart.setDate(cycleStart.getDate() + cycleDuration);
+                
+                // Fertile Window: 14 days before NEXT period
+                const ovulation = new Date(nextPeriodStart);
+                ovulation.setDate(nextPeriodStart.getDate() - 14);
+                
+                // Fertile window is 5 days before + ovulation day = 6 days
+                for(let f=-5; f<=0; f++) {
+                    const d = new Date(ovulation); 
+                    d.setDate(ovulation.getDate() + f);
+                    fertileDays.add(toLocalDateStr(d));
                 }
             }
         }
 
-        if (isHormonal && profile?.content?.contraceptiveStartDate) {
-            const parts = profile.content.contraceptiveStartDate.split('-');
-            if(parts.length === 3) {
-                const contraStart = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
-                for(let k=0; k<36; k++) {
-                    const cycleStart = new Date(contraStart);
-                    cycleStart.setDate(contraStart.getDate() + (28 * k));
-                    for(let j=0; j<21; j++) {
-                        const activeDay = new Date(cycleStart);
-                        activeDay.setDate(cycleStart.getDate() + j);
-                        contraDays.add(window.toLocalDateStr(activeDay));
-                    }
+        // 3. Contraceptive Projections
+        if (profile?.content?.contraceptiveStartDate && isHormonal) {
+            const [y, m, d] = profile.content.contraceptiveStartDate.split('-').map(Number);
+            const contraStart = new Date(y, m - 1, d);
+            
+            // Default 21 days active + 7 days break
+            for(let k=0; k<36; k++) {
+                const cycleStart = new Date(contraStart);
+                cycleStart.setDate(contraStart.getDate() + (28 * k));
+                for(let j=0; j<21; j++) {
+                    const activeDay = new Date(cycleStart);
+                    activeDay.setDate(cycleStart.getDate() + j);
+                    contraDays.add(toLocalDateStr(activeDay));
                 }
             }
         }
@@ -1686,7 +1631,10 @@
             content = `<div style="background:#f9f9f9; padding:20px; border-radius:12px; display:grid; gap:10px"><div style="display:flex; justify-content:flex-end"><button class="btn-add" style="font-size:0.8rem" onclick="window.copyBankData('${item.name}', '${data.holder||'-'}', '${data.agency}', '${data.account}', '${data.pix}')"><i data-lucide="copy"></i> Copiar</button></div><div><small style="text-transform:uppercase; color:#999">Banco</small><div style="font-weight:600">${item.name}</div></div><div><small style="text-transform:uppercase; color:#999">Agência</small><div style="font-weight:600">${data.agency}</div></div><div><small style="text-transform:uppercase; color:#999">Conta</small><div style="font-weight:600">${data.account}</div></div><div><small style="text-transform:uppercase; color:#999">PIX</small><div style="font-weight:600">${data.pix}</div></div><button class="btn-cancel" onclick="alert('${data.pass}')" style="margin-top:10px"><i data-lucide="eye"></i> Senha</button></div>`;
         } else if (item.type === 'social') {
             const data = item.content;
-            content = `<div style="background:#f9f9f9; padding:20px; border-radius:12px; display:grid; gap:10px">${Object.entries(data).map(([k,v]) => k !== 'pass' ? `<div><small style="text-transform:uppercase; color:#999">${k}</small><div style="font-weight:600">${v}</div></div>` : '').join('')}<button class="btn-cancel" onclick="alert('${data.pass}')" style="margin-top:10px"><i data-lucide="eye"></i> Senha</button></div>`;
+            content = `<div style="background:#f9f9f9; padding:20px; border-radius:12px; display:grid; gap:10px">${Object.entries(data).map(([k,v]) => {
+                if (k === 'pass') return '';
+                return `<div><small style="text-transform:uppercase; color:#999">${k}</small><div style="font-weight:600">${v}</div></div>`;
+            }).join('')}<button class="btn-cancel" onclick="alert('${data.pass}')" style="margin-top:10px"><i data-lucide="eye"></i> Senha</button></div>`;
         }
         el.innerHTML = `<div class="section-header"><h2>${item.name}</h2><div style="display:flex; gap:10px"><button class="btn-cancel" onclick="window.goBack()">Voltar</button><button class="btn-add" onclick="window.editItem('${item.id}', '${item.type}')">Editar</button></div></div><div class="card" style="display:block; cursor:default">${content}</div>`;
     };
@@ -1863,7 +1811,7 @@
         let title = editingId ? 'Editar' : 'Novo';
         if (type === 'rename') title = 'Renomear';
         
-        const inp = (id, lbl, pl, val='') => `<div class="form-group"><label>${lbl}</label><input type="text" id="${id}" class="form-control" placeholder="${pl}" value="${val}"></div>`;
+        const inp = (id, lbl, pl, val='', type='text') => `<div class="form-group"><label>${lbl}</label><input type="${type}" id="${id}" class="form-control" placeholder="${pl}" value="${val}"></div>`;
         const item = editingId ? state.items.find(i=>i.id===editingId) : null;
         const v = (key) => item && item.content ? item.content[key] || '' : '';
         const n = () => item ? item.name : '';
@@ -1877,8 +1825,8 @@
             case 'note': html = inp('f-name', 'Título', '', n()) + `<div class="form-group"><label>Conteúdo</label><textarea id="f-text" class="form-control">${v('text')}</textarea></div>`; break;
             case 'file': html = inp('f-name', 'Nome', '', n()) + `<div class="form-group"><label>Arquivo</label><input type="file" id="f-file" class="form-control"></div>` + `<div class="form-group"><label>Legenda</label><input type="text" id="f-caption" class="form-control" value="${v('caption')}"></div>`; break;
             case 'checklist': case 'checklist_sum': html = inp('f-name', 'Título', '', n()) + renderIconSelector(); break;
-            case 'bank': html = inp('f-name', 'Banco', '', n()) + inp('f-holder', 'Titular', '', v('holder')) + inp('f-ag', 'Agência', '', v('agency')) + inp('f-cc', 'Conta', '', v('account')) + inp('f-pix', 'PIX', '', v('pix')) + inp('f-pass', 'Senha', '', v('pass')); break;
-            case 'social': html = inp('f-name','Plataforma','',n()) + inp('f-login','Login','',v('login')) + inp('f-pass','Senha','',v('pass')); break;
+            case 'bank': html = inp('f-name', 'Banco', '', n()) + inp('f-holder', 'Titular', '', v('holder')) + inp('f-ag', 'Agência', '', v('agency')) + inp('f-cc', 'Conta', '', v('account')) + inp('f-pix', 'PIX', '', v('pix')) + inp('f-pass', 'Senha', '', v('pass'), 'password'); break;
+            case 'social': html = inp('f-name','Plataforma','',n()) + inp('f-login','Login','',v('login')) + inp('f-pass','Senha','',v('pass'), 'password'); break;
             case 'expense': case 'pendency': case 'income': 
                 title = type === 'expense' ? 'Nova Despesa' : (type === 'income' ? 'Nova Entrada' : 'Nova Pendência'); 
                 html = inp('f-name', 'Descrição', 'Ex: Salário', n()) + `<div class="form-group"><label>Valor</label><input type="number" id="f-val" class="form-control" value="${v('value')}"></div>` + `<div class="form-group"><label>Parcelas/Repetições</label><input type="number" id="f-par" class="form-control" value="1"></div>` + `<div class="form-group"><label>Vencimento/Data</label><input type="date" id="f-due" class="form-control" value="${v('due') || new Date().toISOString().split('T')[0]}"></div>`; 
