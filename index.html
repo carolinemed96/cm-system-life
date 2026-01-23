@@ -24,9 +24,9 @@
             --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             --shadow: 0 10px 30px -5px rgba(62, 39, 35, 0.1);
             --shadow-hover: 0 15px 35px -5px rgba(197, 160, 89, 0.2);
-            --period-line: #5D4037; 
-            --heart-safe: #C5A059; 
-            --heart-unsafe: #5D4037; 
+            --period-line: #5D4037; /* Marrom escuro para menstruação */
+            --heart-safe: #C5A059; /* Dourado */
+            --heart-unsafe: #5D4037; /* Marrom */
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', 'Segoe UI', sans-serif; }
@@ -89,6 +89,7 @@
             align-items: center; 
             gap: 15px; 
             position: relative; 
+            /* Fix: Essencial para dropdowns */
             overflow: visible !important; 
             z-index: 1;
         }
@@ -105,11 +106,15 @@
         .finance-item:has(.create-menu-dropdown.show),
         .piggy-card:has(.create-menu-dropdown.show),
         div:has(> .create-menu-dropdown.show) {
-            z-index: 2147483647 !important;
-            transform: none !important;
+            z-index: 2147483647 !important; /* Max Int Z-Index */
+            transform: none !important; /* Remove contexto de empilhamento */
             filter: none !important;
             opacity: 1 !important;
-            position: relative !important;
+            perspective: none !important;
+            clip-path: none !important;
+            mask: none !important;
+            position: relative !important; /* Garante que filhos absolutos se ancorem aqui */
+            box-shadow: 0 20px 50px rgba(0,0,0,0.2) !important; /* Destaque visual */
             overflow: visible !important;
         }
         
@@ -142,6 +147,7 @@
             justify-content: center;
             gap: 10px;
             width: 100%;
+            margin-top: 15px;
             transition: all 0.3s ease;
             box-shadow: 0 4px 10px rgba(62, 39, 35, 0.2);
             cursor: pointer;
@@ -892,7 +898,6 @@
                          <div style="font-weight:700; color:var(--chocolate); font-size:0.9rem">GPS</div>
                     </div>
                     <div style="display:flex; gap:8px">
-                        <button class="btn-gps" id="gps-toggle-btn" onclick="window.toggleGpsTracking()">${state.health.walking ? 'Parar' : 'Iniciar'}</button>
                         <button class="btn-gps-report" onclick="window.openGpsReport()">
                             <i data-lucide="file-text" style="width:16px"></i> Relatório
                         </button>
@@ -904,6 +909,7 @@
                     <div><div class="gps-stat-value" id="gps-dist" style="font-size:1.2rem">${(state.health.distance/1000).toFixed(2)}</div><div class="gps-stat-label">KM</div></div>
                     <div><div class="gps-stat-value" id="gps-time" style="font-size:1.2rem">00:00</div><div class="gps-stat-label">TEMPO</div></div>
                 </div>
+                <button class="btn-gps" id="gps-toggle-btn" onclick="window.toggleGpsTracking()">${state.health.walking ? 'Parar' : 'Iniciar'}</button>
             </div>
             </div>
 
@@ -965,9 +971,12 @@
         setTimeout(() => {
             /* UPDATE 3: GPS Persistence - Recreate Map and Polyline */
             if(document.getElementById('gps-map')) {
+                // Always recreate map instance to avoid container reuse errors on SPA navigation
                  if(mapInstance) { mapInstance.remove(); mapInstance = null; }
+                 
                  mapInstance = L.map('gps-map').setView([state.gpsSettings.defaultCity.lat, state.gpsSettings.defaultCity.lng], 13);
                  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(mapInstance);
+                 
                  if (state.health.walking && state.health.path.length > 0) {
                      polyline = L.polyline(state.health.path, {color: 'var(--chocolate)'}).addTo(mapInstance);
                      mapInstance.setView(state.health.path[state.health.path.length-1]);
@@ -1119,15 +1128,13 @@
     window.toggleGpsTracking = () => {
         const btn = document.getElementById('gps-toggle-btn');
         if(!state.health.walking) {
+            // Start
             state.health.walking = true;
             state.health.startTime = Date.now();
             state.health.path = [];
             state.health.distance = 0;
-            // Generate a session ID if needed, though we save at the end
-            if(btn) {
-                btn.innerHTML = `Parar`;
-                btn.classList.add('active');
-            }
+            btn.innerHTML = `Parar`;
+            btn.classList.add('active');
             
             if(navigator.geolocation) {
                 watchId = navigator.geolocation.watchPosition((pos) => {
@@ -1166,6 +1173,7 @@
             }, 1000);
 
         } else {
+            // Stop
             if(watchId) navigator.geolocation.clearWatch(watchId);
             clearInterval(state.health.timer);
             state.health.walking = false;
@@ -1602,7 +1610,6 @@
         else if(item.type.includes('checklist')) {
             const isSum = item.type === 'checklist_sum';
             const items = item.content && item.content.items ? item.content.items : [];
-            /* Cirurgia 5: Auto-sum calculation */
             const total = isSum ? items.reduce((a,b)=>b.checked?a+(parseFloat(b.val)||0):a,0) : 0;
             content = `${isSum ? `<div style="text-align:right; font-size:1.5rem; color:var(--success); font-weight:bold; margin-bottom:15px">${total.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</div>` : ''}<div style="display:flex; flex-direction:column; gap:10px">${items.map((it, idx) => `<div style="display:flex; gap:10px; align-items:center; padding:8px; border-bottom:1px solid #eee"><div class="btn-check ${it.checked?'active':''}" onclick="window.toggleCLItem('${item.id}', ${idx})"><i data-lucide="check" style="width:16px"></i></div><input class="checklist-input form-control" style="border:none; background:transparent; text-decoration:${it.checked?'line-through':''}" value="${it.text}" onchange="window.updateCL('${item.id}',${idx},'text',this.value)">${isSum ? `<input class="form-control" type="number" style="width:80px; text-align:right" value="${it.val}" onchange="window.updateCL('${item.id}',${idx},'val',this.value)">` : ''}<i data-lucide="x" style="width:16px; cursor:pointer; opacity:0.5" onclick="window.deleteCLItem('${item.id}', ${idx})"></i></div>`).join('')}<button class="btn-add" style="align-self:center; margin-top:10px" onclick="window.addCLItem('${item.id}')"><i data-lucide="plus"></i> Item</button></div>`;
         } else if (item.type === 'bank') {
@@ -1718,13 +1725,15 @@
     document.addEventListener('click', () => document.querySelectorAll('.create-menu-dropdown').forEach(m => m.classList.remove('show')));
 
     // Helper for IBGE Cities
-    window.loadCities = async (uf) => {
+    window.loadCities = async (uf, selectedCity = null) => {
         const citySelect = document.getElementById('f-gps-city');
+        if (!citySelect) return;
         citySelect.innerHTML = '<option>Carregando...</option>';
         try {
             const res = await fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${uf}/municipios`);
             const cities = await res.json();
             citySelect.innerHTML = cities.map(c => `<option value="${c.nome}">${c.nome}</option>`).join('');
+            if (selectedCity) citySelect.value = selectedCity;
         } catch(e) { citySelect.innerHTML = '<option>Erro</option>'; }
     };
     
@@ -1807,7 +1816,13 @@
                 break;
             case 'health_med': html = inp('f-name','Remédio','',n()) + inp('f-time','Horário','',v('time')) + inp('f-inst','Instruções','',v('instructions')); break;
             case 'health_food': title='Dieta'; html=`<div class="form-group"><textarea id="f-diet" class="form-control" style="height:200px">${v('text')}</textarea></div>`; break;
-            case 'gps_settings': title = 'GPS Config'; html = `<div class="form-group"><label>Estado</label><select id="f-gps-state" class="form-control" onchange="window.loadCities(this.value)">${BR_STATES.map(s => `<option value="${s}">${s}</option>`).join('')}</select></div><div class="form-group"><label>Cidade</label><select id="f-gps-city" class="form-control"><option>Carregando...</option></select></div>`; setTimeout(()=>window.loadCities(BR_STATES[0]),100); break;
+            case 'gps_settings': 
+                title = 'GPS Config'; 
+                const currentSettings = state.gpsSettings || { state: 'SP', cityName: '' };
+                const currentCityNameOnly = currentSettings.cityName ? currentSettings.cityName.split(' - ')[0] : null;
+                html = `<div class="form-group"><label>Estado</label><select id="f-gps-state" class="form-control" onchange="window.loadCities(this.value)">${BR_STATES.map(s => `<option value="${s}" ${s === currentSettings.state ? 'selected' : ''}>${s}</option>`).join('')}</select></div><div class="form-group"><label>Cidade</label><select id="f-gps-city" class="form-control"><option>Carregando...</option></select></div>`; 
+                setTimeout(() => window.loadCities(currentSettings.state, currentCityNameOnly), 100); 
+                break;
             case 'menstrual_log': 
                 title = 'Ciclo'; 
                 const dateKey = editingId; 
