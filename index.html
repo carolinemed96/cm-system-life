@@ -974,12 +974,36 @@
                 // Always recreate map instance to avoid container reuse errors on SPA navigation
                  if(mapInstance) { mapInstance.remove(); mapInstance = null; }
                  
+                 // 1. Initialize map (fallback to settings just to render tiles)
                  mapInstance = L.map('gps-map').setView([state.gpsSettings.defaultCity.lat, state.gpsSettings.defaultCity.lng], 13);
                  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(mapInstance);
                  
+                 // 2. Handling Active Session vs Idle
                  if (state.health.walking && state.health.path.length > 0) {
                      polyline = L.polyline(state.health.path, {color: 'var(--chocolate)'}).addTo(mapInstance);
                      mapInstance.setView(state.health.path[state.health.path.length-1]);
+                 } else {
+                     // 3. FORCE REAL LOCATION ON INIT (Requirement)
+                     navigator.geolocation.getCurrentPosition(
+                        (pos) => {
+                             const { latitude, longitude } = pos.coords;
+                             // Update map center to real location
+                             if(mapInstance) {
+                                 mapInstance.setView([latitude, longitude], 15);
+                                 // Add 'current location' indicator (blue dot style)
+                                 L.circleMarker([latitude, longitude], {
+                                     radius: 8,
+                                     fillColor: "#4285F4",
+                                     color: "#fff",
+                                     weight: 2,
+                                     opacity: 1,
+                                     fillOpacity: 0.8
+                                 }).addTo(mapInstance);
+                             }
+                        },
+                        (err) => { console.warn("Location access denied or error", err); },
+                        { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+                     );
                  }
             }
         }, 500);
@@ -1006,69 +1030,69 @@
         const fertileDays = new Set();
         const contraDays = new Set();
         
+        // 1. Process Historical Logs (Manual Entry Only for Period)
         logs.forEach(l => {
-            if (l.content.flow) {
-                const parts = l.content.date.split('-');
-                if(parts.length === 3) {
-                    const y = parseInt(parts[0]);
-                    const m = parseInt(parts[1]);
-                    const d = parseInt(parts[2]);
-                    const startDate = new Date(y, m - 1, d);
-                    
-                    for(let i=0; i<flowDuration; i++) {
-                        const d = new Date(startDate); 
-                        d.setDate(startDate.getDate() + i);
-                        periodDays.add(window.toLocalDateStr(d));
-                    }
+            if (l.content.flow) { // Only if flow is marked
+                // FIX: Use local string processing to avoid Timezone shifts
+                const [y, m, d] = l.content.date.split('-').map(Number);
+                const startDate = new Date(y, m - 1, d);
+                
+                for(let i=0; i<flowDuration; i++) {
+                    const d = new Date(startDate); 
+                    d.setDate(startDate.getDate() + i);
+                    periodDays.add(window.toLocalDateStr(d));
                 }
             }
         });
 
-        // Ovulation/Fertile logic disabled for hormonal users
-        if (!isHormonal) {
-            let baseDate = null;
-            const periodLogs = logs.filter(l => l.content.flow).sort((a,b) => new Date(b.content.date) - new Date(a.content.date));
-            
-            if (periodLogs.length > 0) {
-                 const parts = periodLogs[0].content.date.split('-');
-                 if(parts.length === 3) baseDate = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
-            } else if (profile?.content?.lastPeriodDate) {
-                 const parts = profile.content.lastPeriodDate.split('-');
-                 if(parts.length === 3) baseDate = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
-            }
+        // 2. Automatic Projections (Fertile Window Only - NO period lines)
+        let baseDate = null;
+        
+        // Find most recent period start for projection (using local string parsing)
+        const periodLogs = logs.filter(l => l.content.flow).sort((a,b) => new Date(b.content.date) - new Date(a.content.date));
+        if (periodLogs.length > 0) {
+            const [y, m, d] = periodLogs[0].content.date.split('-').map(Number);
+            baseDate = new Date(y, m - 1, d);
+        } else if (profile?.content?.lastPeriodDate) {
+            const [y, m, d] = profile.content.lastPeriodDate.split('-').map(Number);
+            baseDate = new Date(y, m - 1, d);
+        }
 
-            if (baseDate) {
-                for(let k=0; k<36; k++) {
-                    const cycleStart = new Date(baseDate);
-                    cycleStart.setDate(baseDate.getDate() + (cycleDuration * k));
-                    
-                    const nextPeriodStart = new Date(cycleStart);
-                    nextPeriodStart.setDate(cycleStart.getDate() + cycleDuration);
-                    
-                    const ovulation = new Date(nextPeriodStart);
-                    ovulation.setDate(nextPeriodStart.getDate() - 14);
-                    
-                    for(let f=-5; f<=0; f++) {
-                        const d = new Date(ovulation); 
-                        d.setDate(ovulation.getDate() + f);
-                        fertileDays.add(window.toLocalDateStr(d));
-                    }
+        if (baseDate) {
+            // Project forward 36 cycles
+            for(let k=0; k<36; k++) {
+                const cycleStart = new Date(baseDate);
+                cycleStart.setDate(baseDate.getDate() + (cycleDuration * k));
+                
+                // Calculate NEXT period start (Theoretical)
+                const nextPeriodStart = new Date(cycleStart);
+                nextPeriodStart.setDate(cycleStart.getDate() + cycleDuration);
+                
+                // Fertile Window: 14 days before NEXT period
+                const ovulation = new Date(nextPeriodStart);
+                ovulation.setDate(nextPeriodStart.getDate() - 14);
+                
+                for(let f=-5; f<=0; f++) {
+                    const d = new Date(ovulation); 
+                    d.setDate(ovulation.getDate() + f);
+                    fertileDays.add(window.toLocalDateStr(d));
                 }
             }
         }
 
-        if (isHormonal && profile?.content?.contraceptiveStartDate) {
-            const parts = profile.content.contraceptiveStartDate.split('-');
-            if(parts.length === 3) {
-                const contraStart = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
-                for(let k=0; k<36; k++) {
-                    const cycleStart = new Date(contraStart);
-                    cycleStart.setDate(contraStart.getDate() + (28 * k));
-                    for(let j=0; j<21; j++) {
-                        const activeDay = new Date(cycleStart);
-                        activeDay.setDate(cycleStart.getDate() + j);
-                        contraDays.add(window.toLocalDateStr(activeDay));
-                    }
+        // 3. Contraceptive Projections
+        if (profile?.content?.contraceptiveStartDate && contraType !== 'Nenhum') {
+            const [y, m, d] = profile.content.contraceptiveStartDate.split('-').map(Number);
+            const contraStart = new Date(y, m - 1, d);
+            
+            // Default 21 days active + 7 days break
+            for(let k=0; k<36; k++) {
+                const cycleStart = new Date(contraStart);
+                cycleStart.setDate(contraStart.getDate() + (28 * k));
+                for(let j=0; j<21; j++) {
+                    const activeDay = new Date(cycleStart);
+                    activeDay.setDate(cycleStart.getDate() + j);
+                    contraDays.add(window.toLocalDateStr(activeDay));
                 }
             }
         }
@@ -1101,7 +1125,7 @@
             html += `
                 <div class="${classes}" onclick="window.openModal('menstrual_log', '${dateStr}')">
                     <div class="cal-top-zone">
-                        ${isFertile && !isPeriod ? `<div class="cal-dot-fertile"></div>` : ''}
+                        ${isFertile && !isPeriod && !isHormonal ? `<div class="cal-dot-fertile"></div>` : ''}
                         ${log && log.content.sex && !log.content.protection ? `<i data-lucide="heart" class="cal-heart unsafe" stroke="none" fill="currentColor"></i>` : ''}
                         ${log && log.content.sex && log.content.protection ? `<i data-lucide="heart" class="cal-heart safe" stroke="none" fill="currentColor"></i>` : ''}
                     </div>
@@ -1137,6 +1161,12 @@
             btn.classList.add('active');
             
             if(navigator.geolocation) {
+                // Force immediate location before watch starts/updates to ensure responsiveness
+                navigator.geolocation.getCurrentPosition((pos) => {
+                     const { latitude, longitude } = pos.coords;
+                     if(mapInstance) mapInstance.setView([latitude, longitude], 16);
+                }, null, { enableHighAccuracy: true });
+
                 watchId = navigator.geolocation.watchPosition((pos) => {
                     const { latitude, longitude } = pos.coords;
                     const latLng = [latitude, longitude];
@@ -1610,6 +1640,7 @@
         else if(item.type.includes('checklist')) {
             const isSum = item.type === 'checklist_sum';
             const items = item.content && item.content.items ? item.content.items : [];
+            /* Cirurgia 5: Auto-sum calculation */
             const total = isSum ? items.reduce((a,b)=>b.checked?a+(parseFloat(b.val)||0):a,0) : 0;
             content = `${isSum ? `<div style="text-align:right; font-size:1.5rem; color:var(--success); font-weight:bold; margin-bottom:15px">${total.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</div>` : ''}<div style="display:flex; flex-direction:column; gap:10px">${items.map((it, idx) => `<div style="display:flex; gap:10px; align-items:center; padding:8px; border-bottom:1px solid #eee"><div class="btn-check ${it.checked?'active':''}" onclick="window.toggleCLItem('${item.id}', ${idx})"><i data-lucide="check" style="width:16px"></i></div><input class="checklist-input form-control" style="border:none; background:transparent; text-decoration:${it.checked?'line-through':''}" value="${it.text}" onchange="window.updateCL('${item.id}',${idx},'text',this.value)">${isSum ? `<input class="form-control" type="number" style="width:80px; text-align:right" value="${it.val}" onchange="window.updateCL('${item.id}',${idx},'val',this.value)">` : ''}<i data-lucide="x" style="width:16px; cursor:pointer; opacity:0.5" onclick="window.deleteCLItem('${item.id}', ${idx})"></i></div>`).join('')}<button class="btn-add" style="align-self:center; margin-top:10px" onclick="window.addCLItem('${item.id}')"><i data-lucide="plus"></i> Item</button></div>`;
         } else if (item.type === 'bank') {
