@@ -177,7 +177,7 @@
         .file-card-image { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
         .file-card-image:hover { transform: scale(1.05); }
 
-        /* Visionboard Specifics Updated */
+        /* Visionboard Specifics */
         .vision-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; margin-top: 15px; }
         .vision-item { display: flex; flex-direction: column; gap: 8px; transition: transform 0.3s; cursor: pointer; position: relative; }
         .vision-item:hover { transform: scale(1.02); }
@@ -307,12 +307,10 @@
         }
     };
     
-    // Check session on load
     if (localStorage.getItem('cm_access') === 'granted') {
         document.getElementById('lock-screen').style.display = 'none';
     }
 
-    // Enter key support
     document.getElementById('lock-pass').addEventListener('keypress', function (e) {
         if (e.key === 'Enter') window.checkAccess();
     });
@@ -321,7 +319,6 @@
     let app, auth, db, appId;
     let isOffline = false;
 
-    // --- Auto-Resize Global para Caixas de Texto ---
     document.addEventListener('input', function(e) {
         if(e.target.tagName.toLowerCase() === 'textarea') {
             e.target.style.height = 'auto';
@@ -357,7 +354,6 @@
         selectedIcon: null
     };
     
-    // --- Helper Functions attached to Window for HTML access ---
     window.toLocalDateStr = (dateObj) => {
         const y = dateObj.getFullYear();
         const m = String(dateObj.getMonth() + 1).padStart(2, '0');
@@ -383,7 +379,6 @@
         if (contraStart) contraStart.style.display = isHormonal ? 'block' : 'none';
     }
 
-    // --- Setup ---
     try {
         if(typeof __firebase_config !== 'undefined' && __firebase_config) {
             const firebaseConfig = JSON.parse(__firebase_config);
@@ -397,7 +392,6 @@
         isOffline = true;
     }
 
-    // --- Toast System ---
     window.showToast = (msg, type = 'success') => {
         const container = document.getElementById('toast-container');
         const el = document.createElement('div');
@@ -408,7 +402,6 @@
         setTimeout(() => { el.style.opacity = '0'; el.style.transform = 'translateY(-20px)'; setTimeout(() => el.remove(), 300); }, 3000);
     };
 
-    // --- Data Handlers ---
     const _addDoc = async (coll, data) => {
         if(isOffline) {
             const newItem = { id: 'loc_' + Date.now() + Math.random().toString(36).substr(2,9), ...data };
@@ -457,7 +450,6 @@
 
     const saveLocal = () => localStorage.setItem('cm_premium_data', JSON.stringify(state.items));
 
-    // --- Initialization ---
     const initApp = async () => {
         setTimeout(() => {
             const loader = document.getElementById('loading-screen');
@@ -541,7 +533,6 @@
         }
     };
     
-    // --- Navigation & Routing ---
     const ROOT_AREAS = [
         { id: 'pessoal', name: 'Pessoal', icon: 'user' },
         { id: 'profissional', name: 'Profissional', icon: 'briefcase' },
@@ -567,7 +558,6 @@
         render(); 
     };
 
-    // --- Render Logic ---
     window.render = () => {
         const main = document.getElementById('main-content');
         const bread = document.getElementById('breadcrumb-container');
@@ -596,7 +586,6 @@
             else renderGeneralFolder(main, currentId);
         }
         
-        // Ensure autocomplete off for all dynamic elements
         document.querySelectorAll('input, textarea, select').forEach(el => {
             el.setAttribute('autocomplete', 'off');
         });
@@ -604,128 +593,6 @@
         if(window.lucide) window.lucide.createIcons();
     };
 
-    const renderDashboard = (el) => {
-        const verse = VERSES_POOL[(new Date().getDate() + new Date().getMonth() * 31) % VERSES_POOL.length];
-        const fab = `
-            <div class="floating-star-btn" onclick="window.toggleCreateMenu(this)">
-                <svg width="30" height="30" viewBox="0 0 24 24" fill="white">
-                    <path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z" />
-                    <path d="M18 2L19 5L22 6L19 7L18 10L17 7L14 6L17 5L18 2Z" transform="scale(0.5) translate(20, -10)" />
-                </svg>
-            </div>
-            <div class="create-menu-dropdown" style="bottom: 100px; right: 30px; top: auto;">
-                <div class="create-menu-item" onclick="window.openModal('create_area')"><i data-lucide="layout-grid"></i> Criar Nova Área</div>
-                <div class="create-menu-item" onclick="window.openModal('visionboard')"><i data-lucide="image"></i> Visionboard</div>
-                <div class="create-menu-item" onclick="window.toggleSelectionMode()"><i data-lucide="edit-3"></i> Editar</div>
-                <div class="create-menu-item" onclick="window.backupData()"><i data-lucide="upload"></i> Backup</div>
-                <div class="create-menu-item" onclick="window.restoreData()"><i data-lucide="download"></i> Restaurar</div>
-            </div>
-        `;
-
-        el.innerHTML = `
-            <div class="verse-card">
-                <div class="verse-text">"${verse.t}"</div>
-                <div class="verse-ref">${verse.r}</div>
-            </div>
-            <div class="section-header"><h2>Minhas Áreas</h2></div><div class="grid-container"></div>
-            ${fab}
-        `;
-        
-        const grid = el.querySelector('.grid-container');
-        ROOT_AREAS.forEach(a => {
-            const card = document.createElement('div');
-            card.className = 'card';
-            card.innerHTML = `<i data-lucide="${a.icon}" style="color:var(--gold); width:28px; height:28px;"></i><b style="font-size:1.1rem; color:var(--chocolate)">${a.name}</b>`;
-            card.onclick = () => window.navigate(a.id);
-            grid.appendChild(card);
-        });
-
-        const customAreas = state.items.filter(i => i.type === 'custom_area' && i.parentId === 'root');
-        customAreas.forEach(a => {
-            const card = document.createElement('div');
-            card.className = `card ${state.selectionMode?'selection-mode':''} ${state.selectedIds.includes(a.id)?'selected':''}`;
-            card.style.position = 'relative';
-            card.innerHTML = `
-                <i data-lucide="${a.icon || 'layout'}" style="color:var(--gold); width:28px; height:28px;"></i>
-                <b style="font-size:1.1rem; color:var(--chocolate); flex:1">${a.name}</b>
-                ${state.selectionMode ? '<i data-lucide="check-circle" class="selection-check"></i>' : renderActionMenu(a.id, a.type, a.name)}
-            `;
-            card.onclick = (e) => {
-                if(e.target.closest('.create-menu-container')) return;
-                if(state.selectionMode) window.toggleSelectItem(a.id);
-                else window.navigate(a.id);
-            };
-            grid.appendChild(card);
-        });
-    };
-
-    // --- Bible Module ---
-    const renderBible = async (el) => {
-        el.innerHTML = `
-            <div class="section-header">
-                <h2>Bíblia (NVI/Almeida)</h2>
-                <div style="display:flex; gap:10px">
-                    <select id="bible-book" class="form-control" style="width:140px; padding:8px" onchange="window.updateBibleNav()"></select>
-                    <input type="number" id="bible-chapter" class="form-control" style="width:70px; padding:8px" min="1" value="${state.bible.chapter}" onchange="window.updateBibleNav()">
-                    <button class="btn-add" onclick="window.fetchBibleText()">Ler</button>
-                </div>
-            </div>
-            <div id="bible-content" style="background:white; padding:30px; border-radius:24px; box-shadow:var(--shadow); min-height:400px; line-height:1.8; color:#444">
-                ${state.bible.loading ? '<div style="text-align:center; padding:50px; opacity:0.6">Baixando Bíblia Completa... (apenas na 1ª vez)</div>' : (state.bible.text || '<div style="text-align:center; padding:50px; opacity:0.6">Selecione um livro e capítulo para começar a leitura.</div>')}
-            </div>
-        `;
-        
-        const sel = document.getElementById('bible-book');
-        BIBLE_BOOKS.forEach(b => {
-            const opt = document.createElement('option');
-            opt.value = b;
-            opt.innerText = b;
-            if(b === state.bible.book) opt.selected = true;
-            sel.appendChild(opt);
-        });
-    };
-
-    window.updateBibleNav = () => {
-        state.bible.book = document.getElementById('bible-book').value;
-        state.bible.chapter = document.getElementById('bible-chapter').value;
-    };
-    
-    window.fetchBibleText = async () => {
-        state.bible.loading = true;
-        render();
-        try {
-            if (!state.bible.fullData) {
-                const res = await fetch('https://raw.githubusercontent.com/thiagobodruk/bible/master/json/pt_aa.json');
-                if(!res.ok) throw new Error("Erro ao baixar base de dados.");
-                state.bible.fullData = await res.json();
-                window.showToast("Bíblia carregada com sucesso!");
-            }
-
-            const bookData = state.bible.fullData.find(b => b.name === state.bible.book || b.name.includes(state.bible.book));
-            
-            if (bookData) {
-                const chapterIndex = parseInt(state.bible.chapter) - 1;
-                if (chapterIndex >= 0 && chapterIndex < bookData.chapters.length) {
-                    const verses = bookData.chapters[chapterIndex];
-                    let html = `<h3 style="text-align:center; margin-bottom:20px; color:var(--chocolate)">${bookData.name} ${state.bible.chapter}</h3>`;
-                    html += verses.map((v, i) => `<p style="margin-bottom:10px; line-height:1.6"><sup style="color:var(--gold); font-weight:bold; margin-right:4px; font-size:0.8rem">${i+1}</sup> ${v}</p>`).join('');
-                    state.bible.text = html;
-                } else {
-                    state.bible.text = `<div style="text-align:center; padding:20px; color:var(--danger)">Capítulo inexistente. Este livro tem ${bookData.chapters.length} capítulos.</div>`;
-                }
-            } else {
-                state.bible.text = `<div style="text-align:center; padding:20px; color:var(--danger)">Livro não encontrado na base de dados.</div>`;
-            }
-
-        } catch(e) {
-            console.error(e);
-            state.bible.text = `<div style="color:var(--danger); text-align:center; padding:20px">Erro ao carregar a Bíblia.<br><small>Detalhe: ${e.message}</small></div>`;
-        }
-        state.bible.loading = false;
-        render();
-    };
-
-    // --- Health Module ---
     const calculateHealthStats = (weightItem) => {
         if(!weightItem) return null;
         const { current, target, startDate, periodMonths, history, startWeight } = weightItem.content;
@@ -737,7 +604,6 @@
         const mma = (monthsRemaining > 0 && weightToLose > 0) ? (weightToLose / monthsRemaining).toFixed(2) : 0;
         
         let height = parseFloat(weightItem.content.height) || 0;
-        // Correção inteligente: se a pessoa digitar 170 ou 175 em vez de 1.70, converte automaticamente
         if (height > 3) height = height / 100; 
 
         let imc = '--';
@@ -753,12 +619,10 @@
             else { imcColor = 'var(--danger)'; imcText = 'Obesidade'; }
         }
 
-        // Meta de Água Diária: 35ml por cada kg do corpo
         const waterMl = currentWeight * 35;
         const waterLiters = (waterMl / 1000).toFixed(1);
 
         const sortedHistory = [...(history || [])].sort((a,b) => new Date(b.date) - new Date(a.date));
-        
         const totalLossRequired = parseFloat(startWeight) - parseFloat(target);
         const progress = totalLossRequired > 0 ? ((parseFloat(startWeight) - currentWeight) / totalLossRequired * 100) : 0;
         
@@ -818,8 +682,8 @@
                     <div style="display:flex; align-items:center; gap:10px">
                         <div style="width:40px; height:40px; background:var(--off-white); border: 1px solid rgba(197, 160, 89, 0.2); border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--chocolate)"><i data-lucide="scale"></i></div>
                         <div>
-                            <div style="font-weight:700; color:var(--chocolate)">Controle de Peso</div>
-                            <div style="font-size:0.8rem; color:var(--chocolate-light)">${stats ? `Inicial: ${stats.startWeight}kg | Meta Final: ${stats.target}kg` : 'Configure sua meta'}</div>
+                            <div style="font-weight:700; color:var(--chocolate)">Monitoramento de Peso</div>
+                            <div style="font-size:0.8rem; color:var(--chocolate-light)">Foco na evolução mensal</div>
                         </div>
                     </div>
                     ${stats ? `
@@ -830,25 +694,33 @@
                     ` : `<button class="btn-add" onclick="window.openModal('health_weight_config')">Configurar</button>`}
                 </div>
                 ${stats ? `
-                    <div style="margin-top:20px; display:grid; grid-template-columns:1fr 1fr; gap:15px;">
-                        <div style="background:var(--bg-card); border:1px solid #eee; border-radius:12px; padding:15px; text-align:center; position:relative;">
-                            <div style="font-size:0.75rem; text-transform:uppercase; color:var(--chocolate-light); font-weight:700; margin-bottom:5px">Peso Atual</div>
-                            <div style="font-size:1.8rem; font-weight:800; color:var(--chocolate)">${stats.current} <span style="font-size:1rem; color:var(--chocolate-light)">kg</span></div>
-                            <div style="font-size:0.75rem; color:${stats.weightToLose <= 0 ? 'var(--success)' : 'var(--danger)'}; margin-top:5px; font-weight:600">Falta/mês: ${stats.mma} kg</div>
+                    <div style="margin-top:20px; display:flex; flex-direction:column; gap:15px;">
+                        <!-- DESTAQUE PRINCIPAL: META MENSAL -->
+                        <div style="background:var(--off-white); border:2px solid var(--gold); border-radius:16px; padding:20px; text-align:center;">
+                            <div style="font-size:0.8rem; text-transform:uppercase; color:var(--gold); font-weight:700; margin-bottom:8px; letter-spacing:1px">Meta Mensal Restante</div>
+                            <div style="font-size:2.8rem; font-weight:900; color:var(--chocolate); line-height:1;">${stats.mma} <span style="font-size:1.2rem; font-weight:600; color:var(--gold)">kg</span></div>
+                            <div style="font-size:0.85rem; color:var(--chocolate-light); margin-top:10px; font-weight:500">Objetivo para os próximos ${stats.monthsRemaining} meses</div>
                         </div>
-                        <div style="background:var(--bg-card); border:1px solid #eee; border-radius:12px; padding:15px; text-align:center; position:relative;">
-                            <div style="font-size:0.75rem; text-transform:uppercase; color:var(--chocolate-light); font-weight:700; margin-bottom:5px">IMC</div>
-                            <div style="font-size:1.8rem; font-weight:800; color:${stats.imcColor}">${stats.imc}</div>
-                            <div style="display:inline-block; margin-top:5px; padding:3px 8px; background:transparent; border: 1px solid ${stats.imcColor}; color:${stats.imcColor}; border-radius:12px; font-size:0.7rem; font-weight:bold">${stats.imcText || 'Configure Altura'}</div>
+
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px;">
+                            <div style="background:var(--bg-card); border:1px solid #eee; border-radius:12px; padding:15px; text-align:center;">
+                                <div style="font-size:0.7rem; text-transform:uppercase; color:var(--chocolate-light); font-weight:700; margin-bottom:5px">Peso Atual</div>
+                                <div style="font-size:1.4rem; font-weight:800; color:var(--chocolate)">${stats.current} <span style="font-size:0.8rem; color:var(--chocolate-light)">kg</span></div>
+                            </div>
+                            <div style="background:var(--bg-card); border:1px solid #eee; border-radius:12px; padding:15px; text-align:center;">
+                                <div style="font-size:0.7rem; text-transform:uppercase; color:var(--chocolate-light); font-weight:700; margin-bottom:5px">IMC</div>
+                                <div style="font-size:1.4rem; font-weight:800; color:${stats.imcColor}">${stats.imc}</div>
+                                <div style="font-size:0.65rem; font-weight:bold; color:${stats.imcColor}; margin-top:3px">${stats.imcText}</div>
+                            </div>
                         </div>
                     </div>
                     
-                    <div style="background:var(--off-white); border:1px solid rgba(197, 160, 89, 0.3); border-radius:12px; padding:12px 15px; margin-top:15px; display:flex; justify-content:space-between; align-items:center;">
+                    <div style="background:var(--bg-card); border:1px solid rgba(197, 160, 89, 0.3); border-radius:12px; padding:12px 15px; margin-top:15px; display:flex; justify-content:space-between; align-items:center;">
                         <div style="display:flex; align-items:center; gap:10px;">
-                            <div style="width:36px; height:36px; background:var(--bg-card); border-radius:50%; display:flex; justify-content:center; align-items:center; color:var(--gold); border: 1px solid rgba(197, 160, 89, 0.2);"><i data-lucide="droplet" style="width:18px"></i></div>
+                            <div style="width:36px; height:36px; background:var(--off-white); border-radius:50%; display:flex; justify-content:center; align-items:center; color:var(--gold); border: 1px solid rgba(197, 160, 89, 0.2);"><i data-lucide="droplet" style="width:18px"></i></div>
                             <div>
-                                <div style="font-weight:700; color:var(--chocolate); font-size:0.9rem">Meta Diária de Água</div>
-                                <div style="font-size:0.75rem; color:var(--chocolate-light)">Baseada no seu peso atual</div>
+                                <div style="font-weight:700; color:var(--chocolate); font-size:0.9rem">Meta de Hidratação</div>
+                                <div style="font-size:0.75rem; color:var(--chocolate-light)">Calculada pelo seu peso</div>
                             </div>
                         </div>
                         <div style="font-size:1.4rem; font-weight:800; color:var(--gold)">${stats.waterLiters} L</div>
@@ -856,7 +728,7 @@
 
                     <div style="margin-top:20px;">
                         <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--chocolate-light); font-weight:bold; margin-bottom:6px">
-                            <span>Progresso do Peso</span>
+                            <span>Progresso Total da Meta</span>
                             <span style="color:var(--gold)">${stats.progress.toFixed(0)}%</span>
                         </div>
                         <div class="weight-progress-bar"><div class="weight-progress-fill" style="width:${stats.progress}%"></div></div>
@@ -895,626 +767,6 @@
                 }).join('')}
             </div>
         `;
-    };
-
-    const renderCalendar = () => {
-        const today = new Date();
-        const viewDate = state.menstrualView || today;
-        const year = viewDate.getFullYear();
-        const month = viewDate.getMonth();
-        const daysInMonth = new Date(year, month + 1, 0).getDate();
-        const firstDay = new Date(year, month, 1).getDay();
-
-        const profile = state.items.find(i => i.type === 'menstrual_profile');
-        const logs = state.items.filter(i => i.type === 'menstrual_cycle');
-        
-        const flowDuration = profile && profile.content.flowDuration ? parseInt(profile.content.flowDuration) : 5;
-        const cycleDuration = profile && profile.content.cycleDuration ? parseInt(profile.content.cycleDuration) : 28;
-        const contraType = profile && profile.content.contraceptiveType ? profile.content.contraceptiveType : 'Nenhum';
-        const isHormonal = contraType !== 'Nenhum';
-
-        const periodDays = new Set();
-        const fertileDays = new Set();
-        const contraDays = new Set();
-        
-        logs.forEach(l => {
-            if (l.content.flow) { 
-                const [y, m, d] = l.content.date.split('-').map(Number);
-                const startDate = new Date(y, m - 1, d);
-                for(let i=0; i<flowDuration; i++) {
-                    const d = new Date(startDate); 
-                    d.setDate(startDate.getDate() + i);
-                    periodDays.add(window.toLocalDateStr(d));
-                }
-            }
-        });
-
-        let baseDate = null;
-        const periodLogs = logs.filter(l => l.content.flow).sort((a,b) => new Date(b.content.date) - new Date(a.content.date));
-        if (periodLogs.length > 0) {
-            const [y, m, d] = periodLogs[0].content.date.split('-').map(Number);
-            baseDate = new Date(y, m - 1, d);
-        } else if (profile?.content?.lastPeriodDate) {
-            const [y, m, d] = profile.content.lastPeriodDate.split('-').map(Number);
-            baseDate = new Date(y, m - 1, d);
-        }
-
-        if (baseDate && !isHormonal) {
-            for(let k=0; k<36; k++) {
-                const cycleStart = new Date(baseDate);
-                cycleStart.setDate(baseDate.getDate() + (cycleDuration * k));
-                const nextPeriodStart = new Date(cycleStart);
-                nextPeriodStart.setDate(cycleStart.getDate() + cycleDuration);
-                const ovulation = new Date(nextPeriodStart);
-                ovulation.setDate(nextPeriodStart.getDate() - 14);
-                for(let f=-5; f<=0; f++) {
-                    const d = new Date(ovulation); 
-                    d.setDate(ovulation.getDate() + f);
-                    fertileDays.add(toLocalDateStr(d));
-                }
-            }
-        }
-
-        if (profile?.content?.contraceptiveStartDate && isHormonal) {
-            const [y, m, d] = profile.content.contraceptiveStartDate.split('-').map(Number);
-            const contraStart = new Date(y, m - 1, d);
-            for(let k=0; k<36; k++) {
-                const cycleStart = new Date(contraStart);
-                cycleStart.setDate(contraStart.getDate() + (28 * k));
-                for(let j=0; j<21; j++) {
-                    const activeDay = new Date(cycleStart);
-                    activeDay.setDate(cycleStart.getDate() + j);
-                    contraDays.add(toLocalDateStr(activeDay));
-                }
-            }
-        }
-
-        let html = `
-            <div style="display:flex; justify-content:center; align-items:center; gap:15px; margin-bottom:10px">
-                <button class="nav-btn" onclick="window.changeCalMonth(-1)" style="width:24px; height:24px"><i data-lucide="chevron-left" style="width:14px"></i></button>
-                <span style="font-weight:700; color:var(--chocolate); font-size:0.85rem">${viewDate.toLocaleDateString('pt-BR',{month:'long', year:'numeric'})}</span>
-                <button class="nav-btn" onclick="window.changeCalMonth(1)" style="width:24px; height:24px"><i data-lucide="chevron-right" style="width:14px"></i></button>
-            </div>
-            <div class="cal-header"><div>D</div><div>S</div><div>T</div><div>Q</div><div>Q</div><div>S</div><div>S</div></div>
-            <div class="cal-grid">
-        `;
-
-        for(let i=0; i<firstDay; i++) html += `<div></div>`;
-
-        for(let d=1; d<=daysInMonth; d++) {
-            const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-            const isToday = d === today.getDate() && month === today.getMonth() && year === today.getFullYear();
-            
-            const isPeriod = periodDays.has(dateStr);
-            const isFertile = fertileDays.has(dateStr);
-            const isContra = contraDays.has(dateStr);
-            
-            const log = logs.find(l => l.content.date === dateStr);
-
-            let classes = `cal-day ${isToday ? 'today' : ''}`;
-            if (isPeriod) classes += ' period';
-            else if (isFertile) classes += ' fertile';
-
-            if (isContra) classes += ' contra-active';
-
-            html += `
-                <div class="${classes}" onclick="window.openModal('menstrual_log', '${dateStr}')">
-                    <div class="cal-top-zone">
-                        ${log && log.content.sex && !log.content.protection ? `<i data-lucide="heart" class="cal-heart unsafe" stroke="none" fill="currentColor"></i>` : ''}
-                        ${log && log.content.sex && log.content.protection ? `<i data-lucide="heart" class="cal-heart safe" stroke="none" fill="currentColor"></i>` : ''}
-                    </div>
-                    ${d}
-                </div>
-            `;
-        }
-        html += `</div>
-        <div class="cal-legend">
-            <div class="leg-item"><div class="leg-color" style="background:rgba(198, 40, 40, 0.1); border:1px solid rgba(198, 40, 40, 0.3)"></div> Menstruação</div>
-            ${!isHormonal ? `<div class="leg-item"><div class="leg-color" style="background:rgba(85, 139, 47, 0.1); border:1px solid rgba(85, 139, 47, 0.3)"></div> Período Fértil</div>` : ''}
-            <div class="leg-item"><i data-lucide="heart" class="cal-heart unsafe" fill="currentColor"></i> Relação Desprotegida</div>
-            <div class="leg-item"><i data-lucide="heart" class="cal-heart safe" fill="currentColor"></i> Relação Protegida</div>
-        </div>
-        `;
-        
-        if (isHormonal) {
-            html += `<div style="margin-top:10px; padding:10px; background:#f9f9f9; border-radius:8px; font-size:0.75rem; color:var(--chocolate-light); text-align:center;">
-                <i data-lucide="info" style="width:12px; vertical-align:text-bottom"></i> 
-                Você utiliza método hormonal. A ovulação é inibida.
-            </div>`;
-        }
-
-        return html;
-    };
-
-    // --- Action Functions ---
-    window.renameItem = (id, name) => { window.openModal('rename', id); };
-    window.replaceItem = (id, type) => { window.openModal(type, id); };
-    window.moveItem = async (id) => {
-        const newParent = prompt("Digite o ID da pasta de destino:");
-        if(newParent) {
-             const ref = isOffline ? {id} : doc(db, 'artifacts', appId, 'users', state.user.uid, 'items', id);
-             await _updateDoc(ref, { parentId: newParent });
-             window.showToast("Item movido.");
-             render();
-        }
-    };
-    
-    window.openDeleteModal = (id, name) => {
-        state.itemToDelete = id;
-        document.getElementById('delete-modal-text').innerText = `Tem certeza que deseja apagar "${name}"?`;
-        const m = document.getElementById('delete-modal-overlay');
-        m.style.display = 'flex'; setTimeout(() => m.classList.add('open'), 10);
-    };
-    window.closeDeleteModal = () => {
-        const m = document.getElementById('delete-modal-overlay');
-        m.classList.remove('open'); setTimeout(() => m.style.display = 'none', 300);
-        state.itemToDelete = null;
-    };
-    window.confirmDelete = async () => {
-        if(state.itemToDelete) {
-            await _deleteDoc(isOffline ? {id: state.itemToDelete} : doc(db, 'artifacts', appId, 'users', state.user.uid, 'items', state.itemToDelete));
-            window.closeDeleteModal();
-            window.showToast("Item excluído.");
-        }
-    };
-
-    window.toggleSelectionMode = () => {
-        state.selectionMode = !state.selectionMode;
-        state.selectedIds = [];
-        const bar = document.getElementById('batch-actions-bar');
-        bar.style.transform = state.selectionMode ? "translate(-50%, 0)" : "translate(-50%, 150px)";
-        render();
-    };
-    window.toggleSelectItem = (id) => {
-        if(state.selectedIds.includes(id)) state.selectedIds = state.selectedIds.filter(i => i !== id);
-        else state.selectedIds.push(id);
-        document.getElementById('selected-count').innerText = `${state.selectedIds.length} selecionados`;
-        render();
-    };
-    window.confirmBatchDelete = async () => {
-        if(confirm(`Excluir ${state.selectedIds.length} itens?`)) {
-            for(const id of state.selectedIds) {
-                await _deleteDoc(isOffline ? {id} : doc(db, 'artifacts', appId, 'users', state.user.uid, 'items', id));
-            }
-            window.toggleSelectionMode();
-            window.showToast("Itens excluídos.");
-        }
-    };
-    window.promptChangeIconBatch = async () => {
-        if (!state.selectedIds.length) return;
-        window.openModal('icon_selector');
-    };
-
-    window.addCLItem = async (id) => {
-        const item = state.items.find(i => i.id === id);
-        const newItems = [...(item.content.items || []), { text: '', checked: false, val: 0 }];
-        await _updateDoc(isOffline ? {id} : doc(db, 'artifacts', appId, 'users', state.user.uid, 'items', id), { 'content.items': newItems });
-    };
-    window.toggleCLItem = async (id, idx) => {
-        const item = state.items.find(i => i.id === id);
-        const newItems = [...item.content.items];
-        newItems[idx].checked = !newItems[idx].checked;
-        await _updateDoc(isOffline ? {id} : doc(db, 'artifacts', appId, 'users', state.user.uid, 'items', id), { 'content.items': newItems });
-    };
-    window.deleteCLItem = async (id, idx) => {
-        const item = state.items.find(i => i.id === id);
-        const newItems = item.content.items.filter((_, i) => i !== idx);
-        await _updateDoc(isOffline ? {id} : doc(db, 'artifacts', appId, 'users', state.user.uid, 'items', id), { 'content.items': newItems });
-    };
-    window.updateCL = async (id, idx, field, val) => {
-        const item = state.items.find(i => i.id === id);
-        const newItems = [...item.content.items];
-        newItems[idx][field] = val;
-        await _updateDoc(isOffline ? {id} : doc(db, 'artifacts', appId, 'users', state.user.uid, 'items', id), { 'content.items': newItems });
-    };
-
-    window.togglePaid = async (id) => {
-        const item = state.items.find(i => i.id === id);
-        await _updateDoc(isOffline ? {id} : doc(db, 'artifacts', appId, 'users', state.user.uid, 'items', id), { 'content.paid': !item.content.paid });
-    };
-    window.makeDeposit = async (id) => {
-        const val = parseFloat(document.getElementById(`dep-${id}`).value);
-        if(!val) return;
-        const item = state.items.find(i => i.id === id);
-        await _updateDoc(isOffline ? {id} : doc(db, 'artifacts', appId, 'users', state.user.uid, 'items', id), { 'content.saved': (parseFloat(item.content.saved)||0) + val });
-    };
-    
-    window.copyBankData = (bank, holder, ag, cc, pix) => {
-        const text = `Banco: ${bank}\nTitular: ${holder}\nAg: ${ag}\nCC: ${cc}\nPIX: ${pix}`;
-        window.copyToClipboard(text);
-    };
-    window.copyToClipboard = (text) => {
-        const ta = document.createElement('textarea');
-        ta.value = text;
-        document.body.appendChild(ta);
-        ta.select();
-        document.execCommand('copy');
-        document.body.removeChild(ta);
-        window.showToast("Copiado!");
-    };
-    
-    window.shareItem = (id) => {
-        state.shareItemId = id;
-        const link = `https://organizer-premium.app/share/${id}`;
-        if (navigator.share) {
-            navigator.share({ title: 'Organizer Premium', text: 'Confira este item:', url: link }).catch(console.error);
-        } else {
-            document.getElementById('share-link-display').innerText = link;
-            const m = document.getElementById('share-modal');
-            m.style.display = 'flex'; setTimeout(()=>m.classList.add('open'), 10);
-        }
-    };
-    window.shareDirectly = () => { window.open(`whatsapp://send?text=${encodeURIComponent(document.getElementById('share-link-display').innerText)}`); };
-    window.copyShareLink = () => { window.copyToClipboard(document.getElementById('share-link-display').innerText); };
-    window.downloadItem = (id) => {
-        const item = state.items.find(i => i.id === id);
-        if(!item) return;
-        if (item.type === 'file') {
-            const link = document.createElement("a"); link.href = item.content.data; link.download = item.name;
-            document.body.appendChild(link); link.click(); document.body.removeChild(link);
-        } else {
-            const text = JSON.stringify(item.content, null, 2);
-            const blob = new Blob([text], {type: 'text/plain'});
-            const link = document.createElement("a"); link.href = URL.createObjectURL(blob); link.download = `${item.name}.txt`;
-            document.body.appendChild(link); link.click(); document.body.removeChild(link);
-        }
-    };
-    window.editItem = (id, type) => {
-        if(type === 'health_weight') return window.openModal('health_weight_config', id);
-        window.openModal(type, id);
-    };
-
-    window.editVisionCaption = async (id, idx) => {
-        const item = state.items.find(i => i.id === id);
-        if(!item) return;
-        const currentCaption = item.content.images[idx].caption || '';
-        const newCaption = prompt("Legenda:", currentCaption);
-        if(newCaption === null) return;
-        
-        item.content.images[idx].caption = newCaption;
-        
-        const col = isOffline ? null : collection(db, 'artifacts', appId, 'users', state.user.uid, 'items');
-        if(isOffline) {
-            localStorage.setItem('cm_premium_data', JSON.stringify(state.items));
-            render();
-        } else {
-            await _updateDoc(doc(db, 'artifacts', appId, 'users', state.user.uid, 'items', id), {'content.images': item.content.images});
-        }
-    };
-
-    window.deleteVisionImage = async (id, idx) => {
-        if(!confirm("Excluir imagem?")) return;
-        const item = state.items.find(i => i.id === id);
-        const newImages = [...item.content.images];
-        newImages.splice(idx, 1);
-        await _updateDoc(isOffline ? {id} : doc(db, 'artifacts', appId, 'users', state.user.uid, 'items', id), { 'content.images': newImages });
-        render();
-    };
-
-    window.previewImage = (src, caption) => {
-        const overlay = document.getElementById('file-preview-modal');
-        const content = document.getElementById('file-preview-content');
-        const capEl = document.getElementById('preview-caption');
-        const downloadBtn = document.getElementById('preview-download-btn');
-        const title = document.getElementById('preview-filename');
-
-        title.innerText = "Visualização de Imagem";
-        capEl.innerText = caption || '';
-        downloadBtn.href = src;
-        downloadBtn.download = "imagem.png";
-
-        content.innerHTML = `<img src="${src}" style="max-height:70vh; object-fit:contain; border-radius:12px">`;
-        overlay.style.display = 'flex'; setTimeout(() => { overlay.classList.add('open'); window.lucide.createIcons(); }, 10);
-    };
-
-    const renderFinanceRoot = (el) => {
-        const months = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
-        
-        const incomeItems = state.items.filter(i => i.parentId === 'f_entradas' && i.content?.due);
-        const expenseItems = state.items.filter(i => i.parentId === 'f_despesas' && i.content?.due);
-        
-        const filterMonth = (items) => items.filter(i => {
-            const [y, m, d] = i.content.due.split('-').map(Number);
-            return (m - 1) === state.selectedMonth && y === state.selectedYear;
-        });
-
-        const monthIncome = filterMonth(incomeItems).reduce((acc, cur) => acc + (parseFloat(cur.content.value) || 0), 0);
-        const monthExpense = filterMonth(expenseItems).reduce((acc, cur) => acc + (parseFloat(cur.content.value) || 0), 0);
-        const monthNet = monthIncome - monthExpense;
-
-        const subfolders = [
-            state.items.find(i => i.id === 'f_despesas') || {id:'f_despesas', name:'Despesas', type:'folder'},
-            state.items.find(i => i.id === 'f_pendencias') || {id:'f_pendencias', name:'Pendências', type:'folder'},
-            state.items.find(i => i.id === 'f_entradas') || {id:'f_entradas', name:'Entradas', type:'folder'},
-            state.items.find(i => i.id === 'f_investimentos') || {id:'f_investimentos', name:'Investimentos', type:'folder'}
-        ];
-        el.innerHTML = `
-            <div class="section-header"><h2>Financeiro</h2></div>
-            
-            <div class="time-navigator">
-                <button class="nav-btn" onclick="window.changeMonth(-1)"><i data-lucide="chevron-left"></i></button>
-                <span class="current-date-label">${months[state.selectedMonth]} ${state.selectedYear}</span>
-                <button class="nav-btn" onclick="window.changeMonth(1)"><i data-lucide="chevron-right"></i></button>
-            </div>
-
-            <div class="summary-card" style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px;">
-                <div class="summary-item"><span>Receitas</span><b style="color:var(--success)">R$ ${monthIncome.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</b></div>
-                <div class="summary-item"><span>Despesas</span><b style="color:var(--danger)">R$ ${monthExpense.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</b></div>
-                <div class="summary-item"><span>Líquido</span><b style="color:${monthNet >= 0 ? 'var(--gold)' : 'var(--danger)'}">R$ ${monthNet.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</b></div>
-            </div>
-
-            <div class="grid-container">${subfolders.map(f => `<div class="card" onclick="window.navigate('${f.id}')"><i data-lucide="${f.name==='Investimentos'?'trending-up':'dollar-sign'}" style="color:var(--gold)"></i><span style="flex:1; font-weight:600; color:var(--chocolate)">${f.name}</span><i data-lucide="chevron-right" style="opacity:0.3"></i></div>`).join('')}</div>
-        `;
-    };
-
-    window.changeMonth = (delta) => {
-        state.selectedMonth += delta;
-        if(state.selectedMonth > 11) { state.selectedMonth = 0; state.selectedYear++; }
-        if(state.selectedMonth < 0) { state.selectedMonth = 11; state.selectedYear--; }
-        render();
-    };
-
-    const renderFinance = (el, pid, type, title) => {
-        const months = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
-        const list = state.items.filter(i => i.parentId === pid);
-        const monthly = list.filter(i => {
-            if (!i.content.due) return false;
-            const [y, m, d] = i.content.due.split('-').map(Number);
-            return (m - 1) === state.selectedMonth && y === state.selectedYear;
-        }).sort((a,b) => a.content.due.localeCompare(b.content.due));
-        
-        const totalMonth = monthly.reduce((a,b) => a + (parseFloat(b.content.value) || 0), 0);
-        
-        const valueColor = type === 'income' ? 'var(--success)' : 'var(--danger)';
-        const btnTitle = type === 'income' ? 'Nova Entrada' : (type === 'expense' ? 'Nova Despesa' : 'Nova Pendência');
-
-        el.innerHTML = `
-            <div class="section-header"><h2>${title}</h2> ${renderCreateButton()}</div>
-            <div class="time-navigator">
-                <button class="nav-btn" onclick="window.changeMonth(-1)"><i data-lucide="chevron-left"></i></button>
-                <span class="current-date-label">${months[state.selectedMonth]} ${state.selectedYear}</span>
-                <button class="nav-btn" onclick="window.changeMonth(1)"><i data-lucide="chevron-right"></i></button>
-            </div>
-            <div class="summary-card">
-                <div class="summary-item"><span>Total ${title} (Mês)</span><b>R$ ${totalMonth.toLocaleString('pt-BR',{minimumFractionDigits: 2})}</b></div>
-            </div>
-            <div class="finance-list">
-                ${monthly.length ? monthly.map(i => `<div class="finance-item ${i.content.paid?'paid':''}"><div class="btn-check ${i.content.paid?'active':''}" onclick="window.togglePaid('${i.id}')"><i data-lucide="check" style="width:16px"></i></div><div class="item-text" style="font-weight:600; color:var(--chocolate)">${i.name}</div><div class="amount" style="font-weight:bold; color:${valueColor}">R$ ${parseFloat(i.content.value).toLocaleString('pt-BR',{minimumFractionDigits: 2})}</div>${renderActionMenu(i.id, i.type, i.name)}</div>`).join('') : '<div style="padding:30px; text-align:center; opacity:0.5">Sem registros para este período.</div>'}
-            </div>
-            <button class="btn-add" onclick="window.openModal('${type}')" style="margin-top:20px; width:100%; justify-content:center; background:var(--chocolate)"><i data-lucide="plus"></i> ${btnTitle}</button>
-            <div style="margin-top:40px; border-top:1px solid #eee; padding-top:20px">
-                <h4 style="margin-bottom:15px; color:var(--chocolate)">Conteúdo Adicional</h4>
-                <div class="grid-container" id="finance-extras"></div>
-            </div>
-        `;
-        
-        const extras = list.filter(i => i.type !== 'expense' && i.type !== 'pendency' && i.type !== 'income');
-        const extrasContainer = el.querySelector('#finance-extras');
-        if(extrasContainer && extras.length) {
-            extras.forEach(i => {
-                const isSelected = state.selectedIds.includes(i.id);
-                const icon = i.icon || ({note:'file-text', file:'paperclip'}[i.type] || 'file');
-                let cardHTML = '';
-                if(i.type === 'file') {
-                      const isImg = i.content.fileType.startsWith('image') || /\.(jpg|jpeg|png|gif|bmp|webp|heic)$/i.test(i.name);
-                      cardHTML = `<div class="card ${state.selectionMode?'selection-mode':''} ${isSelected?'selected':''}" style="display:block; padding:0; overflow:visible; position:relative;" onclick="${state.selectionMode ? `window.toggleSelectItem('${i.id}')` : `window.openFilePreview('${i.id}')`}">
-                        ${isImg ? `<div class="file-card-image-container"><img src="${i.content.data}" class="file-card-image" onerror="this.style.display='none'"></div>` : `<div style="padding:30px; text-align:center"><i data-lucide="${icon}" style="color:var(--chocolate-light); width:40px; height:40px"></i></div>`}
-                        <div style="padding:15px">
-                            ${i.content.caption ? `<div style="font-weight:600; color:var(--chocolate); font-size:0.9rem; margin-bottom:4px">${i.content.caption}</div>` : ''}
-                            <div style="font-size:0.75rem; color:var(--chocolate-light); white-space:nowrap; text-overflow:ellipsis; overflow:hidden">${i.type === 'file' ? '' : i.name}</div>
-                        </div>
-                        <i data-lucide="check-circle" class="selection-check"></i>
-                        <div style="position:absolute; bottom:10px; right:10px">${renderActionMenu(i.id, i.type, i.name)}</div>
-                    </div>`;
-                } else {
-                      cardHTML = `<div class="card" onclick="window.editItem('${i.id}','${i.type}')"><i data-lucide="${icon}"></i><span>${i.name}</span>${renderActionMenu(i.id, i.type, i.name)}</div>`;
-                }
-                extrasContainer.innerHTML += cardHTML;
-            });
-        }
-    };
-
-    const renderPiggies = (el, pid) => {
-        const items = state.items.filter(i => i.parentId === pid);
-        el.innerHTML = `
-            <div class="section-header"><h2>Investimentos</h2></div>
-            <div class="grid-container">
-                ${items.map(p => {
-                    const saved = parseFloat(p.content.saved || 0);
-                    const target = parseFloat(p.content.target || 1);
-                    const timeMonths = p.content.months || 0;
-                    const remaining = Math.max(0, target - saved);
-                    const pct = target > 0 ? Math.min(100, (saved/target)*100) : 0;
-                    return `<div class="piggy-card"><div style="display:flex; justify-content:space-between"><b>${p.name}</b>${renderActionMenu(p.id, 'piggy', p.name)}</div><div style="font-size:0.8rem; color:var(--chocolate-light); margin-bottom:5px">Prazo: ${timeMonths} meses</div><div style="font-size:1.8rem; font-weight:bold; color:var(--gold); margin:5px 0">R$ ${saved.toLocaleString('pt-BR',{minimumFractionDigits: 2})}</div><div style="color:${remaining > 0 ? 'var(--chocolate)':'var(--success)'}; font-size:0.8rem; font-weight:600">Restante: R$ ${remaining.toLocaleString('pt-BR',{minimumFractionDigits: 2})}</div><div class="progress-grid">${Array(20).fill(0).map((_,i) => `<div class="progress-block ${i<(pct/5)?'filled':''}"></div>`).join('')}</div><div style="display:flex; gap:5px; margin-top:15px"><input class="form-control" style="padding:8px" type="number" id="dep-${p.id}" placeholder="Depósito..." autocomplete="off"><button class="btn-add" onclick="window.makeDeposit('${p.id}')">OK</button></div></div>`;
-                }).join('')}
-                <div class="card" style="justify-content:center; min-height:200px; border:2px dashed #ddd; background:transparent; cursor:pointer" onclick="window.openModal('piggy')">
-                    <div style="text-align:center; color:var(--chocolate-light)"><i data-lucide="plus" style="width:30px; height:30px"></i><br>Novo Objetivo</div>
-                </div>
-            </div>
-        `;
-    };
-
-    const renderActionMenu = (id, type, name) => {
-        if(state.selectionMode) return '';
-        return `
-            <div class="create-menu-container" onclick="event.stopPropagation()">
-                <div style="padding:8px; cursor:pointer; opacity:0.6; transition:0.2s" onclick="window.toggleActionMenu('${id}')">
-                    <i data-lucide="more-vertical"></i>
-                </div>
-                <div class="create-menu-dropdown" id="action-menu-${id}">
-                    <div class="create-menu-item" onclick="window.editItem('${id}', '${type}')"><i data-lucide="edit-2"></i> Editar</div>
-                    <div class="create-menu-item" onclick="window.renameItem('${id}', '${name}')"><i data-lucide="type"></i> Renomear</div>
-                    <div class="create-menu-item" onclick="window.moveItem('${id}')"><i data-lucide="folder-input"></i> Mover</div>
-                    <div class="create-menu-item" onclick="window.shareItem('${id}')"><i data-lucide="share-2"></i> Compartilhar</div>
-                    <div class="create-menu-item" onclick="window.downloadItem('${id}')"><i data-lucide="download"></i> Baixar</div>
-                    <div class="create-menu-item" style="color:var(--danger)" onclick="window.openDeleteModal('${id}', '${name.replace(/'/g, "\\'")}')"><i data-lucide="trash-2"></i> Excluir</div>
-                </div>
-            </div>
-        `;
-    };
-
-    const renderCreateButton = () => {
-        if(state.selectionMode) return '';
-        return `
-            <div style="display:flex; align-items:center; gap:10px">
-                <button class="btn-cancel" style="padding:8px 16px" onclick="window.toggleSelectionMode()">Selecionar</button>
-                <div class="create-menu-container">
-                    <button class="btn-add" onclick="window.toggleCreateMenu(this)"><i data-lucide="plus"></i> Novo</button>
-                    <div class="create-menu-dropdown">
-                        <div class="create-menu-item" onclick="window.openModal('folder')"><i data-lucide="folder"></i> Pasta</div>
-                        <div class="create-menu-item" onclick="window.openModal('note')"><i data-lucide="file-text"></i> Nota</div>
-                        <div class="create-menu-item" onclick="window.openModal('visionboard')"><i data-lucide="image"></i> Visionboard</div>
-                        <div class="create-menu-item" onclick="window.openModal('file')"><i data-lucide="paperclip"></i> Anexo</div>
-                        <div class="create-menu-item" onclick="window.openModal('checklist')"><i data-lucide="list-checks"></i> Checklist</div>
-                        <div class="create-menu-item" onclick="window.openModal('checklist_sum')"><i data-lucide="calculator"></i> Checklist + Soma</div>
-                        <div class="create-menu-item" onclick="window.openModal('bank')"><i data-lucide="credit-card"></i> Dados Bancários</div>
-                        <div class="create-menu-item" onclick="window.openModal('social')"><i data-lucide="at-sign"></i> Social Login</div>
-                    </div>
-                </div>
-            </div>
-        `;
-    };
-
-    const renderGeneralFolder = (el, pid) => {
-        const items = state.items.filter(i => i.parentId === pid);
-        el.innerHTML = `<div class="section-header"><h2 style="font-size:1.5rem">Conteúdo</h2>${renderCreateButton()}</div><div class="grid-container">${items.length ? items.map(i => {
-            const isSelected = state.selectedIds.includes(i.id);
-            const icon = i.icon || ({folder:'folder', note:'file-text', checklist:'list-checks', checklist_sum:'calculator', bank:'credit-card', social:'at-sign', file:'paperclip', visionboard:'image'}[i.type] || 'file');
-            if (i.type === 'file') {
-                const isImg = i.content.fileType.startsWith('image') || /\.(jpg|jpeg|png|gif|bmp|webp|heic)$/i.test(i.name);
-                return `<div class="card ${state.selectionMode?'selection-mode':''} ${isSelected?'selected':''}" style="display:block; padding:0; overflow:visible; position:relative;" onclick="${state.selectionMode ? `window.toggleSelectItem('${i.id}')` : `window.openFilePreview('${i.id}')`}">
-                    ${isImg ? `<div class="file-card-image-container"><img src="${i.content.data}" class="file-card-image" onerror="this.style.display='none'"></div>` : `<div style="padding:30px; text-align:center"><i data-lucide="${icon}" style="color:var(--chocolate-light); width:40px; height:40px"></i></div>`}
-                    <div style="padding:15px">
-                         ${i.content.caption ? `<div style="font-weight:600; color:var(--chocolate); font-size:0.9rem; margin-bottom:4px">${i.content.caption}</div>` : ''}
-                         <div style="font-size:0.75rem; color:var(--chocolate-light); white-space:nowrap; text-overflow:ellipsis; overflow:hidden">${i.type === 'file' ? '' : i.name}</div>
-                    </div>
-                    <i data-lucide="check-circle" class="selection-check"></i>
-                    <div style="position:absolute; bottom:10px; right:10px">${renderActionMenu(i.id, i.type, i.name)}</div>
-                </div>`;
-            }
-            return `<div class="card ${state.selectionMode?'selection-mode':''} ${isSelected?'selected':''}" onclick="${state.selectionMode ? `window.toggleSelectItem('${i.id}')` : `window.navigate('${i.id}')`}"><i data-lucide="${icon}" style="color:${i.type==='folder'?'var(--gold)':'var(--chocolate-light)'}"></i><span style="flex:1; font-weight:600; color:var(--chocolate)">${i.name}</span><i data-lucide="check-circle" class="selection-check"></i>${renderActionMenu(i.id, i.type, i.name)}</div>`;
-        }).join('') : '<div style="grid-column:1/-1; text-align:center; padding:40px; color:var(--chocolate-light)">Esta pasta está vazia.</div>'}</div>`;
-    };
-
-    const renderToolItem = (el, item) => {
-        let content = '';
-        if(item.type === 'note') content = `<div style="white-space:pre-wrap; line-height:1.6; color:var(--text-main)">${item.content.text}</div>`;
-        else if(item.type === 'visionboard') {
-            const images = item.content.images || [];
-            content = `
-                <div class="vision-grid">
-                    ${images.map((img, idx) => `
-                        <div class="vision-item">
-                            <img src="${img.data}" class="vision-img" onclick="window.previewImage('${img.data}', '${img.caption || ''}')">
-                            <div class="vision-caption">${img.caption || ''}</div>
-                            <div class="vision-actions">
-                                <i data-lucide="edit-2" onclick="window.editVisionCaption('${item.id}', ${idx})"></i>
-                                <i data-lucide="trash-2" onclick="window.deleteVisionImage('${item.id}', ${idx})"></i>
-                            </div>
-                        </div>
-                    `).join('')}
-                </div>
-                ${images.length === 0 ? '<div style="text-align:center; opacity:0.5; padding:40px">Nenhuma imagem adicionada.</div>' : ''}
-                <div style="margin-top: 20px; text-align:center;">
-                    <button class="btn-add" onclick="window.openModal('add_vision_image', '${item.id}')"><i data-lucide="plus"></i> Adicionar Imagem</button>
-                </div>
-            `;
-        }
-        else if(item.type.includes('checklist')) {
-            const isSum = item.type === 'checklist_sum';
-            const items = item.content && item.content.items ? item.content.items : [];
-            const total = isSum ? items.reduce((a,b)=>b.checked?a+(parseFloat(b.val)||0):a,0) : 0;
-            content = `${isSum ? `<div style="text-align:right; font-size:1.5rem; color:var(--success); font-weight:bold; margin-bottom:15px">${total.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</div>` : ''}<div style="display:flex; flex-direction:column; gap:10px">${items.map((it, idx) => `<div style="display:flex; gap:10px; align-items:center; padding:8px; border-bottom:1px solid #eee"><div class="btn-check ${it.checked?'active':''}" onclick="window.toggleCLItem('${item.id}', ${idx})"><i data-lucide="check" style="width:16px"></i></div><input class="checklist-input form-control" style="border:none; background:transparent; text-decoration:${it.checked?'line-through':''}" value="${it.text}" onchange="window.updateCL('${item.id}',${idx},'text',this.value)" autocomplete="off">${isSum ? `<input class="form-control" type="number" style="width:80px; text-align:right" value="${it.val}" onchange="window.updateCL('${item.id}',${idx},'val',this.value)" autocomplete="off">` : ''}<i data-lucide="x" style="width:16px; cursor:pointer; opacity:0.5" onclick="window.deleteCLItem('${item.id}', ${idx})"></i></div>`).join('')}<button class="btn-add" style="align-self:center; margin-top:10px" onclick="window.addCLItem('${item.id}')"><i data-lucide="plus"></i> Item</button></div>`;
-        } else if (item.type === 'bank') {
-            const data = item.content;
-            content = `<div style="background:#f9f9f9; padding:20px; border-radius:12px; display:grid; gap:10px"><div style="display:flex; justify-content:flex-end"><button class="btn-add" style="font-size:0.8rem" onclick="window.copyBankData('${item.name}', '${data.holder||'-'}', '${data.agency}', '${data.account}', '${data.pix}')"><i data-lucide="copy"></i> Copiar</button></div><div><small style="text-transform:uppercase; color:var(--chocolate-light)">Banco</small><div style="font-weight:600">${item.name}</div></div><div><small style="text-transform:uppercase; color:var(--chocolate-light)">Agência</small><div style="font-weight:600">${data.agency}</div></div><div><small style="text-transform:uppercase; color:var(--chocolate-light)">Conta</small><div style="font-weight:600">${data.account}</div></div><div><small style="text-transform:uppercase; color:var(--chocolate-light)">PIX</small><div style="font-weight:600">${data.pix}</div></div><button class="btn-cancel" onclick="alert('${data.pass}')" style="margin-top:10px"><i data-lucide="eye"></i> Senha</button></div>`;
-        } else if (item.type === 'social') {
-            const data = item.content;
-            content = `<div style="background:#f9f9f9; padding:20px; border-radius:12px; display:grid; gap:10px">${Object.entries(data).map(([k,v]) => {
-                if (k === 'pass') return '';
-                return `<div><small style="text-transform:uppercase; color:var(--chocolate-light)">${k}</small><div style="font-weight:600">${v}</div></div>`;
-            }).join('')}<button class="btn-cancel" onclick="alert('${data.pass}')" style="margin-top:10px"><i data-lucide="eye"></i> Senha</button></div>`;
-        }
-        el.innerHTML = `<div class="section-header"><h2>${item.name}</h2><div style="display:flex; gap:10px"><button class="btn-cancel" onclick="window.goBack()">Voltar</button><button class="btn-add" onclick="window.editItem('${item.id}', '${item.type}')">Editar</button></div></div><div class="card" style="display:block; cursor:default">${content}</div>`;
-    };
-
-    // --- Modal Logic ---
-    window.toggleCreateMenu = (btn) => { 
-        const menu = btn.nextElementSibling; 
-        const wasShown = menu.classList.contains('show');
-        document.querySelectorAll('.create-menu-dropdown').forEach(m => m.classList.remove('show')); 
-        if(!wasShown) menu.classList.add('show'); 
-        if(window.event) window.event.stopPropagation();
-    };
-    
-    window.toggleActionMenu = (id) => { 
-        const menu = document.getElementById(`action-menu-${id}`); 
-        const wasShown = menu.classList.contains('show');
-        document.querySelectorAll('.create-menu-dropdown').forEach(m => m.classList.remove('show')); 
-        if(!wasShown) menu.classList.add('show'); 
-        if(window.event) window.event.stopPropagation();
-    };
-    document.addEventListener('click', () => document.querySelectorAll('.create-menu-dropdown').forEach(m => m.classList.remove('show')));
-
-    window.selectIcon = (icon) => {
-        state.selectedIcon = icon;
-        document.querySelectorAll('.icon-option').forEach(el => el.classList.remove('selected'));
-        document.getElementById(`icon-opt-${icon}`).classList.add('selected');
-    };
-    const renderIconSelector = () => {
-        return `<div class="form-group"><label>Ícone (Opcional)</label><div class="icon-grid-selector">${ICON_LIB.map(i => `<div id="icon-opt-${i}" class="icon-option" onclick="window.selectIcon('${i}')"><i data-lucide="${i}" style="width:20px"></i></div>`).join('')}</div></div>`;
-    };
-
-    window.closeModal = () => {
-        const m = document.getElementById('modal-overlay');
-        m.classList.remove('open'); setTimeout(() => m.style.display = 'none', 300);
-        state.editingId = null;
-        state.selectedIcon = null;
-    };
-
-    window.resetCycle = async () => {
-        if (!confirm("Tem certeza? Isso apagará TODO o histórico e configurações do ciclo menstrual.")) return;
-        const itemsToDelete = state.items.filter(i => i.type === 'menstrual_profile' || i.type === 'menstrual_cycle');
-        for (const item of itemsToDelete) {
-            await _deleteDoc(isOffline ? {id: item.id} : doc(db, 'artifacts', appId, 'users', state.user.uid, 'items', item.id));
-        }
-        window.closeModal();
-        window.showToast("Ciclo resetado com sucesso.");
-        render(); 
-    };
-
-    window.deleteMenstrualLog = async (id) => {
-        if(!confirm("Excluir este registro?")) return;
-        await _deleteDoc(isOffline ? {id} : doc(db, 'artifacts', appId, 'users', state.user.uid, 'items', id));
-        window.openModal('menstrual_history_list'); 
-        window.showToast("Registro excluído");
-        render(); 
-    };
-
-    window.resetWeightData = async () => {
-        if (!confirm("Tem certeza? Isso apagará TODO o histórico de peso.")) return;
-        const weightItem = state.items.find(i => i.type === 'health_weight');
-        if (weightItem) {
-             await _deleteDoc(isOffline ? {id: weightItem.id} : doc(db, 'artifacts', appId, 'users', state.user.uid, 'items', weightItem.id));
-        }
-        window.closeModal();
-        window.showToast("Dados resetados.");
-        render();
-    };
-
-    window.editWeightHistoryItem = (index) => { state.editingHistoryIndex = index; window.closeModal(); setTimeout(() => window.openModal('weight_history_edit'), 300); };
-    window.deleteWeightHistoryItem = async (index) => {
-        if (!confirm("Excluir registro?")) return;
-        const wItem = state.items.find(i => i.type === 'health_weight');
-        let history = [...(wItem.content.history || [])].sort((a,b) => new Date(b.date) - new Date(a.date));
-        history.splice(index, 1);
-        let newCurrent = history.length > 0 ? history[0].weight : wItem.content.startWeight;
-        
-        const ref = isOffline ? {id: wItem.id} : doc(db, 'artifacts', appId, 'users', state.user.uid, 'items', wItem.id);
-        await _updateDoc(ref, { 'content.history': history, 'content.current': newCurrent });
-        
-        window.openModal('health_weight_register');
-        window.showToast("Excluído.");
     };
 
     window.openModal = (type, editingId = null) => {
@@ -1757,7 +1009,6 @@
              actions.innerHTML = `<button class="btn-cancel" style="width:100%" onclick="window.closeModal()">Fechar</button>`;
         }
         
-        // Ajusta o tamanho das caixas de texto assim que o modal abre
         setTimeout(() => {
             document.querySelectorAll('textarea').forEach(ta => {
                 ta.style.height = 'auto';
@@ -1792,7 +1043,6 @@
             } else if (type === 'visionboard') {
                 data.name = getVal('f-name');
                 if(!state.editingId) data.content = { images: [] };
-                
                 if (state.editingId) await _updateDoc(isOffline ? {id: state.editingId} : doc(db, 'artifacts', appId, 'users', state.user.uid, 'items', state.editingId), data);
                 else await _addDoc(coll, data);
             } else if (type === 'add_vision_image') {
@@ -1807,14 +1057,12 @@
                         window.closeModal(); window.showToast("Imagem adicionada!");
                     };
                     reader.readAsDataURL(file);
-                    return; // Async handler handles closing
+                    return;
                 }
-            }
-            else if (type === 'file') {
+            } else if (type === 'file') {
                  const f = document.getElementById('f-file').files[0];
                  const caption = getVal('f-caption');
                  const name = getVal('f-name');
-                 
                  if(f) {
                     const reader = new FileReader();
                     reader.onload = async (e) => {
@@ -1828,8 +1076,7 @@
                       const ref = isOffline ? {id: state.editingId} : doc(db, 'artifacts', appId, 'users', state.user.uid, 'items', state.editingId);
                       await _updateDoc(ref, { name: name, 'content.caption': caption });
                  }
-            } 
-            else if (type === 'folder') { data.name = getVal('f-name'); await _addDoc(coll, data); }
+            } else if (type === 'folder') { data.name = getVal('f-name'); await _addDoc(coll, data); }
             else if (type === 'note') { data.name = getVal('f-name'); data.content = {text: getVal('f-text')}; if(state.editingId) await _updateDoc(isOffline?{id:state.editingId}:doc(db,'artifacts',appId,'users',state.user.uid,'items',state.editingId), data); else await _addDoc(coll, data); }
             else if (type.includes('checklist')) { data.name = getVal('f-name'); if(!state.editingId) data.content = { items: [] }; if(state.editingId) { const docRef = isOffline ? {id: state.editingId} : doc(db, 'artifacts', appId, 'users', state.user.uid, 'items', state.editingId); delete data.content; await _updateDoc(docRef, data); } else await _addDoc(coll, data); }
             else if (type === 'bank') { data.name = getVal('f-name'); data.content = { holder: getVal('f-holder'), agency: getVal('f-ag'), account: getVal('f-cc'), pix: getVal('f-pix'), pass: getVal('f-pass') }; if(state.editingId) { const docRef = isOffline ? {id: state.editingId} : doc(db, 'artifacts', appId, 'users', state.user.uid, 'items', state.editingId); await _updateDoc(docRef, data); } else await _addDoc(coll, data); }
@@ -1845,85 +1092,56 @@
                     date.setMonth(date.getMonth() + i);
                     await _addDoc(coll, { parentId, type, name: parcels > 1 ? `${name} (${i+1}/${parcels})` : name, createdAt: Date.now() + i, content: { value: parcelVal, due: date.toISOString().split('T')[0], paid: false } });
                 }
-            }
-            else if (type === 'piggy') {
+            } else if (type === 'piggy') {
                 data.name = getVal('f-name');
                 data.content = { target: getVal('f-target'), months: getVal('f-months'), saved: state.editingId ? state.items.find(i=>i.id===state.editingId).content.saved : 0 };
                 if(state.editingId) await _updateDoc(isOffline?{id:state.editingId}:doc(db,'artifacts',appId,'users',state.user.uid,'items',state.editingId), data); else await _addDoc(coll, data);
-            }
-            else if(type === 'health_weight_config') {
+            } else if(type === 'health_weight_config') {
                  const startW = parseFloat(getVal('f-w-start').replace(',', '.')) || 0;
                  const targetW = parseFloat(getVal('f-w-target').replace(',', '.')) || 0;
                  const heightW = parseFloat(getVal('f-w-height').replace(',', '.')) || 0;
                  const periodM = parseInt(getVal('f-w-period')) || 1;
-
                  if(state.editingId) await _updateDoc(isOffline?{id:state.editingId}:doc(db,'artifacts',appId,'users',state.user.uid,'items',state.editingId), { 'content.startWeight': startW, 'content.target': targetW, 'content.startDate': getVal('f-w-date'), 'content.periodMonths': periodM, 'content.height': heightW });
                  else await _addDoc(coll, { parentId: 'saude', type: 'health_weight', name: 'Peso', content: { current: startW, startWeight: startW, target: targetW, startDate: getVal('f-w-date'), periodMonths: periodM, height: heightW, history: [] } });
-            }
-            else if(type === 'add_weight_entry') { 
+            } else if(type === 'add_weight_entry') { 
                 const regW = parseFloat(getVal('f-reg-weight').replace(',', '.'));
                 if(regW) {
                     const wItem = state.items.find(i => i.type === 'health_weight');
                     const newHistory = [...(wItem.content.history||[]), { date: getVal('f-reg-date'), weight: regW }];
                     await _updateDoc(isOffline?{id:wItem.id}:doc(db,'artifacts',appId,'users',state.user.uid,'items',wItem.id), { 'content.current': regW, 'content.history': newHistory });
-                    window.openModal('health_weight_register');
-                    return;
-                } else {
-                    window.showToast("Informe o peso", "error");
-                    return;
-                }
-            }
-            else if(type === 'weight_history_edit') {
+                    window.openModal('health_weight_register'); return;
+                } else { window.showToast("Informe o peso", "error"); return; }
+            } else if(type === 'weight_history_edit') {
                 const wItem = state.items.find(i => i.type === 'health_weight');
                 let history = [...(wItem.content.history||[])].sort((a,b) => new Date(b.date) - new Date(a.date));
                 history[state.editingHistoryIndex] = { date: getVal('f-reg-date'), weight: parseFloat(getVal('f-reg-weight').replace(',', '.')) };
                 history.sort((a,b) => new Date(b.date) - new Date(a.date));
                 const newCurrent = history.length > 0 ? history[0].weight : wItem.content.startWeight;
                 await _updateDoc(isOffline?{id:wItem.id}:doc(db,'artifacts',appId,'users',state.user.uid,'items',wItem.id), { 'content.history': history, 'content.current': newCurrent });
-                window.openModal('health_weight_register');
-                return;
-            }
-            else if(type === 'health_med') { data.name = getVal('f-name'); data.content = { time: getVal('f-time'), instructions: getVal('f-inst') }; if(state.editingId) await _updateDoc(isOffline?{id:state.editingId}:doc(db,'artifacts',appId,'users',state.user.uid,'items',state.editingId), data); else await _addDoc(coll, data); }
+                window.openModal('health_weight_register'); return;
+            } else if(type === 'health_med') { data.name = getVal('f-name'); data.content = { time: getVal('f-time'), instructions: getVal('f-inst') }; if(state.editingId) await _updateDoc(isOffline?{id:state.editingId}:doc(db,'artifacts',appId,'users',state.user.uid,'items',state.editingId), data); else await _addDoc(coll, data); }
             else if(type === 'health_food') { 
-                const content = {
-                    breakfastTime: getVal('f-d-bt'), breakfast: getVal('f-d-b'),
-                    lunchTime: getVal('f-d-lt'), lunch: getVal('f-d-l'),
-                    dinnerTime: getVal('f-d-dt'), dinner: getVal('f-d-d'),
-                    fastingStart: getVal('f-d-fs'), fastingEnd: getVal('f-d-fe')
-                };
+                const content = { breakfastTime: getVal('f-d-bt'), breakfast: getVal('f-d-b'), lunchTime: getVal('f-d-lt'), lunch: getVal('f-d-l'), dinnerTime: getVal('f-d-dt'), dinner: getVal('f-d-d'), fastingStart: getVal('f-d-fs'), fastingEnd: getVal('f-d-fe') };
                 const ex = state.items.find(i=>i.type==='health_food');
                 if(ex) await _updateDoc(isOffline?{id:ex.id}:doc(db,'artifacts',appId,'users',state.user.uid,'items',ex.id), {'content': content});
                 else await _addDoc(coll, {parentId:'saude', type:'health_food', name:'Dieta', content: content});
-            }
-            else if(type === 'menstrual_log') {
+            } else if(type === 'menstrual_log') {
                 const dateKey = getVal('f-mens-date');
                 const content = { date: dateKey, flow: getVal('f-mens-flow'), sex: getCheck('f-mens-sex'), protection: getCheck('f-mens-prot'), notes: getVal('f-mens-notes') };
                 const existing = state.items.find(i => i.type === 'menstrual_cycle' && i.content.date === dateKey);
                 if (existing) await _updateDoc(isOffline ? {id: existing.id} : doc(db, 'artifacts', appId, 'users', state.user.uid, 'items', existing.id), {content});
                 else await _addDoc(coll, { parentId: 'saude', type: 'menstrual_cycle', name: 'Ciclo', content });
                 render();
-            }
-            else if(type === 'menstrual_settings') {
-                const contraType = getVal('f-prof-hormonal');
-                const content = { 
-                    name: getVal('f-prof-name'), 
-                    age: getVal('f-prof-age'), 
-                    cycleDuration: getVal('f-prof-dur'), 
-                    flowDuration: getVal('f-prof-flowdur'), 
-                    contraceptiveType: contraType,
-                    lastPeriodDate: getVal('f-prof-last'), 
-                    contraceptiveStartDate: getVal('f-prof-contradate') 
-                };
+            } else if(type === 'menstrual_settings') {
+                const content = { name: getVal('f-prof-name'), age: getVal('f-prof-age'), cycleDuration: getVal('f-prof-dur'), flowDuration: getVal('f-prof-flowdur'), contraceptiveType: getVal('f-prof-hormonal'), lastPeriodDate: getVal('f-prof-last'), contraceptiveStartDate: getVal('f-prof-contradate') };
                 const existing = state.items.find(i => i.type === 'menstrual_profile');
                 if(existing) await _updateDoc(isOffline ? {id: existing.id} : doc(db, 'artifacts', appId, 'users', state.user.uid, 'items', existing.id), {content});
                 else await _addDoc(coll, { parentId: 'saude', type: 'menstrual_profile', name: 'Perfil Mulher', content });
                 render();
             }
-
             window.showToast("Salvo!"); window.closeModal();
         } catch(e) { console.error(e); window.showToast("Erro: " + e.message, "error"); }
     };
-
     initApp();
 </script>
 </body>
