@@ -61,7 +61,7 @@
 
         .card:has(.create-menu-dropdown.show), .finance-item:has(.create-menu-dropdown.show), .piggy-card:has(.create-menu-dropdown.show), div:has(> .create-menu-dropdown.show) { z-index: 2147483647 !important; transform: none !important; filter: none !important; opacity: 1 !important; perspective: none !important; clip-path: none !important; mask: none !important; position: relative !important; box-shadow: 0 20px 50px rgba(0,0,0,0.2) !important; overflow: visible !important; }
         
-        .card.selected { border: 2px solid var(--success); background-color: #F1F8E9; }
+        .card.selected { border: 2px solid var(--success); background-color: rgba(85, 139, 47, 0.05); }
         .card.selection-mode { cursor: pointer; }
         .selection-check { position: absolute; top: 15px; right: 15px; color: var(--success); display: none; }
         .card.selected .selection-check { display: block; }
@@ -80,7 +80,7 @@
         @keyframes pulse-gold { 0% { box-shadow: 0 0 0 0 rgba(197, 160, 89, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(197, 160, 89, 0); } 100% { box-shadow: 0 0 0 0 rgba(197, 160, 89, 0); } }
 
         /* --- Lock Screen --- */
-        #lock-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #FDFBF7; z-index: 100000; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.5s; }
+        #lock-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--off-white); z-index: 100000; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.5s; }
         .lock-container { text-align: center; animation: fadeIn 0.5s ease-out; }
         .lock-input { margin-top: 20px; padding: 10px 15px; font-size: 1.2rem; letter-spacing: 5px; text-align: center; border: 1px solid var(--gold); border-radius: 30px; outline: none; width: 200px; background: white; color: var(--chocolate); }
         .lock-btn { margin-top: 15px; background: var(--chocolate); color: white; border: none; padding: 10px 30px; border-radius: 30px; cursor: pointer; font-weight: 600; transition: 0.2s; }
@@ -140,8 +140,8 @@
         .cal-day:hover { background: #fDFBF7; border-color: rgba(197, 160, 89, 0.3); }
         .cal-day.today { font-weight: 800; border: 2px solid var(--chocolate); }
         
-        .cal-day.period { background-color: #FFEBEE; border: 1px solid #FFCDD2; color: #C62828; font-weight: bold; }
-        .cal-day.fertile { background-color: #E8F5E9; border: 1px solid #C8E6C9; color: #2E7D32; font-weight: bold; }
+        .cal-day.period { background-color: rgba(198, 40, 40, 0.1); border: 1px solid rgba(198, 40, 40, 0.3); color: var(--danger); font-weight: bold; }
+        .cal-day.fertile { background-color: rgba(85, 139, 47, 0.1); border: 1px solid rgba(85, 139, 47, 0.3); color: var(--success); font-weight: bold; }
         .cal-day.contra-active { border: 2px dashed var(--gold); }
         
         .cal-legend { display: flex; gap: 15px; justify-content: center; margin-top: 15px; font-size: 0.75rem; color: #666; flex-wrap: wrap; }
@@ -150,7 +150,7 @@
 
         .flow-opt { transition: 0.2s; }
         .flow-opt:hover { background: #fafafa; }
-        .flow-opt.active { background: #FFEBEE; border-color: #C62828; color: #C62828; font-weight: bold; }
+        .flow-opt.active { background: rgba(198, 40, 40, 0.1); border-color: var(--danger); color: var(--danger); font-weight: bold; }
 
         .cal-top-zone { position: absolute; top: 4px; width: 100%; display: flex; justify-content: center; align-items: center; gap: 2px; height: 6px; }
         .cal-heart { width: 8px; height: 8px; }
@@ -250,7 +250,7 @@
         <div style="background:#f9f9f9; padding:15px; border-radius:12px; border:1px solid #eee; margin-bottom:20px; font-size:0.9rem; word-break:break-all; color:#666" id="share-link-display"></div>
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px">
             <button class="btn-add" style="justify-content:center" onclick="window.copyShareLink()"><i data-lucide="copy"></i> Copiar Link</button>
-            <button class="btn-add" style="justify-content:center; background:#25D366" onclick="window.shareDirectly()"><i data-lucide="share-2"></i> Enviar</button>
+            <button class="btn-add" style="justify-content:center; background:var(--gold)" onclick="window.shareDirectly()"><i data-lucide="share-2"></i> Enviar</button>
         </div>
         <button class="btn-cancel" style="width:100%; margin-top:15px" onclick="document.getElementById('share-modal').classList.remove('open'); setTimeout(()=>document.getElementById('share-modal').style.display='none',300)">Fechar</button>
     </div>
@@ -259,7 +259,7 @@
 <div id="delete-modal-overlay">
     <div class="modal" style="text-align: center;">
         <div style="display:flex; justify-content:center; margin-bottom:15px">
-            <div style="width:60px; height:60px; background:#FFEBEE; border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--danger)">
+            <div style="width:60px; height:60px; background:rgba(198, 40, 40, 0.1); border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--danger)">
                 <i data-lucide="alert-triangle" style="width:30px; height:30px"></i>
             </div>
         </div>
@@ -736,15 +736,33 @@
         const weightToLose = currentWeight - parseFloat(target);
         const mma = (monthsRemaining > 0 && weightToLose > 0) ? (weightToLose / monthsRemaining).toFixed(2) : 0;
         
-        const height = parseFloat(weightItem.content.height) || 0;
-        const imc = height > 0 ? (currentWeight / (height * height)).toFixed(1) : '--';
+        let height = parseFloat(weightItem.content.height) || 0;
+        // Correção inteligente: se a pessoa digitar 170 ou 175 em vez de 1.70, converte automaticamente
+        if (height > 3) height = height / 100; 
 
-        const sortedHistory = [...history].sort((a,b) => new Date(b.date) - new Date(a.date));
+        let imc = '--';
+        let imcColor = '#999';
+        let imcText = '';
+        
+        if (height > 0) {
+            const imcVal = (currentWeight / (height * height));
+            imc = imcVal.toFixed(1);
+            if (imcVal < 18.5) { imcColor = 'var(--gold)'; imcText = 'Abaixo do Peso'; }
+            else if (imcVal < 24.9) { imcColor = 'var(--success)'; imcText = 'Peso Normal'; }
+            else if (imcVal < 29.9) { imcColor = 'var(--chocolate-light)'; imcText = 'Sobrepeso'; }
+            else { imcColor = 'var(--danger)'; imcText = 'Obesidade'; }
+        }
+
+        // Meta de Água Diária: 35ml por cada kg do corpo
+        const waterMl = currentWeight * 35;
+        const waterLiters = (waterMl / 1000).toFixed(1);
+
+        const sortedHistory = [...(history || [])].sort((a,b) => new Date(b.date) - new Date(a.date));
         
         const totalLossRequired = parseFloat(startWeight) - parseFloat(target);
         const progress = totalLossRequired > 0 ? ((parseFloat(startWeight) - currentWeight) / totalLossRequired * 100) : 0;
         
-        return { current: currentWeight, target, startWeight, mma, imc, progress: Math.min(100, Math.max(0, progress)), monthsRemaining, weightToLose, history: sortedHistory };
+        return { current: currentWeight, target, startWeight, mma, imc, imcColor, imcText, waterLiters, progress: Math.min(100, Math.max(0, progress)), monthsRemaining, weightToLose, history: sortedHistory };
     };
 
     const renderHealth = (el) => {
@@ -756,21 +774,21 @@
         const genericItems = state.items.filter(i => i.parentId === 'saude' && !['menstrual_profile', 'menstrual_cycle', 'health_weight', 'health_med', 'health_food'].includes(i.type));
 
         const dietContent = diet && (diet.content.breakfast || diet.content.lunch || diet.content.dinner) ? `
-            <div style="font-size:0.85rem; color:#555; max-height:250px; overflow-y:auto; display:flex; flex-direction:column; gap:15px;">
-                <div style="background:#fdfdfd; padding:10px; border-radius:8px; border:1px solid #eee">
-                    <strong style="color:var(--gold); display:flex; justify-content:space-between"><span>☕ Café da Manhã</span> <span>${diet.content.breakfastTime}</span></strong>
+            <div style="font-size:0.85rem; color:var(--text-main); max-height:250px; overflow-y:auto; display:flex; flex-direction:column; gap:15px;">
+                <div style="background:var(--bg-card); padding:10px; border-radius:8px; border:1px solid #eee">
+                    <strong style="color:var(--gold); display:flex; justify-content:space-between"><span><i data-lucide="coffee" style="width:14px; vertical-align:text-bottom; margin-right:4px;"></i> Café da Manhã</span> <span>${diet.content.breakfastTime}</span></strong>
                     <div style="margin-top:5px; white-space:pre-wrap; line-height:1.4">${diet.content.breakfast || '-'}</div>
                 </div>
-                <div style="background:#fdfdfd; padding:10px; border-radius:8px; border:1px solid #eee">
-                    <strong style="color:var(--gold); display:flex; justify-content:space-between"><span>🍲 Almoço</span> <span>${diet.content.lunchTime}</span></strong>
+                <div style="background:var(--bg-card); padding:10px; border-radius:8px; border:1px solid #eee">
+                    <strong style="color:var(--gold); display:flex; justify-content:space-between"><span><i data-lucide="utensils" style="width:14px; vertical-align:text-bottom; margin-right:4px;"></i> Almoço</span> <span>${diet.content.lunchTime}</span></strong>
                     <div style="margin-top:5px; white-space:pre-wrap; line-height:1.4">${diet.content.lunch || '-'}</div>
                 </div>
-                <div style="background:#fdfdfd; padding:10px; border-radius:8px; border:1px solid #eee">
-                    <strong style="color:var(--gold); display:flex; justify-content:space-between"><span>🥗 Jantar</span> <span>${diet.content.dinnerTime}</span></strong>
+                <div style="background:var(--bg-card); padding:10px; border-radius:8px; border:1px solid #eee">
+                    <strong style="color:var(--gold); display:flex; justify-content:space-between"><span><i data-lucide="utensils" style="width:14px; vertical-align:text-bottom; margin-right:4px;"></i> Jantar</span> <span>${diet.content.dinnerTime}</span></strong>
                     <div style="margin-top:5px; white-space:pre-wrap; line-height:1.4">${diet.content.dinner || '-'}</div>
                 </div>
-                <div style="background:#FFF3E0; padding:10px; border-radius:8px; border:1px solid rgba(197, 160, 89, 0.2); display:flex; justify-content:space-between; align-items:center">
-                    <strong style="color:var(--chocolate)">⏳ Horário de Jejum</strong>
+                <div style="background:var(--off-white); padding:10px; border-radius:8px; border:1px solid rgba(197, 160, 89, 0.2); display:flex; justify-content:space-between; align-items:center">
+                    <strong style="color:var(--chocolate)"><i data-lucide="timer" style="width:14px; vertical-align:text-bottom; margin-right:4px;"></i> Horário de Jejum</strong>
                     <span style="font-weight:bold; color:var(--chocolate)">${diet.content.fastingStart} às ${diet.content.fastingEnd}</span>
                 </div>
             </div>
@@ -783,7 +801,7 @@
             <div class="card" style="display:block; padding:15px">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px">
                     <div style="display:flex; align-items:center; gap:8px">
-                        <div style="width:32px; height:32px; background:#FFEBEE; border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--danger)"><i data-lucide="calendar-heart" style="width:16px"></i></div>
+                        <div style="width:32px; height:32px; background:rgba(198, 40, 40, 0.1); border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--danger)"><i data-lucide="calendar-heart" style="width:16px"></i></div>
                         <div style="font-weight:700; color:var(--chocolate); font-size:0.9rem">Ciclo Menstrual</div>
                     </div>
                     <div style="display:flex; gap: 5px;">
@@ -798,10 +816,10 @@
             <div class="card" style="display:block; margin:20px 0">
                 <div style="display:flex; justify-content:space-between; align-items:center">
                     <div style="display:flex; align-items:center; gap:10px">
-                        <div style="width:40px; height:40px; background:#FFF3E0; border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--chocolate)"><i data-lucide="scale"></i></div>
+                        <div style="width:40px; height:40px; background:var(--off-white); border: 1px solid rgba(197, 160, 89, 0.2); border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--chocolate)"><i data-lucide="scale"></i></div>
                         <div>
                             <div style="font-weight:700; color:var(--chocolate)">Controle de Peso</div>
-                            <div style="font-size:0.8rem; color:#888">${stats ? `Inicial: ${stats.startWeight}kg | Meta Final: ${stats.target}kg` : 'Configure sua meta'}</div>
+                            <div style="font-size:0.8rem; color:var(--chocolate-light)">${stats ? `Inicial: ${stats.startWeight}kg | Meta Final: ${stats.target}kg` : 'Configure sua meta'}</div>
                         </div>
                     </div>
                     ${stats ? `
@@ -812,20 +830,44 @@
                     ` : `<button class="btn-add" onclick="window.openModal('health_weight_config')">Configurar</button>`}
                 </div>
                 ${stats ? `
-                    <div style="margin-top:20px; display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; text-align:center">
-                        <div><div style="font-size:1.5rem; font-weight:800; color:var(--chocolate)">${stats.current}</div><div style="font-size:0.7rem; text-transform:uppercase; color:#999; font-weight:600">Atual (kg)</div></div>
-                        <div><div style="font-size:1.5rem; font-weight:800; color:${stats.weightToLose <= 0 ? 'var(--success)' : 'var(--danger)'}">${stats.mma}</div><div style="font-size:0.7rem; text-transform:uppercase; color:#999; font-weight:600">Meta Mensal</div></div>
-                        <div><div style="font-size:1.5rem; font-weight:800; color:var(--gold)">${stats.imc}</div><div style="font-size:0.7rem; text-transform:uppercase; color:#999; font-weight:600">IMC</div></div>
+                    <div style="margin-top:20px; display:grid; grid-template-columns:1fr 1fr; gap:15px;">
+                        <div style="background:var(--bg-card); border:1px solid #eee; border-radius:12px; padding:15px; text-align:center; position:relative;">
+                            <div style="font-size:0.75rem; text-transform:uppercase; color:var(--chocolate-light); font-weight:700; margin-bottom:5px">Peso Atual</div>
+                            <div style="font-size:1.8rem; font-weight:800; color:var(--chocolate)">${stats.current} <span style="font-size:1rem; color:var(--chocolate-light)">kg</span></div>
+                            <div style="font-size:0.75rem; color:${stats.weightToLose <= 0 ? 'var(--success)' : 'var(--danger)'}; margin-top:5px; font-weight:600">Falta/mês: ${stats.mma} kg</div>
+                        </div>
+                        <div style="background:var(--bg-card); border:1px solid #eee; border-radius:12px; padding:15px; text-align:center; position:relative;">
+                            <div style="font-size:0.75rem; text-transform:uppercase; color:var(--chocolate-light); font-weight:700; margin-bottom:5px">IMC</div>
+                            <div style="font-size:1.8rem; font-weight:800; color:${stats.imcColor}">${stats.imc}</div>
+                            <div style="display:inline-block; margin-top:5px; padding:3px 8px; background:transparent; border: 1px solid ${stats.imcColor}; color:${stats.imcColor}; border-radius:12px; font-size:0.7rem; font-weight:bold">${stats.imcText || 'Configure Altura'}</div>
+                        </div>
                     </div>
-                    <div class="weight-progress-bar"><div class="weight-progress-fill" style="width:${stats.progress}%"></div></div>
-                    <div style="text-align:right; font-size:0.7rem; color:#888; margin-top:4px">${stats.progress.toFixed(0)}% da meta total</div>
+                    
+                    <div style="background:var(--off-white); border:1px solid rgba(197, 160, 89, 0.3); border-radius:12px; padding:12px 15px; margin-top:15px; display:flex; justify-content:space-between; align-items:center;">
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <div style="width:36px; height:36px; background:var(--bg-card); border-radius:50%; display:flex; justify-content:center; align-items:center; color:var(--gold); border: 1px solid rgba(197, 160, 89, 0.2);"><i data-lucide="droplet" style="width:18px"></i></div>
+                            <div>
+                                <div style="font-weight:700; color:var(--chocolate); font-size:0.9rem">Meta Diária de Água</div>
+                                <div style="font-size:0.75rem; color:var(--chocolate-light)">Baseada no seu peso atual</div>
+                            </div>
+                        </div>
+                        <div style="font-size:1.4rem; font-weight:800; color:var(--gold)">${stats.waterLiters} L</div>
+                    </div>
+
+                    <div style="margin-top:20px;">
+                        <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--chocolate-light); font-weight:bold; margin-bottom:6px">
+                            <span>Progresso do Peso</span>
+                            <span style="color:var(--gold)">${stats.progress.toFixed(0)}%</span>
+                        </div>
+                        <div class="weight-progress-bar"><div class="weight-progress-fill" style="width:${stats.progress}%"></div></div>
+                    </div>
                 ` : ''}
             </div>
 
             <div class="grid-container">
                 <div class="card" style="display:block">
                     <div style="display:flex; justify-content:space-between; margin-bottom:15px"><b>Medicamentos</b><button class="btn-add" style="padding:4px 8px" onclick="window.openModal('health_med')">+</button></div>
-                    ${meds.length ? meds.map(m => `<div style="padding:10px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center"><div><b>${m.name}</b><br><small>${m.content.time} - ${m.content.instructions}</small></div><i data-lucide="trash-2" style="width:14px; cursor:pointer; color:#999" onclick="window.openDeleteModal('${m.id}','${m.name}')"></i></div>`).join('') : '<div style="opacity:0.5; font-size:0.8rem">Nenhum medicamento.</div>'}
+                    ${meds.length ? meds.map(m => `<div style="padding:10px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center"><div><b>${m.name}</b><br><small>${m.content.time} - ${m.content.instructions}</small></div><i data-lucide="trash-2" style="width:14px; cursor:pointer; color:var(--chocolate-light)" onclick="window.openDeleteModal('${m.id}','${m.name}')"></i></div>`).join('') : '<div style="opacity:0.5; font-size:0.8rem">Nenhum medicamento.</div>'}
                 </div>
                 <div class="card" style="display:block">
                     <div style="display:flex; justify-content:space-between; margin-bottom:15px"><b>Dieta e Jejum</b><button class="btn-add" style="padding:4px 8px" onclick="window.openModal('health_food')"><i data-lucide="edit-2" style="width:14px"></i></button></div>
@@ -840,16 +882,16 @@
                     if (i.type === 'file') {
                         const isImg = i.content.fileType.startsWith('image') || /\.(jpg|jpeg|png|gif|bmp|webp|heic)$/i.test(i.name);
                         return `<div class="card ${state.selectionMode?'selection-mode':''} ${isSelected?'selected':''}" style="display:block; padding:0; overflow:visible; position:relative;" onclick="${state.selectionMode ? `window.toggleSelectItem('${i.id}')` : `window.openFilePreview('${i.id}')`}">
-                            ${isImg ? `<div class="file-card-image-container"><img src="${i.content.data}" class="file-card-image" onerror="this.style.display='none'"></div>` : `<div style="padding:30px; text-align:center"><i data-lucide="${icon}" style="color:#999; width:40px; height:40px"></i></div>`}
+                            ${isImg ? `<div class="file-card-image-container"><img src="${i.content.data}" class="file-card-image" onerror="this.style.display='none'"></div>` : `<div style="padding:30px; text-align:center"><i data-lucide="${icon}" style="color:var(--chocolate-light); width:40px; height:40px"></i></div>`}
                             <div style="padding:15px">
                                 ${i.content.caption ? `<div style="font-weight:600; color:var(--chocolate); font-size:0.9rem; margin-bottom:4px">${i.content.caption}</div>` : ''}
-                                <div style="font-size:0.75rem; color:#888; white-space:nowrap; text-overflow:ellipsis; overflow:hidden">${i.type === 'file' ? '' : i.name}</div>
+                                <div style="font-size:0.75rem; color:var(--chocolate-light); white-space:nowrap; text-overflow:ellipsis; overflow:hidden">${i.type === 'file' ? '' : i.name}</div>
                             </div>
                             <i data-lucide="check-circle" class="selection-check"></i>
                             <div style="position:absolute; bottom:10px; right:10px">${renderActionMenu(i.id, i.type, i.name)}</div>
                         </div>`;
                     }
-                    return `<div class="card ${state.selectionMode?'selection-mode':''} ${isSelected?'selected':''}" onclick="${state.selectionMode ? `window.toggleSelectItem('${i.id}')` : `window.navigate('${i.id}')`}"><i data-lucide="${icon}" style="color:${i.type==='folder'?'var(--gold)':'#999'}"></i><span style="flex:1; font-weight:600; color:var(--chocolate)">${i.name}</span><i data-lucide="check-circle" class="selection-check"></i>${renderActionMenu(i.id, i.type, i.name)}</div>`;
+                    return `<div class="card ${state.selectionMode?'selection-mode':''} ${isSelected?'selected':''}" onclick="${state.selectionMode ? `window.toggleSelectItem('${i.id}')` : `window.navigate('${i.id}')`}"><i data-lucide="${icon}" style="color:${i.type==='folder'?'var(--gold)':'var(--chocolate-light)'}"></i><span style="flex:1; font-weight:600; color:var(--chocolate)">${i.name}</span><i data-lucide="check-circle" class="selection-check"></i>${renderActionMenu(i.id, i.type, i.name)}</div>`;
                 }).join('')}
             </div>
         `;
@@ -967,15 +1009,15 @@
         }
         html += `</div>
         <div class="cal-legend">
-            <div class="leg-item"><div class="leg-color" style="background:#FFEBEE; border:1px solid #FFCDD2"></div> Menstruação</div>
-            ${!isHormonal ? `<div class="leg-item"><div class="leg-color" style="background:#E8F5E9; border:1px solid #C8E6C9"></div> Período Fértil</div>` : ''}
+            <div class="leg-item"><div class="leg-color" style="background:rgba(198, 40, 40, 0.1); border:1px solid rgba(198, 40, 40, 0.3)"></div> Menstruação</div>
+            ${!isHormonal ? `<div class="leg-item"><div class="leg-color" style="background:rgba(85, 139, 47, 0.1); border:1px solid rgba(85, 139, 47, 0.3)"></div> Período Fértil</div>` : ''}
             <div class="leg-item"><i data-lucide="heart" class="cal-heart unsafe" fill="currentColor"></i> Relação Desprotegida</div>
             <div class="leg-item"><i data-lucide="heart" class="cal-heart safe" fill="currentColor"></i> Relação Protegida</div>
         </div>
         `;
         
         if (isHormonal) {
-            html += `<div style="margin-top:10px; padding:10px; background:#f9f9f9; border-radius:8px; font-size:0.75rem; color:#666; text-align:center;">
+            html += `<div style="margin-top:10px; padding:10px; background:#f9f9f9; border-radius:8px; font-size:0.75rem; color:var(--chocolate-light); text-align:center;">
                 <i data-lucide="info" style="width:12px; vertical-align:text-bottom"></i> 
                 Você utiliza método hormonal. A ovulação é inibida.
             </div>`;
@@ -1256,10 +1298,10 @@
                 if(i.type === 'file') {
                       const isImg = i.content.fileType.startsWith('image') || /\.(jpg|jpeg|png|gif|bmp|webp|heic)$/i.test(i.name);
                       cardHTML = `<div class="card ${state.selectionMode?'selection-mode':''} ${isSelected?'selected':''}" style="display:block; padding:0; overflow:visible; position:relative;" onclick="${state.selectionMode ? `window.toggleSelectItem('${i.id}')` : `window.openFilePreview('${i.id}')`}">
-                        ${isImg ? `<div class="file-card-image-container"><img src="${i.content.data}" class="file-card-image" onerror="this.style.display='none'"></div>` : `<div style="padding:30px; text-align:center"><i data-lucide="${icon}" style="color:#999; width:40px; height:40px"></i></div>`}
+                        ${isImg ? `<div class="file-card-image-container"><img src="${i.content.data}" class="file-card-image" onerror="this.style.display='none'"></div>` : `<div style="padding:30px; text-align:center"><i data-lucide="${icon}" style="color:var(--chocolate-light); width:40px; height:40px"></i></div>`}
                         <div style="padding:15px">
                             ${i.content.caption ? `<div style="font-weight:600; color:var(--chocolate); font-size:0.9rem; margin-bottom:4px">${i.content.caption}</div>` : ''}
-                            <div style="font-size:0.75rem; color:#888; white-space:nowrap; text-overflow:ellipsis; overflow:hidden">${i.type === 'file' ? '' : i.name}</div>
+                            <div style="font-size:0.75rem; color:var(--chocolate-light); white-space:nowrap; text-overflow:ellipsis; overflow:hidden">${i.type === 'file' ? '' : i.name}</div>
                         </div>
                         <i data-lucide="check-circle" class="selection-check"></i>
                         <div style="position:absolute; bottom:10px; right:10px">${renderActionMenu(i.id, i.type, i.name)}</div>
@@ -1283,10 +1325,10 @@
                     const timeMonths = p.content.months || 0;
                     const remaining = Math.max(0, target - saved);
                     const pct = target > 0 ? Math.min(100, (saved/target)*100) : 0;
-                    return `<div class="piggy-card"><div style="display:flex; justify-content:space-between"><b>${p.name}</b>${renderActionMenu(p.id, 'piggy', p.name)}</div><div style="font-size:0.8rem; color:#999; margin-bottom:5px">Prazo: ${timeMonths} meses</div><div style="font-size:1.8rem; font-weight:bold; color:var(--gold); margin:5px 0">R$ ${saved.toLocaleString('pt-BR',{minimumFractionDigits: 2})}</div><div style="color:${remaining > 0 ? 'var(--chocolate)':'var(--success)'}; font-size:0.8rem; font-weight:600">Restante: R$ ${remaining.toLocaleString('pt-BR',{minimumFractionDigits: 2})}</div><div class="progress-grid">${Array(20).fill(0).map((_,i) => `<div class="progress-block ${i<(pct/5)?'filled':''}"></div>`).join('')}</div><div style="display:flex; gap:5px; margin-top:15px"><input class="form-control" style="padding:8px" type="number" id="dep-${p.id}" placeholder="Depósito..." autocomplete="off"><button class="btn-add" onclick="window.makeDeposit('${p.id}')">OK</button></div></div>`;
+                    return `<div class="piggy-card"><div style="display:flex; justify-content:space-between"><b>${p.name}</b>${renderActionMenu(p.id, 'piggy', p.name)}</div><div style="font-size:0.8rem; color:var(--chocolate-light); margin-bottom:5px">Prazo: ${timeMonths} meses</div><div style="font-size:1.8rem; font-weight:bold; color:var(--gold); margin:5px 0">R$ ${saved.toLocaleString('pt-BR',{minimumFractionDigits: 2})}</div><div style="color:${remaining > 0 ? 'var(--chocolate)':'var(--success)'}; font-size:0.8rem; font-weight:600">Restante: R$ ${remaining.toLocaleString('pt-BR',{minimumFractionDigits: 2})}</div><div class="progress-grid">${Array(20).fill(0).map((_,i) => `<div class="progress-block ${i<(pct/5)?'filled':''}"></div>`).join('')}</div><div style="display:flex; gap:5px; margin-top:15px"><input class="form-control" style="padding:8px" type="number" id="dep-${p.id}" placeholder="Depósito..." autocomplete="off"><button class="btn-add" onclick="window.makeDeposit('${p.id}')">OK</button></div></div>`;
                 }).join('')}
                 <div class="card" style="justify-content:center; min-height:200px; border:2px dashed #ddd; background:transparent; cursor:pointer" onclick="window.openModal('piggy')">
-                    <div style="text-align:center; color:#999"><i data-lucide="plus" style="width:30px; height:30px"></i><br>Novo Objetivo</div>
+                    <div style="text-align:center; color:var(--chocolate-light)"><i data-lucide="plus" style="width:30px; height:30px"></i><br>Novo Objetivo</div>
                 </div>
             </div>
         `;
@@ -1341,22 +1383,22 @@
             if (i.type === 'file') {
                 const isImg = i.content.fileType.startsWith('image') || /\.(jpg|jpeg|png|gif|bmp|webp|heic)$/i.test(i.name);
                 return `<div class="card ${state.selectionMode?'selection-mode':''} ${isSelected?'selected':''}" style="display:block; padding:0; overflow:visible; position:relative;" onclick="${state.selectionMode ? `window.toggleSelectItem('${i.id}')` : `window.openFilePreview('${i.id}')`}">
-                    ${isImg ? `<div class="file-card-image-container"><img src="${i.content.data}" class="file-card-image" onerror="this.style.display='none'"></div>` : `<div style="padding:30px; text-align:center"><i data-lucide="${icon}" style="color:#999; width:40px; height:40px"></i></div>`}
+                    ${isImg ? `<div class="file-card-image-container"><img src="${i.content.data}" class="file-card-image" onerror="this.style.display='none'"></div>` : `<div style="padding:30px; text-align:center"><i data-lucide="${icon}" style="color:var(--chocolate-light); width:40px; height:40px"></i></div>`}
                     <div style="padding:15px">
                          ${i.content.caption ? `<div style="font-weight:600; color:var(--chocolate); font-size:0.9rem; margin-bottom:4px">${i.content.caption}</div>` : ''}
-                         <div style="font-size:0.75rem; color:#888; white-space:nowrap; text-overflow:ellipsis; overflow:hidden">${i.type === 'file' ? '' : i.name}</div>
+                         <div style="font-size:0.75rem; color:var(--chocolate-light); white-space:nowrap; text-overflow:ellipsis; overflow:hidden">${i.type === 'file' ? '' : i.name}</div>
                     </div>
                     <i data-lucide="check-circle" class="selection-check"></i>
                     <div style="position:absolute; bottom:10px; right:10px">${renderActionMenu(i.id, i.type, i.name)}</div>
                 </div>`;
             }
-            return `<div class="card ${state.selectionMode?'selection-mode':''} ${isSelected?'selected':''}" onclick="${state.selectionMode ? `window.toggleSelectItem('${i.id}')` : `window.navigate('${i.id}')`}"><i data-lucide="${icon}" style="color:${i.type==='folder'?'var(--gold)':'#999'}"></i><span style="flex:1; font-weight:600; color:var(--chocolate)">${i.name}</span><i data-lucide="check-circle" class="selection-check"></i>${renderActionMenu(i.id, i.type, i.name)}</div>`;
-        }).join('') : '<div style="grid-column:1/-1; text-align:center; padding:40px; color:#aaa">Esta pasta está vazia.</div>'}</div>`;
+            return `<div class="card ${state.selectionMode?'selection-mode':''} ${isSelected?'selected':''}" onclick="${state.selectionMode ? `window.toggleSelectItem('${i.id}')` : `window.navigate('${i.id}')`}"><i data-lucide="${icon}" style="color:${i.type==='folder'?'var(--gold)':'var(--chocolate-light)'}"></i><span style="flex:1; font-weight:600; color:var(--chocolate)">${i.name}</span><i data-lucide="check-circle" class="selection-check"></i>${renderActionMenu(i.id, i.type, i.name)}</div>`;
+        }).join('') : '<div style="grid-column:1/-1; text-align:center; padding:40px; color:var(--chocolate-light)">Esta pasta está vazia.</div>'}</div>`;
     };
 
     const renderToolItem = (el, item) => {
         let content = '';
-        if(item.type === 'note') content = `<div style="white-space:pre-wrap; line-height:1.6; color:#444">${item.content.text}</div>`;
+        if(item.type === 'note') content = `<div style="white-space:pre-wrap; line-height:1.6; color:var(--text-main)">${item.content.text}</div>`;
         else if(item.type === 'visionboard') {
             const images = item.content.images || [];
             content = `
@@ -1385,12 +1427,12 @@
             content = `${isSum ? `<div style="text-align:right; font-size:1.5rem; color:var(--success); font-weight:bold; margin-bottom:15px">${total.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</div>` : ''}<div style="display:flex; flex-direction:column; gap:10px">${items.map((it, idx) => `<div style="display:flex; gap:10px; align-items:center; padding:8px; border-bottom:1px solid #eee"><div class="btn-check ${it.checked?'active':''}" onclick="window.toggleCLItem('${item.id}', ${idx})"><i data-lucide="check" style="width:16px"></i></div><input class="checklist-input form-control" style="border:none; background:transparent; text-decoration:${it.checked?'line-through':''}" value="${it.text}" onchange="window.updateCL('${item.id}',${idx},'text',this.value)" autocomplete="off">${isSum ? `<input class="form-control" type="number" style="width:80px; text-align:right" value="${it.val}" onchange="window.updateCL('${item.id}',${idx},'val',this.value)" autocomplete="off">` : ''}<i data-lucide="x" style="width:16px; cursor:pointer; opacity:0.5" onclick="window.deleteCLItem('${item.id}', ${idx})"></i></div>`).join('')}<button class="btn-add" style="align-self:center; margin-top:10px" onclick="window.addCLItem('${item.id}')"><i data-lucide="plus"></i> Item</button></div>`;
         } else if (item.type === 'bank') {
             const data = item.content;
-            content = `<div style="background:#f9f9f9; padding:20px; border-radius:12px; display:grid; gap:10px"><div style="display:flex; justify-content:flex-end"><button class="btn-add" style="font-size:0.8rem" onclick="window.copyBankData('${item.name}', '${data.holder||'-'}', '${data.agency}', '${data.account}', '${data.pix}')"><i data-lucide="copy"></i> Copiar</button></div><div><small style="text-transform:uppercase; color:#999">Banco</small><div style="font-weight:600">${item.name}</div></div><div><small style="text-transform:uppercase; color:#999">Agência</small><div style="font-weight:600">${data.agency}</div></div><div><small style="text-transform:uppercase; color:#999">Conta</small><div style="font-weight:600">${data.account}</div></div><div><small style="text-transform:uppercase; color:#999">PIX</small><div style="font-weight:600">${data.pix}</div></div><button class="btn-cancel" onclick="alert('${data.pass}')" style="margin-top:10px"><i data-lucide="eye"></i> Senha</button></div>`;
+            content = `<div style="background:#f9f9f9; padding:20px; border-radius:12px; display:grid; gap:10px"><div style="display:flex; justify-content:flex-end"><button class="btn-add" style="font-size:0.8rem" onclick="window.copyBankData('${item.name}', '${data.holder||'-'}', '${data.agency}', '${data.account}', '${data.pix}')"><i data-lucide="copy"></i> Copiar</button></div><div><small style="text-transform:uppercase; color:var(--chocolate-light)">Banco</small><div style="font-weight:600">${item.name}</div></div><div><small style="text-transform:uppercase; color:var(--chocolate-light)">Agência</small><div style="font-weight:600">${data.agency}</div></div><div><small style="text-transform:uppercase; color:var(--chocolate-light)">Conta</small><div style="font-weight:600">${data.account}</div></div><div><small style="text-transform:uppercase; color:var(--chocolate-light)">PIX</small><div style="font-weight:600">${data.pix}</div></div><button class="btn-cancel" onclick="alert('${data.pass}')" style="margin-top:10px"><i data-lucide="eye"></i> Senha</button></div>`;
         } else if (item.type === 'social') {
             const data = item.content;
             content = `<div style="background:#f9f9f9; padding:20px; border-radius:12px; display:grid; gap:10px">${Object.entries(data).map(([k,v]) => {
                 if (k === 'pass') return '';
-                return `<div><small style="text-transform:uppercase; color:#999">${k}</small><div style="font-weight:600">${v}</div></div>`;
+                return `<div><small style="text-transform:uppercase; color:var(--chocolate-light)">${k}</small><div style="font-weight:600">${v}</div></div>`;
             }).join('')}<button class="btn-cancel" onclick="alert('${data.pass}')" style="margin-top:10px"><i data-lucide="eye"></i> Senha</button></div>`;
         }
         el.innerHTML = `<div class="section-header"><h2>${item.name}</h2><div style="display:flex; gap:10px"><button class="btn-cancel" onclick="window.goBack()">Voltar</button><button class="btn-add" onclick="window.editItem('${item.id}', '${item.type}')">Editar</button></div></div><div class="card" style="display:block; cursor:default">${content}</div>`;
@@ -1553,7 +1595,7 @@
                                     <i data-lucide="trash-2" style="width:16px; color:var(--danger); cursor:pointer" onclick="window.deleteWeightHistoryItem(${index})"></i>
                                 </div>
                             </div>
-                        `).join('') : '<div style="font-size:0.8rem; color:#999; text-align:center">Nenhum registro.</div>'}
+                        `).join('') : '<div style="font-size:0.8rem; color:var(--chocolate-light); text-align:center">Nenhum registro.</div>'}
                     </div>
                 `;
                 break;
@@ -1573,28 +1615,28 @@
                     <div style="display:flex; flex-direction: column; gap:15px; margin-bottom:10px;">
                         <div>
                             <label style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px; font-size:0.8rem; font-weight:bold; color:var(--chocolate)">
-                                ☕ Café da manhã <input type="time" id="f-d-bt" class="form-control" style="width:100px; padding:6px; margin:0;" value="${df.breakfastTime||'08:00'}">
+                                <span><i data-lucide="coffee" style="width:14px; vertical-align:text-bottom; margin-right:4px;"></i> Café da manhã</span> <input type="time" id="f-d-bt" class="form-control" style="width:100px; padding:6px; margin:0;" value="${df.breakfastTime||'08:00'}">
                             </label>
                             <textarea id="f-d-b" class="form-control" placeholder="Descreva o cardápio e quantidades do café da manhã..." style="min-height:80px;">${df.breakfast||''}</textarea>
                         </div>
                         <div>
                             <label style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px; font-size:0.8rem; font-weight:bold; color:var(--chocolate)">
-                                🍲 Almoço <input type="time" id="f-d-lt" class="form-control" style="width:100px; padding:6px; margin:0;" value="${df.lunchTime||'12:30'}">
+                                <span><i data-lucide="utensils" style="width:14px; vertical-align:text-bottom; margin-right:4px;"></i> Almoço</span> <input type="time" id="f-d-lt" class="form-control" style="width:100px; padding:6px; margin:0;" value="${df.lunchTime||'12:30'}">
                             </label>
                             <textarea id="f-d-l" class="form-control" placeholder="Descreva o cardápio e quantidades do almoço..." style="min-height:80px;">${df.lunch||''}</textarea>
                         </div>
                         <div>
                             <label style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px; font-size:0.8rem; font-weight:bold; color:var(--chocolate)">
-                                🥗 Jantar <input type="time" id="f-d-dt" class="form-control" style="width:100px; padding:6px; margin:0;" value="${df.dinnerTime||'19:00'}">
+                                <span><i data-lucide="utensils" style="width:14px; vertical-align:text-bottom; margin-right:4px;"></i> Jantar</span> <input type="time" id="f-d-dt" class="form-control" style="width:100px; padding:6px; margin:0;" value="${df.dinnerTime||'19:00'}">
                             </label>
                             <textarea id="f-d-d" class="form-control" placeholder="Descreva o cardápio e quantidades do jantar..." style="min-height:80px;">${df.dinner||''}</textarea>
                         </div>
                     </div>
                     <div class="form-group" style="border-top:1px solid #eee; padding-top:15px; margin-top:15px">
-                        <label style="color:var(--chocolate); margin-bottom:10px; display:block;">⏳ Horário de Jejum Intermitente</label>
+                        <label style="color:var(--chocolate); margin-bottom:10px; display:block;"><span><i data-lucide="timer" style="width:14px; vertical-align:text-bottom; margin-right:4px;"></i> Horário de Jejum Intermitente</span></label>
                         <div style="display:flex; gap:10px; align-items:center;">
-                            <div style="flex:1"><small style="color:#888; text-transform:uppercase; font-weight:bold">Início</small><input type="time" id="f-d-fs" class="form-control" value="${df.fastingStart||'20:00'}"></div>
-                            <div style="flex:1"><small style="color:#888; text-transform:uppercase; font-weight:bold">Fim</small><input type="time" id="f-d-fe" class="form-control" value="${df.fastingEnd||'08:00'}"></div>
+                            <div style="flex:1"><small style="color:var(--chocolate-light); text-transform:uppercase; font-weight:bold">Início</small><input type="time" id="f-d-fs" class="form-control" value="${df.fastingStart||'20:00'}"></div>
+                            <div style="flex:1"><small style="color:var(--chocolate-light); text-transform:uppercase; font-weight:bold">Fim</small><input type="time" id="f-d-fe" class="form-control" value="${df.fastingEnd||'08:00'}"></div>
                         </div>
                     </div>
                 `; 
@@ -1695,7 +1737,7 @@
                          return `<div style="display:flex; justify-content:space-between; align-items:center; padding:10px; border-bottom:1px solid #eee;">
                                     <div><b>${d}</b> <small>(${log.content.flow || 'Sem fluxo'})</small></div>
                                     <div style="display:flex; gap:10px">
-                                        <i data-lucide="edit-2" style="width:16px; cursor:pointer" onclick="window.openModal('menstrual_log', '${log.content.date}')"></i>
+                                        <i data-lucide="edit-2" style="width:16px; cursor:pointer; color:var(--chocolate)" onclick="window.openModal('menstrual_log', '${log.content.date}')"></i>
                                         <i data-lucide="trash-2" style="width:16px; color:var(--danger); cursor:pointer" onclick="window.deleteMenstrualLog('${log.id}')"></i>
                                     </div>
                                  </div>`;
