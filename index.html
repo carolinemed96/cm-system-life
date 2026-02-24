@@ -97,7 +97,7 @@
         .form-group label { display: block; font-size: 0.8rem; margin-bottom: 8px; color: var(--chocolate); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
         .form-control { width: 100%; padding: 14px; border: 1px solid #eee; border-radius: 12px; font-size: 0.95rem; background: #fafafa; outline: none; }
         .form-control:focus { border-color: var(--gold); background: #fff; box-shadow: 0 0 0 3px rgba(197, 160, 89, 0.1); }
-        textarea.form-control { min-height: 120px; resize: vertical; }
+        textarea.form-control { min-height: 60px; resize: none; overflow-y: hidden; transition: border-color 0.3s, box-shadow 0.3s; }
 
         /* --- Menus --- */
         .create-menu-container { position: relative; overflow: visible !important; }
@@ -207,7 +207,7 @@
 
 <div id="loading-screen" style="position:fixed; top:0; left:0; width:100%; height:100%; background:var(--off-white); z-index:9999; display:none; flex-direction:column; justify-content:center; align-items:center;">
     <div class="monogram" style="font-size: 2rem;">CM</div>
-    <div class="brand-name" style="margin-top:10px; opacity:0.6">Carregando...</div>
+    <div class="brand-name" style="margin-top:10px; opacity:0.6">A Iniciar Sistema...</div>
 </div>
 
 <div id="toast-container"></div>
@@ -233,7 +233,7 @@
 <div id="file-preview-modal">
     <div class="modal large">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px">
-            <h3 style="color:var(--chocolate); font-family: 'Playfair Display', serif;" id="preview-filename">Arquivo</h3>
+            <h3 style="color:var(--chocolate); font-family: 'Playfair Display', serif;" id="preview-filename">Ficheiro</h3>
             <div style="display:flex; gap:10px">
                 <a id="preview-download-btn" class="btn-add" style="padding:6px 12px; font-size:0.8rem; text-decoration:none"><i data-lucide="download" style="width:16px"></i> Download</a>
                 <button onclick="window.closePreviewModal()" style="background:none; border:none; cursor:pointer"><i data-lucide="x"></i></button>
@@ -246,7 +246,7 @@
 
 <div id="share-modal">
     <div class="modal">
-        <h3 style="text-align:center; color:var(--chocolate); font-family:'Playfair Display',serif; margin-bottom:20px">Compartilhar Item</h3>
+        <h3 style="text-align:center; color:var(--chocolate); font-family:'Playfair Display',serif; margin-bottom:20px">Partilhar Item</h3>
         <div style="background:#f9f9f9; padding:15px; border-radius:12px; border:1px solid #eee; margin-bottom:20px; font-size:0.9rem; word-break:break-all; color:#666" id="share-link-display"></div>
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px">
             <button class="btn-add" style="justify-content:center" onclick="window.copyShareLink()"><i data-lucide="copy"></i> Copiar Link</button>
@@ -264,7 +264,7 @@
             </div>
         </div>
         <h3 style="color: var(--danger); margin-bottom: 10px;">Exclusão</h3>
-        <p id="delete-modal-text" style="margin-bottom: 25px; color: #666; line-height: 1.5;">Tem certeza que deseja apagar este item?</p>
+        <p id="delete-modal-text" style="margin-bottom: 25px; color: #666; line-height: 1.5;">Tem a certeza que deseja apagar este item?</p>
         <div style="display: flex; gap: 10px; justify-content: center;">
             <button class="btn-cancel" onclick="window.closeDeleteModal()">Cancelar</button>
             <button class="btn-add" style="background:var(--danger)" id="confirm-delete-btn" onclick="window.confirmDelete()">Confirmar</button>
@@ -279,16 +279,16 @@
     <button onclick="window.toggleSelectionMode()" style="background:white; border:none; color:var(--chocolate); padding:8px 16px; border-radius:20px; cursor:pointer; font-size:0.85rem; font-weight:bold">Cancelar</button>
 </div>
 
-<div style="position:fixed; bottom:10px; right:10px; opacity:0.3; font-size:0.7rem; pointer-events:none" id="user-badge"></div>
+<div style="position:fixed; bottom:10px; right:10px; opacity:0.3; font-size:0.7rem; pointer-events:none" id="sys-status">OFFLINE FIRST (GitHub)</div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
     import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
     import { getFirestore, collection, doc, setDoc, addDoc, updateDoc, deleteDoc, onSnapshot, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-    // --- Access Control ---
+    // --- Access Control (Simulated Hash as requested) ---
     const _0x5a1b = (s) => s.split('').reduce((a,b)=>{a=((a<<5)-a)+b.charCodeAt(0);return a&a},0);
-    const _0x1c8a = 1541063;
+    const _0x1c8a = 1541063; // Password is "1234"
 
     window.checkAccess = () => {
         const inp = document.getElementById('lock-pass');
@@ -301,7 +301,7 @@
                 if (typeof state !== 'undefined' && state.items.length === 0) initApp();
             }, 500);
         } else {
-            msg.innerText = "Senha incorreta";
+            msg.innerText = "Palavra-passe incorreta";
             inp.value = '';
             setTimeout(() => msg.innerText = '', 2000);
         }
@@ -320,6 +320,14 @@
     // --- State & Config ---
     let app, auth, db, appId;
     let isOffline = false;
+
+    // --- Auto-Resize Global para Caixas de Texto ---
+    document.addEventListener('input', function(e) {
+        if(e.target.tagName.toLowerCase() === 'textarea') {
+            e.target.style.height = 'auto';
+            e.target.style.height = (e.target.scrollHeight) + 'px';
+        }
+    });
 
     const ICON_LIB = ['folder', 'file-text', 'star', 'heart', 'briefcase', 'coffee', 'sun', 'moon', 'music', 'camera', 'shopping-bag', 'gift', 'map', 'compass', 'anchor', 'feather', 'key', 'lock', 'bell', 'bookmark', 'image'];
     const BIBLE_BOOKS = [
@@ -748,11 +756,23 @@
         const genericItems = state.items.filter(i => i.parentId === 'saude' && !['menstrual_profile', 'menstrual_cycle', 'health_weight', 'health_med', 'health_food'].includes(i.type));
 
         const dietContent = diet && (diet.content.breakfast || diet.content.lunch || diet.content.dinner) ? `
-            <div style="font-size:0.85rem; color:#555; max-height:250px; overflow-y:auto; display:flex; flex-direction:column; gap:10px;">
-                <div><strong style="color:var(--gold)">☕ Café da Manhã (${diet.content.breakfastTime})</strong><br>${diet.content.breakfast || '-'}</div>
-                <div><strong style="color:var(--gold)">🍲 Almoço (${diet.content.lunchTime})</strong><br>${diet.content.lunch || '-'}</div>
-                <div><strong style="color:var(--gold)">🥗 Jantar (${diet.content.dinnerTime})</strong><br>${diet.content.dinner || '-'}</div>
-                <div><strong style="color:var(--chocolate)">⏳ Horário de Jejum</strong><br>${diet.content.fastingStart} às ${diet.content.fastingEnd}</div>
+            <div style="font-size:0.85rem; color:#555; max-height:250px; overflow-y:auto; display:flex; flex-direction:column; gap:15px;">
+                <div style="background:#fdfdfd; padding:10px; border-radius:8px; border:1px solid #eee">
+                    <strong style="color:var(--gold); display:flex; justify-content:space-between"><span>☕ Café da Manhã</span> <span>${diet.content.breakfastTime}</span></strong>
+                    <div style="margin-top:5px; white-space:pre-wrap; line-height:1.4">${diet.content.breakfast || '-'}</div>
+                </div>
+                <div style="background:#fdfdfd; padding:10px; border-radius:8px; border:1px solid #eee">
+                    <strong style="color:var(--gold); display:flex; justify-content:space-between"><span>🍲 Almoço</span> <span>${diet.content.lunchTime}</span></strong>
+                    <div style="margin-top:5px; white-space:pre-wrap; line-height:1.4">${diet.content.lunch || '-'}</div>
+                </div>
+                <div style="background:#fdfdfd; padding:10px; border-radius:8px; border:1px solid #eee">
+                    <strong style="color:var(--gold); display:flex; justify-content:space-between"><span>🥗 Jantar</span> <span>${diet.content.dinnerTime}</span></strong>
+                    <div style="margin-top:5px; white-space:pre-wrap; line-height:1.4">${diet.content.dinner || '-'}</div>
+                </div>
+                <div style="background:#FFF3E0; padding:10px; border-radius:8px; border:1px solid rgba(197, 160, 89, 0.2); display:flex; justify-content:space-between; align-items:center">
+                    <strong style="color:var(--chocolate)">⏳ Horário de Jejum</strong>
+                    <span style="font-weight:bold; color:var(--chocolate)">${diet.content.fastingStart} às ${diet.content.fastingEnd}</span>
+                </div>
             </div>
         ` : '<div style="opacity:0.5; font-size:0.8rem">Nenhuma dieta configurada.</div>';
 
@@ -1439,7 +1459,7 @@
     window.deleteWeightHistoryItem = async (index) => {
         if (!confirm("Excluir registro?")) return;
         const wItem = state.items.find(i => i.type === 'health_weight');
-        let history = [...wItem.content.history].sort((a,b) => new Date(b.date) - new Date(a.date));
+        let history = [...(wItem.content.history || [])].sort((a,b) => new Date(b.date) - new Date(a.date));
         history.splice(index, 1);
         let newCurrent = history.length > 0 ? history[0].weight : wItem.content.startWeight;
         
@@ -1461,7 +1481,7 @@
         let title = editingId ? 'Editar' : 'Novo';
         if (type === 'rename') title = 'Renomear';
         
-        const inp = (id, lbl, pl, val='', type='text') => `<div class="form-group"><label>${lbl}</label><input type="${type}" id="${id}" class="form-control" placeholder="${pl}" value="${val}" autocomplete="off"></div>`;
+        const inp = (id, lbl, pl, val='', type='text', step='') => `<div class="form-group"><label>${lbl}</label><input type="${type}" id="${id}" class="form-control" placeholder="${pl}" value="${val}" autocomplete="off" ${step ? `step="${step}"` : ''}></div>`;
         const item = editingId ? state.items.find(i=>i.id===editingId) : null;
         const v = (key) => item && item.content ? item.content[key] || '' : '';
         const n = () => item ? item.name : '';
@@ -1493,7 +1513,17 @@
                 html = inp('f-name', 'Descrição', 'Ex: Salário', n()) + `<div class="form-group"><label>Valor</label><input type="number" id="f-val" class="form-control" value="${v('value')}" autocomplete="off"></div>` + `<div class="form-group"><label>Parcelas/Repetições</label><input type="number" id="f-par" class="form-control" value="1" autocomplete="off"></div>` + `<div class="form-group"><label>Vencimento/Data</label><input type="date" id="f-due" class="form-control" value="${v('due') || new Date().toISOString().split('T')[0]}" autocomplete="off"></div>`; 
                 break;
             case 'piggy': html = inp('f-name', 'Objetivo', '', n()) + inp('f-target', 'Valor Alvo', '', v('target')) + inp('f-months', 'Meses', '', v('months')); break;
-            case 'health_weight_config': title='Config Peso'; html = inp('f-w-start','Peso Inicial (kg)',0,v('startWeight')) + inp('f-w-height','Altura (m)', 'Ex: 1.70', v('height')) + inp('f-w-target','Meta (kg)',0,v('target')) + `<div class="form-group"><label>Início</label><input type="date" id="f-w-date" class="form-control" value="${v('startDate')||new Date().toISOString().split('T')[0]}" autocomplete="off"></div>` + inp('f-w-period','Prazo (Meses)',12,v('periodMonths')) + `<button class="btn-add" style="width:100%; background:var(--danger); justify-content:center; margin-top:15px;" onclick="window.resetWeightData()"><i data-lucide="trash-2" style="width:16px"></i> Resetar Dados</button>`; break;
+            case 'health_weight_config': 
+                title='Configurar Peso'; 
+                html = `
+                    ${inp('f-w-start','Peso Inicial (kg)','Ex: 128',v('startWeight'),'number','0.01')}
+                    ${inp('f-w-height','Altura (m)','Ex: 1.70',v('height'),'number','0.01')}
+                    ${inp('f-w-target','Meta Final (kg)','Ex: 60',v('target'),'number','0.01')}
+                    <div class="form-group"><label>Data de Início</label><input type="date" id="f-w-date" class="form-control" value="${v('startDate')||new Date().toISOString().split('T')[0]}" autocomplete="off"></div>
+                    ${inp('f-w-period','Prazo (Meses)','Ex: 10',v('periodMonths'),'number')}
+                    <button class="btn-add" style="width:100%; background:var(--danger); justify-content:center; margin-top:15px;" onclick="window.resetWeightData()"><i data-lucide="trash-2" style="width:16px"></i> Resetar Dados</button>
+                `; 
+                break;
             case 'health_weight_register': 
                 title = 'Registrar Peso';
                 const hwItem = state.items.find(i => i.type === 'health_weight');
@@ -1503,7 +1533,7 @@
                         <h4 style="margin-bottom:10px; font-size:0.9rem; color:var(--chocolate)">Novo Registro</h4>
                         <div style="display:flex; gap:10px">
                             <input type="date" id="f-reg-date" class="form-control" value="${new Date().toISOString().split('T')[0]}" autocomplete="off">
-                            <input type="number" id="f-reg-weight" class="form-control" placeholder="Peso (kg)" autocomplete="off">
+                            <input type="number" step="0.01" id="f-reg-weight" class="form-control" placeholder="Peso (kg)" autocomplete="off">
                             <button class="btn-add" onclick="window.saveItem('add_weight_entry')">Salvar</button>
                         </div>
                     </div>
@@ -1528,28 +1558,38 @@
                 let sortedHist = [...wItem.content.history].sort((a,b) => new Date(b.date) - new Date(a.date));
                 const histItem = sortedHist[state.editingHistoryIndex];
                 html = `<div class="form-group"><label>Data</label><input type="date" id="f-reg-date" class="form-control" value="${histItem.date}" autocomplete="off"></div>` + 
-                       `<div class="form-group"><label>Peso (kg)</label><input type="number" id="f-reg-weight" class="form-control" value="${histItem.weight}" autocomplete="off"></div>`;
+                       `<div class="form-group"><label>Peso (kg)</label><input type="number" step="0.01" id="f-reg-weight" class="form-control" value="${histItem.weight}" autocomplete="off"></div>`;
                 break;
             case 'health_med': html = inp('f-name','Remédio','',n()) + inp('f-time','Horário','',v('time')) + inp('f-inst','Instruções','',v('instructions')); break;
             case 'health_food': 
                 title='Dieta e Jejum'; 
                 const df = item && item.content ? item.content : (state.items.find(i=>i.type==='health_food')?.content || {});
                 html=`
-                    <div style="display:grid; grid-template-columns: 100px 1fr; gap:10px; margin-bottom:10px;">
-                        <input type="time" id="f-d-bt" class="form-control" value="${df.breakfastTime||'08:00'}">
-                        <input type="text" id="f-d-b" class="form-control" placeholder="Café da manhã..." value="${df.breakfast||''}" autocomplete="off">
-                        
-                        <input type="time" id="f-d-lt" class="form-control" value="${df.lunchTime||'12:30'}">
-                        <input type="text" id="f-d-l" class="form-control" placeholder="Almoço..." value="${df.lunch||''}" autocomplete="off">
-                        
-                        <input type="time" id="f-d-dt" class="form-control" value="${df.dinnerTime||'19:00'}">
-                        <input type="text" id="f-d-d" class="form-control" placeholder="Jantar..." value="${df.dinner||''}" autocomplete="off">
+                    <div style="display:flex; flex-direction: column; gap:15px; margin-bottom:10px;">
+                        <div>
+                            <label style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px; font-size:0.8rem; font-weight:bold; color:var(--chocolate)">
+                                ☕ Café da manhã <input type="time" id="f-d-bt" class="form-control" style="width:100px; padding:6px; margin:0;" value="${df.breakfastTime||'08:00'}">
+                            </label>
+                            <textarea id="f-d-b" class="form-control" placeholder="Descreva o cardápio e quantidades do café da manhã..." style="min-height:80px;">${df.breakfast||''}</textarea>
+                        </div>
+                        <div>
+                            <label style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px; font-size:0.8rem; font-weight:bold; color:var(--chocolate)">
+                                🍲 Almoço <input type="time" id="f-d-lt" class="form-control" style="width:100px; padding:6px; margin:0;" value="${df.lunchTime||'12:30'}">
+                            </label>
+                            <textarea id="f-d-l" class="form-control" placeholder="Descreva o cardápio e quantidades do almoço..." style="min-height:80px;">${df.lunch||''}</textarea>
+                        </div>
+                        <div>
+                            <label style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px; font-size:0.8rem; font-weight:bold; color:var(--chocolate)">
+                                🥗 Jantar <input type="time" id="f-d-dt" class="form-control" style="width:100px; padding:6px; margin:0;" value="${df.dinnerTime||'19:00'}">
+                            </label>
+                            <textarea id="f-d-d" class="form-control" placeholder="Descreva o cardápio e quantidades do jantar..." style="min-height:80px;">${df.dinner||''}</textarea>
+                        </div>
                     </div>
-                    <div class="form-group" style="border-top:1px solid #eee; padding-top:10px; margin-top:15px">
-                        <label style="color:var(--chocolate)">Horário de Jejum</label>
+                    <div class="form-group" style="border-top:1px solid #eee; padding-top:15px; margin-top:15px">
+                        <label style="color:var(--chocolate); margin-bottom:10px; display:block;">⏳ Horário de Jejum Intermitente</label>
                         <div style="display:flex; gap:10px; align-items:center;">
-                            Início: <input type="time" id="f-d-fs" class="form-control" value="${df.fastingStart||'20:00'}">
-                            Fim: <input type="time" id="f-d-fe" class="form-control" value="${df.fastingEnd||'08:00'}">
+                            <div style="flex:1"><small style="color:#888; text-transform:uppercase; font-weight:bold">Início</small><input type="time" id="f-d-fs" class="form-control" value="${df.fastingStart||'20:00'}"></div>
+                            <div style="flex:1"><small style="color:#888; text-transform:uppercase; font-weight:bold">Fim</small><input type="time" id="f-d-fe" class="form-control" value="${df.fastingEnd||'08:00'}"></div>
                         </div>
                     </div>
                 `; 
@@ -1670,6 +1710,14 @@
              actions.innerHTML = `<button class="btn-cancel" style="width:100%" onclick="window.closeModal()">Fechar</button>`;
         }
         
+        // Ajusta o tamanho das caixas de texto assim que o modal abre
+        setTimeout(() => {
+            document.querySelectorAll('textarea').forEach(ta => {
+                ta.style.height = 'auto';
+                ta.style.height = ta.scrollHeight + 'px';
+            });
+        }, 20);
+
         overlay.style.display = 'flex'; setTimeout(() => { overlay.classList.add('open'); if(state.selectedIcon) document.getElementById(`icon-opt-${state.selectedIcon}`).classList.add('selected'); if(window.lucide) window.lucide.createIcons(); }, 10);
     };
 
@@ -1757,23 +1805,31 @@
                 if(state.editingId) await _updateDoc(isOffline?{id:state.editingId}:doc(db,'artifacts',appId,'users',state.user.uid,'items',state.editingId), data); else await _addDoc(coll, data);
             }
             else if(type === 'health_weight_config') {
-                 const startW = getVal('f-w-start'); const targetW = getVal('f-w-target');
-                 if(state.editingId) await _updateDoc(isOffline?{id:state.editingId}:doc(db,'artifacts',appId,'users',state.user.uid,'items',state.editingId), { 'content.startWeight': startW, 'content.target': targetW, 'content.startDate': getVal('f-w-date'), 'content.periodMonths': getVal('f-w-period'), 'content.height': getVal('f-w-height') });
-                 else await _addDoc(coll, { parentId: 'saude', type: 'health_weight', name: 'Peso', content: { current: startW, startWeight: startW, target: targetW, startDate: getVal('f-w-date'), periodMonths: getVal('f-w-period'), height: getVal('f-w-height'), history: [] } });
+                 const startW = parseFloat(getVal('f-w-start').replace(',', '.')) || 0;
+                 const targetW = parseFloat(getVal('f-w-target').replace(',', '.')) || 0;
+                 const heightW = parseFloat(getVal('f-w-height').replace(',', '.')) || 0;
+                 const periodM = parseInt(getVal('f-w-period')) || 1;
+
+                 if(state.editingId) await _updateDoc(isOffline?{id:state.editingId}:doc(db,'artifacts',appId,'users',state.user.uid,'items',state.editingId), { 'content.startWeight': startW, 'content.target': targetW, 'content.startDate': getVal('f-w-date'), 'content.periodMonths': periodM, 'content.height': heightW });
+                 else await _addDoc(coll, { parentId: 'saude', type: 'health_weight', name: 'Peso', content: { current: startW, startWeight: startW, target: targetW, startDate: getVal('f-w-date'), periodMonths: periodM, height: heightW, history: [] } });
             }
             else if(type === 'add_weight_entry') { 
-                const regW = parseFloat(getVal('f-reg-weight'));
+                const regW = parseFloat(getVal('f-reg-weight').replace(',', '.'));
                 if(regW) {
                     const wItem = state.items.find(i => i.type === 'health_weight');
-                    await _updateDoc(isOffline?{id:wItem.id}:doc(db,'artifacts',appId,'users',state.user.uid,'items',wItem.id), { 'content.current': regW, 'content.history': [...wItem.content.history, { date: getVal('f-reg-date'), weight: regW }] });
+                    const newHistory = [...(wItem.content.history||[]), { date: getVal('f-reg-date'), weight: regW }];
+                    await _updateDoc(isOffline?{id:wItem.id}:doc(db,'artifacts',appId,'users',state.user.uid,'items',wItem.id), { 'content.current': regW, 'content.history': newHistory });
                     window.openModal('health_weight_register');
+                    return;
+                } else {
+                    window.showToast("Informe o peso", "error");
                     return;
                 }
             }
             else if(type === 'weight_history_edit') {
                 const wItem = state.items.find(i => i.type === 'health_weight');
-                let history = [...wItem.content.history].sort((a,b) => new Date(b.date) - new Date(a.date));
-                history[state.editingHistoryIndex] = { date: getVal('f-reg-date'), weight: parseFloat(getVal('f-reg-weight')) };
+                let history = [...(wItem.content.history||[])].sort((a,b) => new Date(b.date) - new Date(a.date));
+                history[state.editingHistoryIndex] = { date: getVal('f-reg-date'), weight: parseFloat(getVal('f-reg-weight').replace(',', '.')) };
                 history.sort((a,b) => new Date(b.date) - new Date(a.date));
                 const newCurrent = history.length > 0 ? history[0].weight : wItem.content.startWeight;
                 await _updateDoc(isOffline?{id:wItem.id}:doc(db,'artifacts',appId,'users',state.user.uid,'items',wItem.id), { 'content.history': history, 'content.current': newCurrent });
