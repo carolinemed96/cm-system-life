@@ -804,7 +804,12 @@
                             <div style="font-size:0.8rem; color:#888">${stats ? `Inicial: ${stats.startWeight}kg | Meta Final: ${stats.target}kg` : 'Configure sua meta'}</div>
                         </div>
                     </div>
-                    ${stats ? `<button class="btn-add" style="padding:5px 15px; font-size:0.7rem" onclick="window.openModal('health_weight_register')">Pesar</button>` : `<button class="btn-add" onclick="window.openModal('health_weight_config')">Configurar</button>`}
+                    ${stats ? `
+                    <div style="display:flex; gap:5px;">
+                        <button class="btn-add" style="padding:5px 15px; font-size:0.7rem" onclick="window.openModal('health_weight_register')">Pesar</button>
+                        <button class="btn-cancel" style="padding:5px 8px; font-size:0.7rem" onclick="window.openModal('health_weight_config', '${weightItem.id}')"><i data-lucide="settings" style="width:14px"></i></button>
+                    </div>
+                    ` : `<button class="btn-add" onclick="window.openModal('health_weight_config')">Configurar</button>`}
                 </div>
                 ${stats ? `
                     <div style="margin-top:20px; display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; text-align:center">
