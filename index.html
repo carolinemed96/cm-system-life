@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html lang="pt-pt">
+<html lang="pt-PT">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Caroline Medeiros - Organizador Premium</title>
     
     <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
     
     <style>
         :root {
@@ -29,14 +30,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', 'Segoe UI', sans-serif; }
         h1, h2, h3, .monogram { font-family: 'Playfair Display', 'Georgia', serif; }
 
-        body {
-            background-color: var(--off-white);
-            color: var(--text-main);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow-x: hidden;
-        }
+        body { background-color: var(--off-white); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
 
         /* --- Scrollbar --- */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
@@ -45,12 +39,7 @@
         ::-webkit-scrollbar-thumb:hover { background: var(--gold); }
 
         /* --- Header --- */
-        header {
-            padding: 20px 20px 15px; text-align: center;
-            background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(197, 160, 89, 0.2);
-            position: sticky; top: 0; z-index: 50;
-        }
+        header { padding: 20px 20px 15px; text-align: center; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(197, 160, 89, 0.2); position: sticky; top: 0; z-index: 50; }
         .monogram { font-size: 2.2rem; letter-spacing: 2px; color: var(--chocolate); line-height: 1; }
         .brand-name { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 3px; color: var(--gold); font-weight: 700; margin-top: 4px; }
         .date-time-display { font-size: 0.75rem; color: #8D6E63; margin-top: 8px; font-weight: 500; }
@@ -66,53 +55,11 @@
         .section-header h2 { color: var(--chocolate); }
 
         /* --- Cards & Stacking Logic --- */
-        .grid-container { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
-            gap: 20px; 
-            overflow: visible !important; 
-            contain: none !important;
-        }
-        
-        .card { 
-            background: var(--bg-card); 
-            padding: 25px; 
-            border-radius: 24px; 
-            border: 1px solid rgba(0,0,0,0.03); 
-            box-shadow: var(--shadow); 
-            cursor: pointer; 
-            transition: var(--transition); 
-            display: flex; 
-            align-items: center; 
-            gap: 15px; 
-            position: relative; 
-            overflow: visible !important; 
-            z-index: 1;
-        }
-        
-        .card:hover { 
-            transform: translateY(-4px); 
-            box-shadow: var(--shadow-hover); 
-            border-color: rgba(197, 160, 89, 0.3); 
-            z-index: 10; 
-        }
+        .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; overflow: visible !important; contain: none !important; }
+        .card { background: var(--bg-card); padding: 25px; border-radius: 24px; border: 1px solid rgba(0,0,0,0.03); box-shadow: var(--shadow); cursor: pointer; transition: var(--transition); display: flex; align-items: center; gap: 15px; position: relative; overflow: visible !important; z-index: 1; }
+        .card:hover { transform: translateY(-4px); box-shadow: var(--shadow-hover); border-color: rgba(197, 160, 89, 0.3); z-index: 10; }
 
-        /* Camada Superior Global */
-        .card:has(.create-menu-dropdown.show),
-        .finance-item:has(.create-menu-dropdown.show),
-        .piggy-card:has(.create-menu-dropdown.show),
-        div:has(> .create-menu-dropdown.show) {
-            z-index: 2147483647 !important; /* Max Int Z-Index */
-            transform: none !important; /* Remove contexto de empilhamento */
-            filter: none !important;
-            opacity: 1 !important;
-            perspective: none !important;
-            clip-path: none !important;
-            mask: none !important;
-            position: relative !important; 
-            box-shadow: 0 20px 50px rgba(0,0,0,0.2) !important; 
-            overflow: visible !important;
-        }
+        .card:has(.create-menu-dropdown.show), .finance-item:has(.create-menu-dropdown.show), .piggy-card:has(.create-menu-dropdown.show), div:has(> .create-menu-dropdown.show) { z-index: 2147483647 !important; transform: none !important; filter: none !important; opacity: 1 !important; perspective: none !important; clip-path: none !important; mask: none !important; position: relative !important; box-shadow: 0 20px 50px rgba(0,0,0,0.2) !important; overflow: visible !important; }
         
         .card.selected { border: 2px solid var(--success); background-color: #F1F8E9; }
         .card.selection-mode { cursor: pointer; }
@@ -133,55 +80,17 @@
         @keyframes pulse-gold { 0% { box-shadow: 0 0 0 0 rgba(197, 160, 89, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(197, 160, 89, 0); } 100% { box-shadow: 0 0 0 0 rgba(197, 160, 89, 0); } }
 
         /* --- Lock Screen --- */
-        #lock-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #FDFBF7;
-            z-index: 100000;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            transition: opacity 0.5s;
-        }
-        .lock-container {
-            text-align: center;
-            animation: fadeIn 0.5s ease-out;
-        }
-        .lock-input {
-            margin-top: 20px;
-            padding: 10px 15px;
-            font-size: 1.2rem;
-            letter-spacing: 5px;
-            text-align: center;
-            border: 1px solid var(--gold);
-            border-radius: 30px;
-            outline: none;
-            width: 200px;
-            background: white;
-            color: var(--chocolate);
-        }
-        .lock-btn {
-            margin-top: 15px;
-            background: var(--chocolate);
-            color: white;
-            border: none;
-            padding: 10px 30px;
-            border-radius: 30px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: 0.2s;
-        }
+        #lock-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #FDFBF7; z-index: 100000; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.5s; }
+        .lock-container { text-align: center; animation: fadeIn 0.5s ease-out; }
+        .lock-input { margin-top: 20px; padding: 10px 15px; font-size: 1.2rem; letter-spacing: 5px; text-align: center; border: 1px solid var(--gold); border-radius: 30px; outline: none; width: 200px; background: white; color: var(--chocolate); }
+        .lock-btn { margin-top: 15px; background: var(--chocolate); color: white; border: none; padding: 10px 30px; border-radius: 30px; cursor: pointer; font-weight: 600; transition: 0.2s; }
         .lock-btn:hover { background: var(--chocolate-light); }
 
         /* --- Modals --- */
         #modal-overlay, #delete-modal-overlay, #file-preview-modal, #share-modal { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(62, 39, 35, 0.4); backdrop-filter: blur(4px); display: none; justify-content: center; align-items: center; z-index: 99999; opacity: 0; transition: opacity 0.3s; }
         #modal-overlay.open, #delete-modal-overlay.open, #file-preview-modal.open, #share-modal.open { opacity: 1; }
         .modal { background: white; padding: 35px; border-radius: 24px; width: 90%; max-width: 480px; max-height: 90vh; overflow-y: auto; transform: scale(0.95); transition: transform 0.3s; }
-        .modal.large { max-width: 600px; }
+        .modal.large { max-width: 800px; }
         #modal-overlay.open .modal, #delete-modal-overlay.open .modal, #file-preview-modal.open .modal, #share-modal.open .modal { transform: scale(1); }
         
         .form-group { margin-bottom: 20px; }
@@ -191,29 +100,9 @@
         textarea.form-control { min-height: 120px; resize: vertical; }
 
         /* --- Menus --- */
-        .create-menu-container { 
-            position: relative; 
-            overflow: visible !important; 
-        }
-        
-        .create-menu-container:has(.create-menu-dropdown.show) {
-            z-index: 2147483647 !important;
-        }
-
-        .create-menu-dropdown { 
-            position: absolute; 
-            top: 110%; 
-            right: 0; 
-            background: white; 
-            border: 1px solid #f0f0f0; 
-            border-radius: 16px; 
-            box-shadow: 0 10px 40px rgba(0,0,0,0.3) !important;
-            width: 240px; 
-            display: none; 
-            z-index: 2147483647 !important; 
-            overflow: hidden; 
-            animation: fadeIn 0.1s ease; 
-        }
+        .create-menu-container { position: relative; overflow: visible !important; }
+        .create-menu-container:has(.create-menu-dropdown.show) { z-index: 2147483647 !important; }
+        .create-menu-dropdown { position: absolute; top: 110%; right: 0; background: white; border: 1px solid #f0f0f0; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.3) !important; width: 240px; display: none; z-index: 2147483647 !important; overflow: hidden; animation: fadeIn 0.1s ease; }
         .create-menu-dropdown.show { display: block; }
         .create-menu-item { padding: 12px 20px; cursor: pointer; display: flex; align-items: center; gap: 12px; font-size: 0.9rem; color: #555; transition: 0.2s; }
         .create-menu-item:hover { background: #fdfaf5; color: var(--chocolate); padding-left: 25px; }
@@ -244,99 +133,61 @@
         .history-list { max-height: 200px; overflow-y: auto; margin-top: 15px; border-top: 1px solid #eee; }
         .history-item { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #f9f9f9; font-size: 0.9rem; }
         
-        /* Updated Minimalist Calendar Styles - NEW VISUALS */
+        /* Updated Minimalist Calendar Styles */
         .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-top: 10px; }
         .cal-header { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; font-size: 0.65rem; font-weight: 700; color: var(--chocolate); margin-bottom: 5px; opacity: 0.8; }
-        .cal-day { 
-            aspect-ratio: 1/1; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 50%; 
-            font-size: 0.85rem; color: #555; cursor: pointer; position: relative; border: 1px solid transparent; transition: 0.2s; margin: 2px; box-sizing: border-box;
-        }
+        .cal-day { aspect-ratio: 1/1; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 50%; font-size: 0.85rem; color: #555; cursor: pointer; position: relative; border: 1px solid transparent; transition: 0.2s; margin: 2px; box-sizing: border-box; }
         .cal-day:hover { background: #fDFBF7; border-color: rgba(197, 160, 89, 0.3); }
-        .cal-day.today { font-weight: 800; color: var(--chocolate); background: rgba(197, 160, 89, 0.1); }
+        .cal-day.today { font-weight: 800; border: 2px solid var(--chocolate); }
         
-        /* --- Indicators --- */
-        /* Contraceptive: Golden Circle around number */
-        .cal-day.contra-active { border: 1px solid var(--gold); }
+        .cal-day.period { background-color: #FFEBEE; border: 1px solid #FFCDD2; color: #C62828; font-weight: bold; }
+        .cal-day.fertile { background-color: #E8F5E9; border: 1px solid #C8E6C9; color: #2E7D32; font-weight: bold; }
+        .cal-day.contra-active { border: 2px dashed var(--gold); }
         
-        /* Top Zone (Symbols Above) */
-        .cal-top-zone {
-            position: absolute;
-            top: 4px;
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 2px;
-            height: 6px;
-        }
+        .cal-legend { display: flex; gap: 15px; justify-content: center; margin-top: 15px; font-size: 0.75rem; color: #666; flex-wrap: wrap; }
+        .leg-item { display: flex; align-items: center; gap: 5px; }
+        .leg-color { width: 12px; height: 12px; border-radius: 50%; }
 
-        /* Bottom Zone (Symbols Below) */
-        .cal-bottom-zone {
-            position: absolute;
-            bottom: 4px;
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 2px;
-            height: 6px;
-        }
+        .flow-opt { transition: 0.2s; }
+        .flow-opt:hover { background: #fafafa; }
+        .flow-opt.active { background: #FFEBEE; border-color: #C62828; color: #C62828; font-weight: bold; }
 
-        /* Menstruation: Thin brown line in Bottom Zone */
-        .cal-line-period {
-            width: 14px;
-            height: 2px;
-            background-color: var(--period-line);
-            border-radius: 1px;
-        }
-
-        /* Fertile Period: Golden dot in Top Zone */
-        .cal-dot-fertile {
-            width: 4px;
-            height: 4px;
-            background: var(--gold);
-            border-radius: 50%;
-        }
-
-        /* Hearts */
+        .cal-top-zone { position: absolute; top: 4px; width: 100%; display: flex; justify-content: center; align-items: center; gap: 2px; height: 6px; }
         .cal-heart { width: 8px; height: 8px; }
         .cal-heart.safe { color: var(--gold); fill: var(--gold); }
         .cal-heart.unsafe { color: var(--heart-unsafe); fill: var(--heart-unsafe); }
         
-        .alert-card { background: #FFF8E1; border-left: 4px solid var(--gold); padding: 12px; border-radius: 8px; display: flex; align-items: center; gap: 10px; margin-bottom: 10px; font-size: 0.9rem; }
-        .alert-card.danger { background: #FFEBEE; border-color: var(--danger); color: var(--danger); }
         .verse-card { background: transparent; border: 1px solid rgba(197, 160, 89, 0.2); padding: 12px 15px; margin-bottom: 20px; border-radius: 12px; font-size: 0.85rem; color: #666; display: flex; flex-direction: column; gap: 4px; }
         .verse-text { font-family: 'Georgia', serif; font-style: italic; color: var(--chocolate); line-height: 1.4; }
         .verse-ref { font-weight: 700; font-size: 0.7rem; color: var(--gold); text-transform: uppercase; text-align: right; }
-        .report-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
-        .report-table th, .report-table td { padding: 10px; border-bottom: 1px solid #eee; text-align: left; }
-        .report-table th { color: var(--chocolate); font-weight: 700; text-transform: uppercase; font-size: 0.75rem; }
         
         #file-preview-content iframe { width: 100%; height: 500px; border: none; background: #eee; }
         #file-preview-content img { max-width: 100%; height: auto; display: block; margin: 0 auto; }
         
-        /* Time Navigation */
         .time-navigator { display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 20px; }
         .nav-btn { background: white; border: 1px solid #eee; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--chocolate); }
         .nav-btn:hover { background: var(--gold); color: white; border-color: var(--gold); }
         .current-date-label { font-family: 'Playfair Display', serif; font-size: 1.2rem; color: var(--chocolate); min-width: 180px; text-align: center; }
 
-        /* Icon Grid */
         .icon-grid-selector { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-top: 10px; }
         .icon-option { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border: 1px solid #eee; border-radius: 8px; cursor: pointer; transition: 0.2s; color: var(--gold); }
         .icon-option:hover, .icon-option.selected { background: var(--off-white); border-color: var(--gold); transform: scale(1.1); }
 
-        /* Image File Card */
         .file-card-image-container { width: 100%; aspect-ratio: 4/5; overflow: hidden; border-radius: 12px 12px 0 0; background: #eee; position: relative; }
         .file-card-image { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
         .file-card-image:hover { transform: scale(1.05); }
 
-        /* Visionboard Specifics */
+        /* Visionboard Specifics Updated */
         .vision-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; margin-top: 15px; }
-        .vision-item { display: flex; flex-direction: column; gap: 8px; transition: transform 0.3s; cursor: pointer; }
+        .vision-item { display: flex; flex-direction: column; gap: 8px; transition: transform 0.3s; cursor: pointer; position: relative; }
         .vision-item:hover { transform: scale(1.02); }
         .vision-img { width: 100%; aspect-ratio: 3/4; object-fit: cover; border-radius: 16px; box-shadow: var(--shadow); }
         .vision-caption { font-size: 0.75rem; text-align: center; color: var(--chocolate); font-weight: 600; min-height: 1rem; }
+        
+        .vision-actions { display: flex; gap: 5px; position: absolute; top: 5px; right: 5px; background: rgba(255,255,255,0.9); padding: 5px; border-radius: 8px; opacity: 0; transition: 0.3s; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .vision-item:hover .vision-actions { opacity: 1; }
+        .vision-actions i { cursor: pointer; width: 16px; color: var(--chocolate); transition: 0.2s; }
+        .vision-actions i:hover { color: var(--gold); }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes slideInRight { from { opacity: 0; transform: translateX(50px); } to { opacity: 1; transform: translateX(0); } }
@@ -349,7 +200,7 @@
 <div id="lock-screen">
     <div class="monogram" style="font-size: 3rem; margin-bottom: 20px;">CM</div>
     <div style="font-family: 'Playfair Display', serif; color: var(--chocolate); margin-bottom: 10px;">Caroline Medeiros</div>
-    <input type="password" id="lock-pass" class="lock-input" placeholder="Senha" maxlength="4" />
+    <input type="password" id="lock-pass" class="lock-input" placeholder="Senha" maxlength="4" autocomplete="off" />
     <button class="lock-btn" onclick="checkAccess()">Entrar</button>
     <div id="lock-msg" style="color: var(--danger); margin-top: 10px; height: 20px; font-size: 0.8rem;"></div>
 </div>
@@ -388,7 +239,7 @@
                 <button onclick="window.closePreviewModal()" style="background:none; border:none; cursor:pointer"><i data-lucide="x"></i></button>
             </div>
         </div>
-        <div id="file-preview-content" style="max-height:60vh; overflow-y:auto; text-align:center;"></div>
+        <div id="file-preview-content" style="max-height:60vh; overflow-y:auto; text-align:center; display:flex; justify-content:center;"></div>
         <div id="preview-caption" style="margin-top:15px; font-style:italic; color:#666; text-align:center;"></div>
     </div>
 </div>
@@ -600,7 +451,6 @@
 
     // --- Initialization ---
     const initApp = async () => {
-        // Fallback safety for infinite loading
         setTimeout(() => {
             const loader = document.getElementById('loading-screen');
             if(loader && loader.style.display !== 'none') {
@@ -615,7 +465,7 @@
         setInterval(() => {
             const now = new Date();
             const el = document.getElementById('clock-display');
-            if(el) el.innerText = now.toLocaleDateString('pt-PT', { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' });
+            if(el) el.innerText = now.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' });
         }, 1000);
 
         if(isOffline) {
@@ -737,6 +587,12 @@
             if(item && item.type !== 'folder' && item.type !== 'custom_area') renderToolItem(main, item);
             else renderGeneralFolder(main, currentId);
         }
+        
+        // Ensure autocomplete off for all dynamic elements
+        document.querySelectorAll('input, textarea, select').forEach(el => {
+            el.setAttribute('autocomplete', 'off');
+        });
+
         if(window.lucide) window.lucide.createIcons();
     };
 
@@ -867,13 +723,20 @@
         const { current, target, startDate, periodMonths, history, startWeight } = weightItem.content;
         const monthsPassed = Math.max(0, (new Date().getFullYear() - new Date(startDate).getFullYear()) * 12 + (new Date().getMonth() - new Date(startDate).getMonth()));
         const monthsRemaining = Math.max(1, periodMonths - monthsPassed);
-        const weightToLose = parseFloat(current) - parseFloat(target);
-        const totalLossRequired = parseFloat(startWeight) - parseFloat(target);
-        const mma = weightToLose > 0 ? (weightToLose / monthsRemaining).toFixed(2) : 0;
-        const sortedHistory = [...history].sort((a,b) => new Date(b.date) - new Date(a.date));
-        const progress = totalLossRequired > 0 ? ((parseFloat(startWeight) - parseFloat(current)) / totalLossRequired * 100) : 0;
         
-        return { current, target, startWeight, mma, progress: Math.min(100, Math.max(0, progress)), monthsRemaining, totalLossRequired, periodMonths, startDate, history: sortedHistory, weightToLose };
+        const currentWeight = parseFloat(current);
+        const weightToLose = currentWeight - parseFloat(target);
+        const mma = (monthsRemaining > 0 && weightToLose > 0) ? (weightToLose / monthsRemaining).toFixed(2) : 0;
+        
+        const height = parseFloat(weightItem.content.height) || 0;
+        const imc = height > 0 ? (currentWeight / (height * height)).toFixed(1) : '--';
+
+        const sortedHistory = [...history].sort((a,b) => new Date(b.date) - new Date(a.date));
+        
+        const totalLossRequired = parseFloat(startWeight) - parseFloat(target);
+        const progress = totalLossRequired > 0 ? ((parseFloat(startWeight) - currentWeight) / totalLossRequired * 100) : 0;
+        
+        return { current: currentWeight, target, startWeight, mma, imc, progress: Math.min(100, Math.max(0, progress)), monthsRemaining, weightToLose, history: sortedHistory };
     };
 
     const renderHealth = (el) => {
@@ -884,6 +747,15 @@
 
         const genericItems = state.items.filter(i => i.parentId === 'saude' && !['menstrual_profile', 'menstrual_cycle', 'health_weight', 'health_med', 'health_food'].includes(i.type));
 
+        const dietContent = diet && (diet.content.breakfast || diet.content.lunch || diet.content.dinner) ? `
+            <div style="font-size:0.85rem; color:#555; max-height:250px; overflow-y:auto; display:flex; flex-direction:column; gap:10px;">
+                <div><strong style="color:var(--gold)">☕ Café da Manhã (${diet.content.breakfastTime})</strong><br>${diet.content.breakfast || '-'}</div>
+                <div><strong style="color:var(--gold)">🍲 Almoço (${diet.content.lunchTime})</strong><br>${diet.content.lunch || '-'}</div>
+                <div><strong style="color:var(--gold)">🥗 Jantar (${diet.content.dinnerTime})</strong><br>${diet.content.dinner || '-'}</div>
+                <div><strong style="color:var(--chocolate)">⏳ Horário de Jejum</strong><br>${diet.content.fastingStart} às ${diet.content.fastingEnd}</div>
+            </div>
+        ` : '<div style="opacity:0.5; font-size:0.8rem">Nenhuma dieta configurada.</div>';
+
         el.innerHTML = `
             <div class="section-header"><h2>Saúde e Bem-estar</h2>${renderCreateButton()}</div>
             
@@ -892,10 +764,10 @@
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px">
                     <div style="display:flex; align-items:center; gap:8px">
                         <div style="width:32px; height:32px; background:#FFEBEE; border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--danger)"><i data-lucide="calendar-heart" style="width:16px"></i></div>
-                        <div style="font-weight:700; color:var(--chocolate); font-size:0.9rem">Ciclo</div>
+                        <div style="font-weight:700; color:var(--chocolate); font-size:0.9rem">Ciclo Menstrual</div>
                     </div>
                     <div style="display:flex; gap: 5px;">
-                        <button class="btn-add" style="padding:4px 10px; font-size:0.75rem" onclick="window.openModal('menstrual_log', window.toLocalDateStr(new Date()))">Marcar</button>
+                        <button class="btn-add" style="padding:4px 10px; font-size:0.75rem" onclick="window.openModal('menstrual_log', window.toLocalDateStr(new Date()))">Registrar Hoje</button>
                         <button class="btn-cancel" style="padding:4px 8px" onclick="window.openModal('menstrual_settings')"><i data-lucide="settings" style="width:12px"></i></button>
                     </div>
                 </div>
@@ -909,7 +781,7 @@
                         <div style="width:40px; height:40px; background:#FFF3E0; border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--chocolate)"><i data-lucide="scale"></i></div>
                         <div>
                             <div style="font-weight:700; color:var(--chocolate)">Controle de Peso</div>
-                            <div style="font-size:0.8rem; color:#888">${stats ? `Meta: ${stats.target}kg` : 'Configure sua meta'}</div>
+                            <div style="font-size:0.8rem; color:#888">${stats ? `Inicial: ${stats.startWeight}kg | Meta Final: ${stats.target}kg` : 'Configure sua meta'}</div>
                         </div>
                     </div>
                     ${stats ? `<button class="btn-add" style="padding:5px 15px; font-size:0.7rem" onclick="window.openModal('health_weight_register')">Pesar</button>` : `<button class="btn-add" onclick="window.openModal('health_weight_config')">Configurar</button>`}
@@ -917,12 +789,11 @@
                 ${stats ? `
                     <div style="margin-top:20px; display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; text-align:center">
                         <div><div style="font-size:1.5rem; font-weight:800; color:var(--chocolate)">${stats.current}</div><div style="font-size:0.7rem; text-transform:uppercase; color:#999; font-weight:600">Atual (kg)</div></div>
-                        <div><div style="font-size:1.5rem; font-weight:800; color:${stats.weightToLose <= 0 ? 'var(--success)' : 'var(--danger)'}">${stats.mma}</div><div style="font-size:0.7rem; text-transform:uppercase; color:#999; font-weight:600">Meta/Mês</div></div>
-                        <div><div style="font-size:1.5rem; font-weight:800; color:var(--gold)">${stats.monthsRemaining}</div><div style="font-size:0.7rem; text-transform:uppercase; color:#999; font-weight:600">Meses Rest.</div></div>
+                        <div><div style="font-size:1.5rem; font-weight:800; color:${stats.weightToLose <= 0 ? 'var(--success)' : 'var(--danger)'}">${stats.mma}</div><div style="font-size:0.7rem; text-transform:uppercase; color:#999; font-weight:600">Meta Mensal</div></div>
+                        <div><div style="font-size:1.5rem; font-weight:800; color:var(--gold)">${stats.imc}</div><div style="font-size:0.7rem; text-transform:uppercase; color:#999; font-weight:600">IMC</div></div>
                     </div>
                     <div class="weight-progress-bar"><div class="weight-progress-fill" style="width:${stats.progress}%"></div></div>
                     <div style="text-align:right; font-size:0.7rem; color:#888; margin-top:4px">${stats.progress.toFixed(0)}% da meta total</div>
-                    <div style="margin-top:15px; text-align:center; cursor:pointer; color:var(--gold); font-size:0.8rem; font-weight:600" onclick="window.openWeightHistory()">Ver Histórico Completo</div>
                 ` : ''}
             </div>
 
@@ -932,8 +803,8 @@
                     ${meds.length ? meds.map(m => `<div style="padding:10px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center"><div><b>${m.name}</b><br><small>${m.content.time} - ${m.content.instructions}</small></div><i data-lucide="trash-2" style="width:14px; cursor:pointer; color:#999" onclick="window.openDeleteModal('${m.id}','${m.name}')"></i></div>`).join('') : '<div style="opacity:0.5; font-size:0.8rem">Nenhum medicamento.</div>'}
                 </div>
                 <div class="card" style="display:block">
-                    <div style="display:flex; justify-content:space-between; margin-bottom:15px"><b>Dieta</b><button class="btn-add" style="padding:4px 8px" onclick="window.openModal('health_food')"><i data-lucide="edit-2" style="width:14px"></i></button></div>
-                    <div style="white-space:pre-wrap; font-size:0.85rem; color:#555; max-height:150px; overflow-y:auto">${diet ? diet.content.text : 'Nenhuma dieta cadastrada.'}</div>
+                    <div style="display:flex; justify-content:space-between; margin-bottom:15px"><b>Dieta e Jejum</b><button class="btn-add" style="padding:4px 8px" onclick="window.openModal('health_food')"><i data-lucide="edit-2" style="width:14px"></i></button></div>
+                    ${dietContent}
                 </div>
             </div>
 
@@ -967,7 +838,6 @@
         const daysInMonth = new Date(year, month + 1, 0).getDate();
         const firstDay = new Date(year, month, 1).getDay();
 
-        // Profile Data
         const profile = state.items.find(i => i.type === 'menstrual_profile');
         const logs = state.items.filter(i => i.type === 'menstrual_cycle');
         
@@ -1055,28 +925,34 @@
             const log = logs.find(l => l.content.date === dateStr);
 
             let classes = `cal-day ${isToday ? 'today' : ''}`;
+            if (isPeriod) classes += ' period';
+            else if (isFertile) classes += ' fertile';
+
             if (isContra) classes += ' contra-active';
 
             html += `
                 <div class="${classes}" onclick="window.openModal('menstrual_log', '${dateStr}')">
                     <div class="cal-top-zone">
-                        ${isFertile && !isPeriod ? `<div class="cal-dot-fertile"></div>` : ''}
                         ${log && log.content.sex && !log.content.protection ? `<i data-lucide="heart" class="cal-heart unsafe" stroke="none" fill="currentColor"></i>` : ''}
                         ${log && log.content.sex && log.content.protection ? `<i data-lucide="heart" class="cal-heart safe" stroke="none" fill="currentColor"></i>` : ''}
                     </div>
                     ${d}
-                    <div class="cal-bottom-zone">
-                        ${isPeriod ? `<div class="cal-line-period"></div>` : ''}
-                    </div>
                 </div>
             `;
         }
-        html += `</div>`;
+        html += `</div>
+        <div class="cal-legend">
+            <div class="leg-item"><div class="leg-color" style="background:#FFEBEE; border:1px solid #FFCDD2"></div> Menstruação</div>
+            ${!isHormonal ? `<div class="leg-item"><div class="leg-color" style="background:#E8F5E9; border:1px solid #C8E6C9"></div> Período Fértil</div>` : ''}
+            <div class="leg-item"><i data-lucide="heart" class="cal-heart unsafe" fill="currentColor"></i> Relação Desprotegida</div>
+            <div class="leg-item"><i data-lucide="heart" class="cal-heart safe" fill="currentColor"></i> Relação Protegida</div>
+        </div>
+        `;
         
         if (isHormonal) {
             html += `<div style="margin-top:10px; padding:10px; background:#f9f9f9; border-radius:8px; font-size:0.75rem; color:#666; text-align:center;">
                 <i data-lucide="info" style="width:12px; vertical-align:text-bottom"></i> 
-                Você utiliza método hormonal. A ovulação é inibida, portanto não existe período fértil.
+                Você utiliza método hormonal. A ovulação é inibida.
             </div>`;
         }
 
@@ -1235,8 +1111,33 @@
             localStorage.setItem('cm_premium_data', JSON.stringify(state.items));
             render();
         } else {
-            await _updateDoc({id}, {'content.images': item.content.images});
+            await _updateDoc(doc(db, 'artifacts', appId, 'users', state.user.uid, 'items', id), {'content.images': item.content.images});
         }
+    };
+
+    window.deleteVisionImage = async (id, idx) => {
+        if(!confirm("Excluir imagem?")) return;
+        const item = state.items.find(i => i.id === id);
+        const newImages = [...item.content.images];
+        newImages.splice(idx, 1);
+        await _updateDoc(isOffline ? {id} : doc(db, 'artifacts', appId, 'users', state.user.uid, 'items', id), { 'content.images': newImages });
+        render();
+    };
+
+    window.previewImage = (src, caption) => {
+        const overlay = document.getElementById('file-preview-modal');
+        const content = document.getElementById('file-preview-content');
+        const capEl = document.getElementById('preview-caption');
+        const downloadBtn = document.getElementById('preview-download-btn');
+        const title = document.getElementById('preview-filename');
+
+        title.innerText = "Visualização de Imagem";
+        capEl.innerText = caption || '';
+        downloadBtn.href = src;
+        downloadBtn.download = "imagem.png";
+
+        content.innerHTML = `<img src="${src}" style="max-height:70vh; object-fit:contain; border-radius:12px">`;
+        overlay.style.display = 'flex'; setTimeout(() => { overlay.classList.add('open'); window.lucide.createIcons(); }, 10);
     };
 
     const renderFinanceRoot = (el) => {
@@ -1357,7 +1258,7 @@
                     const timeMonths = p.content.months || 0;
                     const remaining = Math.max(0, target - saved);
                     const pct = target > 0 ? Math.min(100, (saved/target)*100) : 0;
-                    return `<div class="piggy-card"><div style="display:flex; justify-content:space-between"><b>${p.name}</b>${renderActionMenu(p.id, 'piggy', p.name)}</div><div style="font-size:0.8rem; color:#999; margin-bottom:5px">Prazo: ${timeMonths} meses</div><div style="font-size:1.8rem; font-weight:bold; color:var(--gold); margin:5px 0">R$ ${saved.toLocaleString('pt-BR',{minimumFractionDigits: 2})}</div><div style="color:${remaining > 0 ? 'var(--chocolate)':'var(--success)'}; font-size:0.8rem; font-weight:600">Restante: R$ ${remaining.toLocaleString('pt-BR',{minimumFractionDigits: 2})}</div><div class="progress-grid">${Array(20).fill(0).map((_,i) => `<div class="progress-block ${i<(pct/5)?'filled':''}"></div>`).join('')}</div><div style="display:flex; gap:5px; margin-top:15px"><input class="form-control" style="padding:8px" type="number" id="dep-${p.id}" placeholder="Depósito..."><button class="btn-add" onclick="window.makeDeposit('${p.id}')">OK</button></div></div>`;
+                    return `<div class="piggy-card"><div style="display:flex; justify-content:space-between"><b>${p.name}</b>${renderActionMenu(p.id, 'piggy', p.name)}</div><div style="font-size:0.8rem; color:#999; margin-bottom:5px">Prazo: ${timeMonths} meses</div><div style="font-size:1.8rem; font-weight:bold; color:var(--gold); margin:5px 0">R$ ${saved.toLocaleString('pt-BR',{minimumFractionDigits: 2})}</div><div style="color:${remaining > 0 ? 'var(--chocolate)':'var(--success)'}; font-size:0.8rem; font-weight:600">Restante: R$ ${remaining.toLocaleString('pt-BR',{minimumFractionDigits: 2})}</div><div class="progress-grid">${Array(20).fill(0).map((_,i) => `<div class="progress-block ${i<(pct/5)?'filled':''}"></div>`).join('')}</div><div style="display:flex; gap:5px; margin-top:15px"><input class="form-control" style="padding:8px" type="number" id="dep-${p.id}" placeholder="Depósito..." autocomplete="off"><button class="btn-add" onclick="window.makeDeposit('${p.id}')">OK</button></div></div>`;
                 }).join('')}
                 <div class="card" style="justify-content:center; min-height:200px; border:2px dashed #ddd; background:transparent; cursor:pointer" onclick="window.openModal('piggy')">
                     <div style="text-align:center; color:#999"><i data-lucide="plus" style="width:30px; height:30px"></i><br>Novo Objetivo</div>
@@ -1428,29 +1329,6 @@
         }).join('') : '<div style="grid-column:1/-1; text-align:center; padding:40px; color:#aaa">Esta pasta está vazia.</div>'}</div>`;
     };
 
-    window.openFilePreview = (id) => {
-        const item = state.items.find(i => i.id === id);
-        if (!item || item.type !== 'file') return;
-        const overlay = document.getElementById('file-preview-modal');
-        const content = document.getElementById('file-preview-content');
-        const caption = document.getElementById('preview-caption');
-        const downloadBtn = document.getElementById('preview-download-btn');
-        const title = document.getElementById('preview-filename');
-
-        title.innerText = item.name;
-        caption.innerText = item.content.caption || '';
-        downloadBtn.href = item.content.data;
-        downloadBtn.download = item.name;
-
-        const isImg = item.content.fileType.startsWith('image') || /\.(jpg|jpeg|png|gif|bmp|webp|heic)$/i.test(item.name);
-        if (isImg) { content.innerHTML = `<img src="${item.content.data}" alt="${item.name}">`; } 
-        else if (item.content.fileType === 'application/pdf') { content.innerHTML = `<iframe src="${item.content.data}"></iframe>`; } 
-        else { content.innerHTML = `<div style="padding:40px; color:#666"><i data-lucide="file" style="width:48px; height:48px; margin-bottom:10px"></i><br>Visualização não disponível.</div>`; }
-
-        overlay.style.display = 'flex'; setTimeout(() => { overlay.classList.add('open'); window.lucide.createIcons(); }, 10);
-    }
-    window.closePreviewModal = () => { const o = document.getElementById('file-preview-modal'); o.classList.remove('open'); setTimeout(() => o.style.display = 'none', 300); }
-
     const renderToolItem = (el, item) => {
         let content = '';
         if(item.type === 'note') content = `<div style="white-space:pre-wrap; line-height:1.6; color:#444">${item.content.text}</div>`;
@@ -1459,20 +1337,27 @@
             content = `
                 <div class="vision-grid">
                     ${images.map((img, idx) => `
-                        <div class="vision-item" onclick="window.editVisionCaption('${item.id}', ${idx})">
-                            <img src="${img.data}" class="vision-img">
-                            <div class="vision-caption">${img.caption || 'Adicionar legenda...'}</div>
+                        <div class="vision-item">
+                            <img src="${img.data}" class="vision-img" onclick="window.previewImage('${img.data}', '${img.caption || ''}')">
+                            <div class="vision-caption">${img.caption || ''}</div>
+                            <div class="vision-actions">
+                                <i data-lucide="edit-2" onclick="window.editVisionCaption('${item.id}', ${idx})"></i>
+                                <i data-lucide="trash-2" onclick="window.deleteVisionImage('${item.id}', ${idx})"></i>
+                            </div>
                         </div>
                     `).join('')}
                 </div>
-                ${images.length === 0 ? '<div style="text-align:center; opacity:0.5; padding:40px">Nenhuma imagem.</div>' : ''}
+                ${images.length === 0 ? '<div style="text-align:center; opacity:0.5; padding:40px">Nenhuma imagem adicionada.</div>' : ''}
+                <div style="margin-top: 20px; text-align:center;">
+                    <button class="btn-add" onclick="window.openModal('add_vision_image', '${item.id}')"><i data-lucide="plus"></i> Adicionar Imagem</button>
+                </div>
             `;
         }
         else if(item.type.includes('checklist')) {
             const isSum = item.type === 'checklist_sum';
             const items = item.content && item.content.items ? item.content.items : [];
             const total = isSum ? items.reduce((a,b)=>b.checked?a+(parseFloat(b.val)||0):a,0) : 0;
-            content = `${isSum ? `<div style="text-align:right; font-size:1.5rem; color:var(--success); font-weight:bold; margin-bottom:15px">${total.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</div>` : ''}<div style="display:flex; flex-direction:column; gap:10px">${items.map((it, idx) => `<div style="display:flex; gap:10px; align-items:center; padding:8px; border-bottom:1px solid #eee"><div class="btn-check ${it.checked?'active':''}" onclick="window.toggleCLItem('${item.id}', ${idx})"><i data-lucide="check" style="width:16px"></i></div><input class="checklist-input form-control" style="border:none; background:transparent; text-decoration:${it.checked?'line-through':''}" value="${it.text}" onchange="window.updateCL('${item.id}',${idx},'text',this.value)">${isSum ? `<input class="form-control" type="number" style="width:80px; text-align:right" value="${it.val}" onchange="window.updateCL('${item.id}',${idx},'val',this.value)">` : ''}<i data-lucide="x" style="width:16px; cursor:pointer; opacity:0.5" onclick="window.deleteCLItem('${item.id}', ${idx})"></i></div>`).join('')}<button class="btn-add" style="align-self:center; margin-top:10px" onclick="window.addCLItem('${item.id}')"><i data-lucide="plus"></i> Item</button></div>`;
+            content = `${isSum ? `<div style="text-align:right; font-size:1.5rem; color:var(--success); font-weight:bold; margin-bottom:15px">${total.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</div>` : ''}<div style="display:flex; flex-direction:column; gap:10px">${items.map((it, idx) => `<div style="display:flex; gap:10px; align-items:center; padding:8px; border-bottom:1px solid #eee"><div class="btn-check ${it.checked?'active':''}" onclick="window.toggleCLItem('${item.id}', ${idx})"><i data-lucide="check" style="width:16px"></i></div><input class="checklist-input form-control" style="border:none; background:transparent; text-decoration:${it.checked?'line-through':''}" value="${it.text}" onchange="window.updateCL('${item.id}',${idx},'text',this.value)" autocomplete="off">${isSum ? `<input class="form-control" type="number" style="width:80px; text-align:right" value="${it.val}" onchange="window.updateCL('${item.id}',${idx},'val',this.value)" autocomplete="off">` : ''}<i data-lucide="x" style="width:16px; cursor:pointer; opacity:0.5" onclick="window.deleteCLItem('${item.id}', ${idx})"></i></div>`).join('')}<button class="btn-add" style="align-self:center; margin-top:10px" onclick="window.addCLItem('${item.id}')"><i data-lucide="plus"></i> Item</button></div>`;
         } else if (item.type === 'bank') {
             const data = item.content;
             content = `<div style="background:#f9f9f9; padding:20px; border-radius:12px; display:grid; gap:10px"><div style="display:flex; justify-content:flex-end"><button class="btn-add" style="font-size:0.8rem" onclick="window.copyBankData('${item.name}', '${data.holder||'-'}', '${data.agency}', '${data.account}', '${data.pix}')"><i data-lucide="copy"></i> Copiar</button></div><div><small style="text-transform:uppercase; color:#999">Banco</small><div style="font-weight:600">${item.name}</div></div><div><small style="text-transform:uppercase; color:#999">Agência</small><div style="font-weight:600">${data.agency}</div></div><div><small style="text-transform:uppercase; color:#999">Conta</small><div style="font-weight:600">${data.account}</div></div><div><small style="text-transform:uppercase; color:#999">PIX</small><div style="font-weight:600">${data.pix}</div></div><button class="btn-cancel" onclick="alert('${data.pass}')" style="margin-top:10px"><i data-lucide="eye"></i> Senha</button></div>`;
@@ -1484,97 +1369,6 @@
             }).join('')}<button class="btn-cancel" onclick="alert('${data.pass}')" style="margin-top:10px"><i data-lucide="eye"></i> Senha</button></div>`;
         }
         el.innerHTML = `<div class="section-header"><h2>${item.name}</h2><div style="display:flex; gap:10px"><button class="btn-cancel" onclick="window.goBack()">Voltar</button><button class="btn-add" onclick="window.editItem('${item.id}', '${item.type}')">Editar</button></div></div><div class="card" style="display:block; cursor:default">${content}</div>`;
-    };
-
-    window.toggleWeightView = () => { state.weightExpanded = !state.weightExpanded; render(); };
-    window.openWeightHistory = () => {
-        const weightItem = state.items.find(i => i.type === 'health_weight');
-        if (!weightItem || !weightItem.content.history) return;
-        const history = [...weightItem.content.history].sort((a,b) => new Date(b.date) - new Date(a.date));
-        const overlay = document.getElementById('modal-overlay');
-        const form = document.getElementById('modal-form');
-        const actions = document.getElementById('modal-actions');
-        document.getElementById('modal-title').innerText = "Histórico de Peso";
-        const listHtml = history.length ? history.map((h, index) => `<div style="display:flex; justify-content:space-between; align-items:center; padding:12px; border-bottom:1px solid #eee"><div><div style="font-weight:600">${new Date(h.date).toLocaleDateString()}</div></div><div style="display:flex; align-items:center; gap:15px"><span style="font-weight:bold; color:var(--chocolate)">${h.weight} kg</span><i data-lucide="edit-2" style="width:18px; color:var(--chocolate); cursor:pointer" onclick="window.editWeightHistoryItem(${index})"></i><i data-lucide="trash-2" style="width:18px; color:var(--danger); cursor:pointer" onclick="window.deleteWeightHistoryItem(${index})"></i></div></div>`).join('') : '<div style="padding:20px; text-align:center; opacity:0.5">Sem registros.</div>';
-        form.innerHTML = `<div style="max-height:400px; overflow-y:auto">${listHtml}</div>`;
-        actions.innerHTML = `<button class="btn-cancel" onclick="window.closeModal()">Fechar</button>`;
-        overlay.style.display = 'flex'; setTimeout(() => { overlay.classList.add('open'); if(window.lucide) window.lucide.createIcons(); }, 10);
-    };
-    
-    window.editWeightHistoryItem = (index) => { state.editingHistoryIndex = index; window.closeModal(); setTimeout(() => window.openModal('weight_history_edit'), 300); };
-    window.deleteWeightHistoryItem = async (index) => {
-        if (!confirm("Excluir?")) return;
-        const wItem = state.items.find(i => i.type === 'health_weight');
-        let history = [...wItem.content.history].sort((a,b) => new Date(b.date) - new Date(a.date));
-        history.splice(index, 1);
-        let newCurrent = history.length > 0 ? history[0].weight : wItem.content.startWeight;
-        const ref = isOffline ? {id: wItem.id} : doc(db, 'artifacts', appId, 'users', state.user.uid, 'items', wItem.id);
-        await _updateDoc(ref, { 'content.history': history, 'content.current': newCurrent });
-        window.closeModal(); window.showToast("Excluído.");
-    };
-    window.toggleMenstrualView = () => { state.menstrualView = state.menstrualView ? null : new Date(); render(); };
-    window.changeCalMonth = (d) => { 
-        if(!state.menstrualView) state.menstrualView = new Date();
-        state.menstrualView.setMonth(state.menstrualView.getMonth() + d); 
-        render(); 
-    };
-    
-    // --- Backup & Restore Logic ---
-    window.backupData = () => {
-        const dataStr = JSON.stringify(state.items, null, 2);
-        const blob = new Blob([dataStr], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = `backup_cm_premium_${new Date().toISOString().slice(0,10)}.json`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        window.showToast("Backup gerado!");
-    };
-
-    window.restoreData = () => {
-        const input = document.createElement('input');
-        input.type = 'file';
-        input.accept = 'application/json';
-        input.onchange = (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = async (ev) => {
-                try {
-                    const imported = JSON.parse(ev.target.result);
-                    if (!Array.isArray(imported)) throw new Error("Formato inválido");
-                    
-                    if (confirm("Isso substituirá TODOS os dados atuais. Confirmar?")) {
-                        if(isOffline) {
-                            state.items = imported;
-                            saveLocal();
-                            window.showToast("Dados restaurados (Offline)");
-                            render();
-                        } else {
-                            window.showToast("Limpando dados antigos...", "success");
-                            const refCol = collection(db, 'artifacts', appId, 'users', state.user.uid, 'items');
-                            const snapshot = await getDocs(refCol);
-                            for (const docDel of snapshot.docs) {
-                                await deleteDoc(docDel.ref);
-                            }
-                            
-                            window.showToast("Restaurando backup...", "success");
-                            for (const item of imported) {
-                                const { id, ...data } = item;
-                                await setDoc(doc(db, 'artifacts', appId, 'users', state.user.uid, 'items', id), data);
-                            }
-                            window.showToast("Restauração concluída!");
-                        }
-                    }
-                } catch(err) {
-                    alert("Erro ao ler backup: " + err.message);
-                }
-            };
-            reader.readAsText(file);
-        };
-        input.click();
     };
 
     // --- Modal Logic ---
@@ -1641,6 +1435,21 @@
         render();
     };
 
+    window.editWeightHistoryItem = (index) => { state.editingHistoryIndex = index; window.closeModal(); setTimeout(() => window.openModal('weight_history_edit'), 300); };
+    window.deleteWeightHistoryItem = async (index) => {
+        if (!confirm("Excluir registro?")) return;
+        const wItem = state.items.find(i => i.type === 'health_weight');
+        let history = [...wItem.content.history].sort((a,b) => new Date(b.date) - new Date(a.date));
+        history.splice(index, 1);
+        let newCurrent = history.length > 0 ? history[0].weight : wItem.content.startWeight;
+        
+        const ref = isOffline ? {id: wItem.id} : doc(db, 'artifacts', appId, 'users', state.user.uid, 'items', wItem.id);
+        await _updateDoc(ref, { 'content.history': history, 'content.current': newCurrent });
+        
+        window.openModal('health_weight_register');
+        window.showToast("Excluído.");
+    };
+
     window.openModal = (type, editingId = null) => {
         const overlay = document.getElementById('modal-overlay');
         const form = document.getElementById('modal-form');
@@ -1652,7 +1461,7 @@
         let title = editingId ? 'Editar' : 'Novo';
         if (type === 'rename') title = 'Renomear';
         
-        const inp = (id, lbl, pl, val='', type='text') => `<div class="form-group"><label>${lbl}</label><input type="${type}" id="${id}" class="form-control" placeholder="${pl}" value="${val}"></div>`;
+        const inp = (id, lbl, pl, val='', type='text') => `<div class="form-group"><label>${lbl}</label><input type="${type}" id="${id}" class="form-control" placeholder="${pl}" value="${val}" autocomplete="off"></div>`;
         const item = editingId ? state.items.find(i=>i.id===editingId) : null;
         const v = (key) => item && item.content ? item.content[key] || '' : '';
         const n = () => item ? item.name : '';
@@ -1663,41 +1472,122 @@
             case 'create_area': title = 'Nova Área'; html = inp('f-name', 'Nome da Área', 'Ex: Projetos') + renderIconSelector(); break;
             case 'rename': html = inp('f-name', 'Novo Nome', '', n()); break;
             case 'folder': html = inp('f-name', 'Nome da Pasta', '', n()) + renderIconSelector(); break;
-            case 'note': html = inp('f-name', 'Título', '', n()) + `<div class="form-group"><label>Conteúdo</label><textarea id="f-text" class="form-control">${v('text')}</textarea></div>`; break;
+            case 'note': html = inp('f-name', 'Título', '', n()) + `<div class="form-group"><label>Conteúdo</label><textarea id="f-text" class="form-control" autocomplete="off">${v('text')}</textarea></div>`; break;
             case 'visionboard': 
                 title = 'Novo Visionboard'; 
+                html = `<div class="form-group"><label>Título do Visionboard</label><input id="f-name" class="form-control" autocomplete="off" value="${n()}"></div>`;
+                break;
+            case 'add_vision_image':
+                title = 'Adicionar Imagem';
                 html = `
-                    <div class="form-group"><label>Título do Visionboard</label><input id="f-name" class="form-control"></div>
-                    <div class="form-group"><label>Imagens</label><input type="file" id="f-files" class="form-control" multiple accept="image/*"></div>
+                    <div class="form-group"><label>Imagem</label><input type="file" id="f-vision-img" class="form-control" accept="image/*"></div>
+                    <div class="form-group"><label>Legenda (Opcional)</label><input type="text" id="f-vision-cap" class="form-control" autocomplete="off"></div>
                 `;
                 break;
-            case 'file': html = inp('f-name', 'Nome', '', n()) + `<div class="form-group"><label>Arquivo</label><input type="file" id="f-file" class="form-control"></div>` + `<div class="form-group"><label>Legenda</label><input type="text" id="f-caption" class="form-control" value="${v('caption')}"></div>`; break;
+            case 'file': html = inp('f-name', 'Nome', '', n()) + `<div class="form-group"><label>Arquivo</label><input type="file" id="f-file" class="form-control"></div>` + `<div class="form-group"><label>Legenda</label><input type="text" id="f-caption" class="form-control" value="${v('caption')}" autocomplete="off"></div>`; break;
             case 'checklist': case 'checklist_sum': html = inp('f-name', 'Título', '', n()) + renderIconSelector(); break;
             case 'bank': html = inp('f-name', 'Banco', '', n()) + inp('f-holder', 'Titular', '', v('holder')) + inp('f-ag', 'Agência', '', v('agency')) + inp('f-cc', 'Conta', '', v('account')) + inp('f-pix', 'PIX', '', v('pix')) + inp('f-pass', 'Senha', '', v('pass'), 'password'); break;
             case 'social': html = inp('f-name','Plataforma','',n()) + inp('f-login','Login','',v('login')) + inp('f-pass','Senha','',v('pass'), 'password'); break;
             case 'expense': case 'pendency': case 'income': 
                 title = type === 'expense' ? 'Nova Despesa' : (type === 'income' ? 'Nova Entrada' : 'Nova Pendência'); 
-                html = inp('f-name', 'Descrição', 'Ex: Salário', n()) + `<div class="form-group"><label>Valor</label><input type="number" id="f-val" class="form-control" value="${v('value')}"></div>` + `<div class="form-group"><label>Parcelas/Repetições</label><input type="number" id="f-par" class="form-control" value="1"></div>` + `<div class="form-group"><label>Vencimento/Data</label><input type="date" id="f-due" class="form-control" value="${v('due') || new Date().toISOString().split('T')[0]}"></div>`; 
+                html = inp('f-name', 'Descrição', 'Ex: Salário', n()) + `<div class="form-group"><label>Valor</label><input type="number" id="f-val" class="form-control" value="${v('value')}" autocomplete="off"></div>` + `<div class="form-group"><label>Parcelas/Repetições</label><input type="number" id="f-par" class="form-control" value="1" autocomplete="off"></div>` + `<div class="form-group"><label>Vencimento/Data</label><input type="date" id="f-due" class="form-control" value="${v('due') || new Date().toISOString().split('T')[0]}" autocomplete="off"></div>`; 
                 break;
             case 'piggy': html = inp('f-name', 'Objetivo', '', n()) + inp('f-target', 'Valor Alvo', '', v('target')) + inp('f-months', 'Meses', '', v('months')); break;
-            case 'health_weight_config': title='Config Peso'; html = inp('f-w-start','Peso Inicial (kg)',0,v('startWeight')) + inp('f-w-height','Altura (m)', 'Ex: 1.70', v('height')) + inp('f-w-target','Meta (kg)',0,v('target')) + `<div class="form-group"><label>Início</label><input type="date" id="f-w-date" class="form-control" value="${v('startDate')||new Date().toISOString().split('T')[0]}"></div>` + inp('f-w-period','Prazo (Meses)',12,v('periodMonths')) + `<button class="btn-add" style="width:100%; background:var(--danger); justify-content:center; margin-top:15px;" onclick="window.resetWeightData()"><i data-lucide="trash-2" style="width:16px"></i> Resetar Dados</button>`; break;
-            case 'health_weight_register': html = `<div class="form-group"><label>Data</label><input type="date" id="f-reg-date" class="form-control" value="${new Date().toISOString().split('T')[0]}"></div>` + inp('f-reg-weight','Peso Atual (kg)',0,''); break;
+            case 'health_weight_config': title='Config Peso'; html = inp('f-w-start','Peso Inicial (kg)',0,v('startWeight')) + inp('f-w-height','Altura (m)', 'Ex: 1.70', v('height')) + inp('f-w-target','Meta (kg)',0,v('target')) + `<div class="form-group"><label>Início</label><input type="date" id="f-w-date" class="form-control" value="${v('startDate')||new Date().toISOString().split('T')[0]}" autocomplete="off"></div>` + inp('f-w-period','Prazo (Meses)',12,v('periodMonths')) + `<button class="btn-add" style="width:100%; background:var(--danger); justify-content:center; margin-top:15px;" onclick="window.resetWeightData()"><i data-lucide="trash-2" style="width:16px"></i> Resetar Dados</button>`; break;
+            case 'health_weight_register': 
+                title = 'Registrar Peso';
+                const hwItem = state.items.find(i => i.type === 'health_weight');
+                const historyLog = [...(hwItem?.content?.history || [])].sort((a,b) => new Date(b.date) - new Date(a.date));
+                html = `
+                    <div style="background:#f9f9f9; padding:15px; border-radius:12px; margin-bottom:20px;">
+                        <h4 style="margin-bottom:10px; font-size:0.9rem; color:var(--chocolate)">Novo Registro</h4>
+                        <div style="display:flex; gap:10px">
+                            <input type="date" id="f-reg-date" class="form-control" value="${new Date().toISOString().split('T')[0]}" autocomplete="off">
+                            <input type="number" id="f-reg-weight" class="form-control" placeholder="Peso (kg)" autocomplete="off">
+                            <button class="btn-add" onclick="window.saveItem('add_weight_entry')">Salvar</button>
+                        </div>
+                    </div>
+                    <h4 style="margin-bottom:10px; font-size:0.9rem; color:var(--chocolate)">Histórico</h4>
+                    <div style="max-height:250px; overflow-y:auto">
+                        ${historyLog.length ? historyLog.map((h, index) => `
+                            <div style="display:flex; justify-content:space-between; align-items:center; padding:10px; border-bottom:1px solid #eee">
+                                <div style="font-weight:600">${new Date(h.date + 'T12:00:00').toLocaleDateString('pt-BR')}</div>
+                                <div style="display:flex; align-items:center; gap:15px">
+                                    <span style="font-weight:bold; color:var(--chocolate)">${h.weight} kg</span>
+                                    <i data-lucide="edit-2" style="width:16px; color:var(--chocolate); cursor:pointer" onclick="window.editWeightHistoryItem(${index})"></i>
+                                    <i data-lucide="trash-2" style="width:16px; color:var(--danger); cursor:pointer" onclick="window.deleteWeightHistoryItem(${index})"></i>
+                                </div>
+                            </div>
+                        `).join('') : '<div style="font-size:0.8rem; color:#999; text-align:center">Nenhum registro.</div>'}
+                    </div>
+                `;
+                break;
             case 'weight_history_edit':
                 title = 'Editar Registro';
                 const wItem = state.items.find(i => i.type === 'health_weight');
                 let sortedHist = [...wItem.content.history].sort((a,b) => new Date(b.date) - new Date(a.date));
                 const histItem = sortedHist[state.editingHistoryIndex];
-                html = `<div class="form-group"><label>Data</label><input type="date" id="f-reg-date" class="form-control" value="${histItem.date}"></div>` + 
-                       `<div class="form-group"><label>Peso (kg)</label><input type="number" id="f-reg-weight" class="form-control" value="${histItem.weight}"></div>`;
+                html = `<div class="form-group"><label>Data</label><input type="date" id="f-reg-date" class="form-control" value="${histItem.date}" autocomplete="off"></div>` + 
+                       `<div class="form-group"><label>Peso (kg)</label><input type="number" id="f-reg-weight" class="form-control" value="${histItem.weight}" autocomplete="off"></div>`;
                 break;
             case 'health_med': html = inp('f-name','Remédio','',n()) + inp('f-time','Horário','',v('time')) + inp('f-inst','Instruções','',v('instructions')); break;
-            case 'health_food': title='Dieta'; html=`<div class="form-group"><textarea id="f-diet" class="form-control" style="height:200px">${v('text')}</textarea></div>`; break;
+            case 'health_food': 
+                title='Dieta e Jejum'; 
+                const df = item && item.content ? item.content : (state.items.find(i=>i.type==='health_food')?.content || {});
+                html=`
+                    <div style="display:grid; grid-template-columns: 100px 1fr; gap:10px; margin-bottom:10px;">
+                        <input type="time" id="f-d-bt" class="form-control" value="${df.breakfastTime||'08:00'}">
+                        <input type="text" id="f-d-b" class="form-control" placeholder="Café da manhã..." value="${df.breakfast||''}" autocomplete="off">
+                        
+                        <input type="time" id="f-d-lt" class="form-control" value="${df.lunchTime||'12:30'}">
+                        <input type="text" id="f-d-l" class="form-control" placeholder="Almoço..." value="${df.lunch||''}" autocomplete="off">
+                        
+                        <input type="time" id="f-d-dt" class="form-control" value="${df.dinnerTime||'19:00'}">
+                        <input type="text" id="f-d-d" class="form-control" placeholder="Jantar..." value="${df.dinner||''}" autocomplete="off">
+                    </div>
+                    <div class="form-group" style="border-top:1px solid #eee; padding-top:10px; margin-top:15px">
+                        <label style="color:var(--chocolate)">Horário de Jejum</label>
+                        <div style="display:flex; gap:10px; align-items:center;">
+                            Início: <input type="time" id="f-d-fs" class="form-control" value="${df.fastingStart||'20:00'}">
+                            Fim: <input type="time" id="f-d-fe" class="form-control" value="${df.fastingEnd||'08:00'}">
+                        </div>
+                    </div>
+                `; 
+                break;
             case 'menstrual_log': 
-                title = 'Ciclo'; 
+                title = 'Registro Diário'; 
                 const dateKey = editingId; 
                 const existingLog = state.items.find(i => i.type === 'menstrual_cycle' && i.content.date === dateKey);
                 const flow = existingLog ? existingLog.content.flow : '';
-                html = `<input type="hidden" id="f-mens-date" value="${dateKey}"><div style="text-align:center;margin-bottom:10px">${new Date(dateKey).toLocaleDateString()}</div><div class="form-group"><label>Fluxo</label><select id="f-mens-flow" class="form-control"><option value="">Nenhum</option><option value="Inicio" ${flow==='Inicio'?'selected':''}>Início</option><option value="Medio" ${flow==='Medio'?'selected':''}>Médio</option><option value="Intenso" ${flow==='Intenso'?'selected':''}>Intenso</option><option value="Leve" ${flow==='Leve'?'selected':''}>Leve</option></select></div><div class="form-group"><input type="checkbox" id="f-mens-sex" ${existingLog && existingLog.content.sex?'checked':''}> Sexo <input type="checkbox" id="f-mens-prot" ${existingLog && existingLog.content.protection?'checked':''}> Proteção</div><div class="form-group"><label>Notas</label><textarea id="f-mens-notes" class="form-control">${existingLog?existingLog.content.notes||'':''}</textarea></div>`;
+                html = `
+                    <input type="hidden" id="f-mens-date" value="${dateKey}">
+                    <div style="text-align:center; font-weight:bold; color:var(--chocolate); margin-bottom:15px">${new Date(dateKey + 'T12:00:00').toLocaleDateString('pt-BR', {weekday:'long', day:'numeric', month:'long'})}</div>
+                    
+                    <div class="form-group">
+                        <label>Intensidade do Fluxo</label>
+                        <div style="display:flex; gap:10px; justify-content:space-between;">
+                            ${['Nenhum', 'Leve', 'Medio', 'Intenso'].map(f => `
+                                <div onclick="document.querySelectorAll('.flow-opt').forEach(el=>el.classList.remove('active')); this.classList.add('active'); document.getElementById('f-mens-flow').value='${f==='Nenhum'?'':f}'" class="flow-opt ${flow===f || (flow===''&&f==='Nenhum') ? 'active' : ''}" style="flex:1; text-align:center; padding:10px 5px; border:1px solid #eee; border-radius:8px; cursor:pointer; font-size:0.8rem;">
+                                    ${f}
+                                </div>
+                            `).join('')}
+                        </div>
+                        <input type="hidden" id="f-mens-flow" value="${flow}">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Atividade Íntima</label>
+                        <div style="display:flex; gap:15px;">
+                            <label style="display:flex; align-items:center; gap:5px; text-transform:none; font-weight:normal"><input type="checkbox" id="f-mens-sex" ${existingLog && existingLog.content.sex?'checked':''}> Houve relação</label>
+                            <label style="display:flex; align-items:center; gap:5px; text-transform:none; font-weight:normal"><input type="checkbox" id="f-mens-prot" ${existingLog && existingLog.content.protection?'checked':''}> Com proteção</label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Sintomas / Notas</label>
+                        <textarea id="f-mens-notes" class="form-control" placeholder="Como você está se sentindo hoje?" autocomplete="off">${existingLog?existingLog.content.notes||'':''}</textarea>
+                    </div>
+                `;
                 break;
             case 'menstrual_settings': 
                  title = 'Perfil Mulher';
@@ -1705,7 +1595,7 @@
                  html = `
                     <div class="form-group">
                         <label>Você utiliza algum método contraceptivo hormonal?</label>
-                        <select id="f-prof-hormonal" class="form-control" onchange="window.toggleMenstrualFields()">
+                        <select id="f-prof-hormonal" class="form-control" onchange="window.toggleMenstrualFields()" autocomplete="off">
                             <option value="Nenhum" ${p.content.contraceptiveType === 'Nenhum' ? 'selected' : ''}>NÃO</option>
                             <option value="Pílula" ${p.content.contraceptiveType === 'Pílula' ? 'selected' : ''}>SIM – Pílula anticoncepcional</option>
                             <option value="Injeção" ${p.content.contraceptiveType === 'Injeção' ? 'selected' : ''}>SIM – Injeção anticoncepcional</option>
@@ -1714,32 +1604,32 @@
 
                     <div class="form-group">
                         <label>Nome</label>
-                        <input type="text" id="f-prof-name" class="form-control" value="${p.content.name || ''}">
+                        <input type="text" id="f-prof-name" class="form-control" value="${p.content.name || ''}" autocomplete="off">
                     </div>
 
                     <div class="form-group">
                         <label>Idade</label>
-                        <input type="number" id="f-prof-age" class="form-control" value="${p.content.age || ''}">
+                        <input type="number" id="f-prof-age" class="form-control" value="${p.content.age || ''}" autocomplete="off">
                     </div>
 
                     <div id="field-last-period" class="form-group" style="${p.content.contraceptiveType !== 'Nenhum' ? 'display:none' : 'block'}">
                         <label>Data da Última Menstruação</label>
-                        <input type="date" id="f-prof-last" class="form-control" value="${p.content.lastPeriodDate||''}">
+                        <input type="date" id="f-prof-last" class="form-control" value="${p.content.lastPeriodDate||''}" autocomplete="off">
                     </div>
 
                     <div id="field-cycle-dur" class="form-group" style="${p.content.contraceptiveType !== 'Nenhum' ? 'display:none' : 'block'}">
                         <label>Duração Média do Ciclo (dias)</label>
-                        <input type="number" id="f-prof-dur" class="form-control" value="${p.content.cycleDuration||28}">
+                        <input type="number" id="f-prof-dur" class="form-control" value="${p.content.cycleDuration||28}" autocomplete="off">
                     </div>
 
                     <div id="field-contra-start" class="form-group" style="${p.content.contraceptiveType === 'Nenhum' ? 'display:none' : 'block'}">
                         <label>Início da Cartela / Dose</label>
-                        <input type="date" id="f-prof-contradate" class="form-control" value="${p.content.contraceptiveStartDate||''}">
+                        <input type="date" id="f-prof-contradate" class="form-control" value="${p.content.contraceptiveStartDate||''}" autocomplete="off">
                     </div>
 
                     <div class="form-group">
                         <label>Duração do Fluxo (dias)</label>
-                        <input type="number" id="f-prof-flowdur" class="form-control" value="${p.content.flowDuration||5}">
+                        <input type="number" id="f-prof-flowdur" class="form-control" value="${p.content.flowDuration||5}" autocomplete="off">
                     </div>
 
                     <button class="btn-cancel" style="width:100%; margin: 10px 0; justify-content:center" onclick="window.openModal('menstrual_history_list')"><i data-lucide="list" style="width:16px"></i> Editar Histórico Completo</button>
@@ -1756,7 +1646,7 @@
                      html += `<div style="text-align:center; padding:20px; opacity:0.5">Nenhum registro encontrado.</div>`;
                  } else {
                      html += allLogs.map(log => {
-                         const d = new Date(log.content.date).toLocaleDateString('pt-BR');
+                         const d = new Date(log.content.date + 'T12:00:00').toLocaleDateString('pt-BR');
                          return `<div style="display:flex; justify-content:space-between; align-items:center; padding:10px; border-bottom:1px solid #eee;">
                                     <div><b>${d}</b> <small>(${log.content.flow || 'Sem fluxo'})</small></div>
                                     <div style="display:flex; gap:10px">
@@ -1774,7 +1664,7 @@
 
         document.getElementById('modal-title').innerText = title;
         form.innerHTML = html;
-        if (type !== 'menstrual_history_list') {
+        if (type !== 'menstrual_history_list' && type !== 'health_weight_register') {
              actions.innerHTML = `<button class="btn-cancel" onclick="window.closeModal()">Cancelar</button><button class="btn-add" onclick="window.saveItem('${type}')">Salvar</button>`;
         } else {
              actions.innerHTML = `<button class="btn-cancel" style="width:100%" onclick="window.closeModal()">Fechar</button>`;
@@ -1806,20 +1696,24 @@
                 window.toggleSelectionMode();
             } else if (type === 'visionboard') {
                 data.name = getVal('f-name');
-                const files = document.getElementById('f-files').files;
+                if(!state.editingId) data.content = { images: [] };
                 
-                const loadedImages = [];
-                if(files.length > 0) {
-                    const promises = Array.from(files).map(file => new Promise((resolve) => {
-                        const reader = new FileReader();
-                        reader.onload = (e) => resolve({ data: e.target.result, caption: '' });
-                        reader.readAsDataURL(file);
-                    }));
-                    const results = await Promise.all(promises);
-                    loadedImages.push(...results);
+                if (state.editingId) await _updateDoc(isOffline ? {id: state.editingId} : doc(db, 'artifacts', appId, 'users', state.user.uid, 'items', state.editingId), data);
+                else await _addDoc(coll, data);
+            } else if (type === 'add_vision_image') {
+                const file = document.getElementById('f-vision-img').files[0];
+                const cap = getVal('f-vision-cap');
+                if (file && state.editingId) {
+                    const reader = new FileReader();
+                    reader.onload = async (e) => {
+                        const item = state.items.find(i => i.id === state.editingId);
+                        const newImages = [...(item.content.images || []), { data: e.target.result, caption: cap }];
+                        await _updateDoc(isOffline ? {id: state.editingId} : doc(db, 'artifacts', appId, 'users', state.user.uid, 'items', state.editingId), { 'content.images': newImages });
+                        window.closeModal(); window.showToast("Imagem adicionada!");
+                    };
+                    reader.readAsDataURL(file);
+                    return; // Async handler handles closing
                 }
-                data.content = { images: loadedImages };
-                await _addDoc(coll, data);
             }
             else if (type === 'file') {
                  const f = document.getElementById('f-file').files[0];
@@ -1867,10 +1761,14 @@
                  if(state.editingId) await _updateDoc(isOffline?{id:state.editingId}:doc(db,'artifacts',appId,'users',state.user.uid,'items',state.editingId), { 'content.startWeight': startW, 'content.target': targetW, 'content.startDate': getVal('f-w-date'), 'content.periodMonths': getVal('f-w-period'), 'content.height': getVal('f-w-height') });
                  else await _addDoc(coll, { parentId: 'saude', type: 'health_weight', name: 'Peso', content: { current: startW, startWeight: startW, target: targetW, startDate: getVal('f-w-date'), periodMonths: getVal('f-w-period'), height: getVal('f-w-height'), history: [] } });
             }
-            else if(type === 'health_weight_register') { 
+            else if(type === 'add_weight_entry') { 
                 const regW = parseFloat(getVal('f-reg-weight'));
-                const wItem = state.items.find(i => i.type === 'health_weight');
-                await _updateDoc(isOffline?{id:wItem.id}:doc(db,'artifacts',appId,'users',state.user.uid,'items',wItem.id), { 'content.current': regW, 'content.history': [...wItem.content.history, { date: getVal('f-reg-date'), weight: regW }] });
+                if(regW) {
+                    const wItem = state.items.find(i => i.type === 'health_weight');
+                    await _updateDoc(isOffline?{id:wItem.id}:doc(db,'artifacts',appId,'users',state.user.uid,'items',wItem.id), { 'content.current': regW, 'content.history': [...wItem.content.history, { date: getVal('f-reg-date'), weight: regW }] });
+                    window.openModal('health_weight_register');
+                    return;
+                }
             }
             else if(type === 'weight_history_edit') {
                 const wItem = state.items.find(i => i.type === 'health_weight');
@@ -1879,12 +1777,20 @@
                 history.sort((a,b) => new Date(b.date) - new Date(a.date));
                 const newCurrent = history.length > 0 ? history[0].weight : wItem.content.startWeight;
                 await _updateDoc(isOffline?{id:wItem.id}:doc(db,'artifacts',appId,'users',state.user.uid,'items',wItem.id), { 'content.history': history, 'content.current': newCurrent });
+                window.openModal('health_weight_register');
+                return;
             }
             else if(type === 'health_med') { data.name = getVal('f-name'); data.content = { time: getVal('f-time'), instructions: getVal('f-inst') }; if(state.editingId) await _updateDoc(isOffline?{id:state.editingId}:doc(db,'artifacts',appId,'users',state.user.uid,'items',state.editingId), data); else await _addDoc(coll, data); }
             else if(type === 'health_food') { 
-                const txt = getVal('f-diet'); const ex = state.items.find(i=>i.type==='health_food');
-                if(ex) await _updateDoc(isOffline?{id:ex.id}:doc(db,'artifacts',appId,'users',state.user.uid,'items',ex.id), {'content.text': txt});
-                else await _addDoc(coll, {parentId:'saude', type:'health_food', name:'Dieta', content:{text:txt}});
+                const content = {
+                    breakfastTime: getVal('f-d-bt'), breakfast: getVal('f-d-b'),
+                    lunchTime: getVal('f-d-lt'), lunch: getVal('f-d-l'),
+                    dinnerTime: getVal('f-d-dt'), dinner: getVal('f-d-d'),
+                    fastingStart: getVal('f-d-fs'), fastingEnd: getVal('f-d-fe')
+                };
+                const ex = state.items.find(i=>i.type==='health_food');
+                if(ex) await _updateDoc(isOffline?{id:ex.id}:doc(db,'artifacts',appId,'users',state.user.uid,'items',ex.id), {'content': content});
+                else await _addDoc(coll, {parentId:'saude', type:'health_food', name:'Dieta', content: content});
             }
             else if(type === 'menstrual_log') {
                 const dateKey = getVal('f-mens-date');
@@ -1914,25 +1820,7 @@
             window.showToast("Salvo!"); window.closeModal();
         } catch(e) { console.error(e); window.showToast("Erro: " + e.message, "error"); }
     };
-    
-    window.editVisionCaption = async (id, idx) => {
-        const item = state.items.find(i => i.id === id);
-        if(!item) return;
-        const currentCaption = item.content.images[idx].caption || '';
-        const newCaption = prompt("Legenda:", currentCaption);
-        if(newCaption === null) return;
-        
-        item.content.images[idx].caption = newCaption;
-        
-        const col = isOffline ? null : collection(db, 'artifacts', appId, 'users', state.user.uid, 'items');
-        if(isOffline) {
-            localStorage.setItem('cm_premium_data', JSON.stringify(state.items));
-            render();
-        } else {
-            await _updateDoc({id}, {'content.images': item.content.images});
-        }
-    };
-    
+
     initApp();
 </script>
 </body>
