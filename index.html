@@ -19,6 +19,7 @@
             --bg-card: #FFFFFF;
             --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
             --shadow-premium: 0 20px 40px rgba(62, 39, 35, 0.08);
+            --shadow-elevated: 0 15px 45px rgba(62, 39, 35, 0.15);
             --danger: #A62121;
             --success: #3E6B27;
         }
@@ -28,13 +29,13 @@
 
         body { background-color: var(--off-white); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; padding-bottom: 100px; }
 
-        /* --- Lock Screen (Majestic Size) --- */
+        /* --- Lock Screen Majestic --- */
         #lock-screen { position: fixed; inset: 0; background: var(--off-white); z-index: 5000; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: all 0.6s ease; }
         .lock-container { text-align: center; width: 90%; max-width: 450px; }
-        .lock-monogram { font-size: 6rem; color: var(--chocolate); font-weight: 900; line-height: 1; margin-bottom: 10px; }
-        .lock-brand { font-size: 1.2rem; text-transform: uppercase; letter-spacing: 8px; color: var(--gold); font-weight: 800; margin-bottom: 50px; }
-        .lock-input { width: 100%; text-align: center; font-size: 3rem; letter-spacing: 20px; border: none; border-bottom: 3px solid var(--gold); background: transparent; padding: 20px; outline: none; color: var(--chocolate); margin-bottom: 40px; font-weight: 900; }
-        .lock-input::placeholder { font-size: 1rem; letter-spacing: 2px; opacity: 0.3; }
+        .lock-monogram { font-size: 8rem; color: var(--chocolate); font-weight: 900; line-height: 1; margin-bottom: 10px; }
+        .lock-brand { font-size: 1.4rem; text-transform: uppercase; letter-spacing: 10px; color: var(--gold); font-weight: 800; margin-bottom: 60px; }
+        .lock-input { width: 100%; text-align: center; font-size: 4rem; letter-spacing: 25px; border: none; border-bottom: 4px solid var(--gold); background: transparent; padding: 20px; outline: none; color: var(--chocolate); margin-bottom: 40px; font-weight: 900; }
+        .lock-input::placeholder { font-size: 1.2rem; letter-spacing: 2px; opacity: 0.3; }
 
         /* --- UI Framework --- */
         header { padding: 30px 20px; text-align: center; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(15px); border-bottom: 1px solid rgba(197, 160, 89, 0.1); position: sticky; top: 0; z-index: 100; }
@@ -53,50 +54,65 @@
         main { flex: 1; padding: 25px 6%; max-width: 1200px; margin: 0 auto; width: 100%; animation: fadeIn 0.4s ease; }
         .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
         .card { background: var(--bg-card); padding: 25px; border-radius: 28px; box-shadow: var(--shadow-premium); border: 1px solid rgba(0,0,0,0.02); transition: var(--transition); position: relative; }
-        .card:hover { transform: translateY(-4px); }
 
-        /* --- Widgets --- */
-        .hero-meta { background: var(--chocolate); color: white; padding: 40px 20px; border-radius: 35px; text-align: center; border: 1px solid var(--gold); margin-bottom: 25px; box-shadow: var(--shadow-elevated); }
-        .meta-label { font-size: 0.8rem; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; color: var(--gold-light); }
-        .meta-val { font-size: 5rem; font-weight: 900; line-height: 1; color: #fff; margin: 10px 0; }
-        .stat-line { display: flex; justify-content: space-around; margin-top: 30px; padding-top: 25px; border-top: 1px solid rgba(255,255,255,0.1); }
-        .stat-box small { font-size: 0.6rem; font-weight: 800; color: var(--gold-light); text-transform: uppercase; display: block; margin-bottom: 5px; }
-        .stat-box b { font-size: 1.4rem; font-weight: 800; color: #fff; }
+        /* --- Weight Monitor: Meta Mensal em Destaque --- */
+        .hero-meta { background: var(--chocolate); color: white; padding: 50px 20px; border-radius: 40px; text-align: center; border: 1px solid var(--gold); margin-bottom: 25px; box-shadow: var(--shadow-elevated); }
+        .meta-label { font-size: 0.9rem; font-weight: 800; text-transform: uppercase; letter-spacing: 3px; color: var(--gold-light); margin-bottom: 15px; }
+        .meta-val { font-size: 6rem; font-weight: 900; line-height: 0.8; color: #fff; }
+        .meta-unit { font-size: 1.5rem; color: var(--gold); font-weight: 800; margin-left: 5px; }
+        .stat-line { display: flex; justify-content: space-around; margin-top: 40px; padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.1); }
+        .stat-box small { font-size: 0.65rem; font-weight: 800; color: var(--gold-light); text-transform: uppercase; display: block; margin-bottom: 6px; }
+        .stat-box b { font-size: 1.6rem; font-weight: 800; color: #fff; }
 
-        .info-pill { background: var(--off-white); padding: 15px; border-radius: 20px; margin-bottom: 12px; border-left: 4px solid var(--gold); }
-        .info-pill b { display: block; font-size: 0.75rem; color: var(--gold); margin-bottom: 5px; text-transform: uppercase; font-weight: 800; }
-        .info-pill p { font-size: 0.95rem; line-height: 1.5; color: var(--chocolate-light); white-space: pre-wrap; }
+        .info-pill { background: var(--off-white); padding: 15px; border-radius: 20px; margin-bottom: 12px; border-left: 5px solid var(--gold); }
+        .info-pill b { display: block; font-size: 0.8rem; color: var(--gold); margin-bottom: 5px; text-transform: uppercase; font-weight: 800; }
+        .info-pill p { font-size: 1rem; line-height: 1.6; color: var(--chocolate-light); white-space: pre-wrap; }
 
-        /* --- Forms --- */
+        /* --- Menstrual --- */
+        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin-top: 15px; }
+        .cal-day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 0.9rem; font-weight: 800; cursor: pointer; position: relative; color: var(--chocolate); }
+        .cal-day.period { background: rgba(166, 33, 33, 0.15); color: var(--danger); }
+        .cal-day.fertile { background: rgba(197, 160, 89, 0.15); color: var(--gold); }
+        .cal-day.today { border: 2px solid var(--chocolate); }
+
+        /* --- Vision Board --- */
+        .mural-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; margin-top: 10px; }
+        .mural-item { border-radius: 20px; overflow: hidden; position: relative; aspect-ratio: 3/4; background: #eee; box-shadow: var(--shadow-soft); cursor: pointer; }
+        .mural-img { width: 100%; height: 100%; object-fit: cover; transition: 0.4s; }
+        .mural-item:hover .mural-img { transform: scale(1.05); }
+        .mural-cap { position: absolute; bottom: 0; width: 100%; padding: 12px; background: rgba(62, 39, 35, 0.85); color: white; font-size: 0.75rem; font-weight: 700; text-align: center; }
+
+        /* --- Form Elements --- */
         .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; font-size: 0.7rem; font-weight: 800; color: var(--gold); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
-        .form-control { width: 100%; padding: 16px; border: 1px solid #eee; border-radius: 16px; font-size: 1rem; background: #fafafa; outline: none; transition: 0.3s; color: var(--chocolate); }
+        .form-group label { display: block; font-size: 0.75rem; font-weight: 800; color: var(--gold); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+        .form-control { width: 100%; padding: 18px; border: 1px solid #eee; border-radius: 16px; font-size: 1.1rem; background: #fafafa; outline: none; transition: 0.3s; color: var(--chocolate); }
         .form-control:focus { border-color: var(--gold); background: #fff; box-shadow: 0 0 0 4px rgba(197,160,89,0.1); }
-        textarea.form-control { min-height: 60px; resize: none; overflow: hidden; line-height: 1.5; }
+        textarea.form-control { min-height: 80px; resize: none; overflow: hidden; line-height: 1.6; }
 
-        .btn-primary { background: var(--chocolate); color: white; border: none; padding: 16px 30px; border-radius: 50px; font-weight: 800; font-size: 0.85rem; cursor: pointer; transition: 0.3s; box-shadow: 0 10px 20px rgba(62, 39, 35, 0.15); width: 100%; }
+        .btn-primary { background: var(--chocolate); color: white; border: none; padding: 18px 35px; border-radius: 50px; font-weight: 800; font-size: 0.9rem; cursor: pointer; transition: 0.3s; box-shadow: 0 10px 20px rgba(62, 39, 35, 0.15); width: 100%; }
         .btn-primary:active { transform: scale(0.97); }
 
         #modal-overlay { position: fixed; inset: 0; background: rgba(62, 39, 35, 0.6); backdrop-filter: blur(10px); z-index: 1000; display: none; justify-content: center; align-items: center; padding: 20px; }
-        .modal { background: #fff; width: 100%; max-width: 480px; border-radius: 40px; padding: 35px; max-height: 85vh; overflow-y: auto; }
+        .modal { background: #fff; width: 100%; max-width: 500px; border-radius: 40px; padding: 40px; max-height: 85vh; overflow-y: auto; box-shadow: var(--shadow-elevated); }
 
-        .mural-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; }
-        .mural-item { border-radius: 20px; overflow: hidden; position: relative; aspect-ratio: 3/4; background: #eee; }
-        .mural-img { width: 100%; height: 100%; object-fit: cover; }
-        .mural-cap { position: absolute; bottom: 0; width: 100%; padding: 10px; background: rgba(62, 39, 35, 0.8); color: white; font-size: 0.7rem; font-weight: 700; text-align: center; }
+        .fab-menu { position: absolute; bottom: 85px; right: 0; background: #fff; border-radius: 25px; box-shadow: 0 20px 60px rgba(0,0,0,0.25); width: 230px; display: none; overflow: hidden; border: 1px solid #eee; z-index: 450; }
+        .menu-option { padding: 18px 22px; display: flex; align-items: center; gap: 12px; font-size: 0.85rem; color: var(--chocolate); font-weight: 800; cursor: pointer; border-bottom: 1px solid #f9f9f9; }
+        .menu-option:last-child { border-bottom: none; }
+        .menu-option:hover { background: var(--off-white); color: var(--gold); }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body autocomplete="off">
 
+<!-- Ecrã de Segurança -->
 <div id="lock-screen">
     <div class="lock-container">
         <div class="lock-monogram">CM</div>
         <div class="lock-brand">Caroline Medeiros</div>
-        <input type="password" id="pin-input" class="lock-input" placeholder="PALAVRA-PASSE" maxlength="4" autocomplete="off">
-        <div id="pin-error" style="color:var(--danger); font-size:0.8rem; font-weight:800; margin-bottom:20px; height:20px;"></div>
-        <button onclick="unlockApp()" class="btn-primary" style="font-size:1rem; padding: 20px;">ACEDER AGORA</button>
+        <input type="password" id="pin-field" class="lock-input" placeholder="••••" maxlength="4" autocomplete="off">
+        <div id="pin-err" style="color:var(--danger); font-size:0.8rem; font-weight:800; margin-bottom:25px; height:20px;"></div>
+        <button onclick="checkPin()" class="btn-primary" style="font-size:1.1rem; letter-spacing:2px; padding: 22px;">ACEDER AO ORGANIZADOR</button>
     </div>
 </div>
 
@@ -109,95 +125,129 @@
 
 <main id="app-view"></main>
 
+<!-- Navegação Inferior -->
 <nav class="bottom-nav">
-    <div class="nav-tab" id="tab-root" onclick="goBack(0)"><i data-lucide="layout"></i><span>Home</span></div>
+    <div class="nav-tab active" id="tab-root" onclick="goBack(0)"><i data-lucide="home"></i><span>Home</span></div>
     <div class="nav-tab" id="tab-saude" onclick="navigate('saude')"><i data-lucide="heart-pulse"></i><span>Saúde</span></div>
     <div class="nav-tab" id="tab-financeiro" onclick="navigate('financeiro')"><i data-lucide="wallet"></i><span>Finanças</span></div>
     <div class="nav-tab" id="tab-biblia" onclick="navigate('biblia')"><i data-lucide="book-marked"></i><span>Bíblia</span></div>
-    <div class="nav-tab" onclick="toggleFabMenu(event)"><i data-lucide="plus-circle"></i><span>Menu</span></div>
+    <div class="nav-tab" onclick="toggleFab(event)"><i data-lucide="plus-circle"></i><span>Novo</span></div>
 </nav>
 
-<!-- FAB Multi-Menu -->
+<!-- Menu de Ações -->
 <div id="fab-overlay" style="position:fixed; inset:0; z-index:350; display:none;" onclick="this.style.display='none'">
-    <div style="position:absolute; bottom:90px; right:20px; background:#fff; border-radius:25px; box-shadow:0 20px 50px rgba(0,0,0,0.2); width:210px; overflow:hidden; border:1px solid #eee;">
-        <div style="padding:15px; font-size:0.8rem; font-weight:800; border-bottom:1px solid #f9f9f9; cursor:pointer;" onclick="openModal('folder')"><i data-lucide="folder" style="width:16px; margin-right:8px; vertical-align:middle;"></i> Nova Pasta</div>
-        <div style="padding:15px; font-size:0.8rem; font-weight:800; border-bottom:1px solid #f9f9f9; cursor:pointer;" onclick="openModal('note')"><i data-lucide="file-text" style="width:16px; margin-right:8px; vertical-align:middle;"></i> Nova Nota</div>
-        <div style="padding:15px; font-size:0.8rem; font-weight:800; border-bottom:1px solid #f9f9f9; cursor:pointer;" onclick="openModal('checklist')"><i data-lucide="check-square" style="width:16px; margin-right:8px; vertical-align:middle;"></i> Checklist</div>
-        <div style="padding:15px; font-size:0.8rem; font-weight:800; border-bottom:1px solid #f9f9f9; cursor:pointer;" onclick="openModal('visionboard')"><i data-lucide="image" style="width:16px; margin-right:8px; vertical-align:middle;"></i> Visionboard</div>
-        <div style="padding:15px; font-size:0.8rem; font-weight:800; border-bottom:1px solid #f9f9f9; cursor:pointer;" onclick="openModal('bank')"><i data-lucide="credit-card" style="width:16px; margin-right:8px; vertical-align:middle;"></i> Dados Bancários</div>
-        <div style="padding:15px; font-size:0.8rem; font-weight:800; cursor:pointer; color:var(--gold);" onclick="exportData()"><i data-lucide="download" style="width:16px; margin-right:8px; vertical-align:middle;"></i> Backup</div>
+    <div class="fab-menu" id="fab-dropdown">
+        <div class="menu-option" onclick="openModal('folder')"><i data-lucide="folder"></i> Nova Pasta</div>
+        <div class="menu-option" onclick="openModal('note')"><i data-lucide="file-text"></i> Nova Nota</div>
+        <div class="menu-option" onclick="openModal('checklist')"><i data-lucide="check-square"></i> Checklist</div>
+        <div class="menu-option" onclick="openModal('visionboard')"><i data-lucide="image"></i> Visionboard</div>
+        <div class="menu-option" onclick="openModal('bank')"><i data-lucide="credit-card"></i> Dados Bancários</div>
+        <div class="menu-option" onclick="openModal('social')"><i data-lucide="user-lock"></i> Logins Sociais</div>
+        <div class="menu-option" style="color:var(--gold); background: #fdfaf0;" onclick="exportData()"><i data-lucide="download-cloud"></i> Fazer Backup</div>
+        <div class="menu-option" style="color:var(--gold);" onclick="triggerImport()"><i data-lucide="upload-cloud"></i> Restaurar Dados</div>
     </div>
 </div>
 
+<!-- Modal Principal -->
 <div id="modal-overlay">
     <div class="modal">
-        <h2 id="m-title" style="text-align:center; margin-bottom:25px; color:var(--chocolate)"></h2>
-        <div id="m-body"></div>
-        <div style="display:flex; gap:12px; margin-top:30px;">
-            <button class="btn-primary" style="background:#f5f5f5; color:#888;" onclick="closeModal()">Sair</button>
-            <button class="btn-primary" id="m-save">Guardar</button>
+        <h2 id="modal-title" style="text-align:center; margin-bottom:30px; color:var(--chocolate); font-size:1.8rem;"></h2>
+        <div id="modal-body"></div>
+        <div style="display:flex; gap:15px; margin-top:35px;">
+            <button class="btn-primary" style="background:#f2f2f2; color:#999; box-shadow:none;" onclick="closeModal()">Cancelar</button>
+            <button class="btn-primary" id="modal-save">Guardar</button>
         </div>
     </div>
 </div>
 
-<div id="lightbox" onclick="this.style.display='none'" style="position:fixed; inset:0; background:rgba(0,0,0,0.95); z-index:2000; display:none; justify-content:center; align-items:center;">
-    <img id="lb-img" style="max-width:90%; max-height:85vh; border-radius:15px;">
-</div>
+<div id="lightbox" onclick="this.style.display='none'"><img id="lb-img"></div>
+
+<!-- Input de Ficheiro Invisível para Importação -->
+<input type="file" id="import-input" style="display:none" accept=".json">
 
 <script>
-    // --- Database Key (Persistência) ---
-    const DB_KEY = "cm_luxury_v10";
+    // --- Global State & Storage ---
+    const APP_DB_NAME = "cm_organizer_elite_v1";
 
     let state = {
         path: ['root'],
-        items: JSON.parse(localStorage.getItem(DB_KEY + "_items")) || [],
-        menstrual: JSON.parse(localStorage.getItem(DB_KEY + "_men")) || { last: "2024-01-01", cycle: 28, flow: 5 },
+        items: JSON.parse(localStorage.getItem(APP_DB_NAME + "_data")) || [],
+        menstrual: JSON.parse(localStorage.getItem(APP_DB_NAME + "_men")) || { last: "2024-01-01", cycle: 28, flow: 5 },
         bible: { book: "Gênesis", cap: 1 }
     };
 
     function sync() {
-        localStorage.setItem(DB_KEY + "_items", JSON.stringify(state.items));
-        localStorage.setItem(DB_KEY + "_men", JSON.stringify(state.menstrual));
+        localStorage.setItem(APP_DB_NAME + "_data", JSON.stringify(state.items));
+        localStorage.setItem(APP_DB_NAME + "_men", JSON.stringify(state.menstrual));
         renderApp();
     }
 
-    function unlockApp() {
-        if(document.getElementById('pin-input').value === "2405") {
+    function checkPin() {
+        if(document.getElementById('pin-field').value === "2405") {
             document.getElementById('lock-screen').style.opacity = '0';
             setTimeout(() => document.getElementById('lock-screen').style.display = 'none', 600);
         } else {
-            document.getElementById('pin-error').innerText = "SENHA INVÁLIDA";
-            document.getElementById('pin-input').value = "";
+            document.getElementById('pin-err').innerText = "SENHA INCORRETA";
+            document.getElementById('pin-field').value = "";
         }
     }
 
-    // Auto-expand engine
-    function resizeTextArea(el) {
+    // Auto-expand para todos os campos de texto
+    function autoGrow(el) {
         el.style.height = 'auto';
         el.style.height = el.scrollHeight + 'px';
     }
 
     document.addEventListener('input', e => {
-        if(e.target.tagName === 'TEXTAREA') resizeTextArea(e.target);
+        if(e.target.tagName === 'TEXTAREA') autoGrow(e.target);
     });
 
-    // --- Core Logic ---
-    function getWeightStats() {
+    // --- Math Engine ---
+    function getWeightMetrics() {
         const w = state.items.find(i => i.type === 'health_weight');
         if(!w || !w.content.target) return null;
-        const current = w.content.history?.length ? w.content.history.sort((a,b)=>new Date(b.date)-new Date(a.date))[0].weight : w.content.startWeight;
-        const diff = current - w.content.target;
+        const history = w.content.history || [];
+        const current = history.length ? history.sort((a,b)=>new Date(b.date)-new Date(a.date))[0].weight : w.content.startWeight;
+        const remaining = current - w.content.target;
         const start = new Date(w.content.startDate);
-        const end = new Date(start); end.setMonth(start.getMonth() + (parseInt(w.content.periodMonths) || 1));
-        const monthsRem = Math.max(1, Math.ceil((end - new Date()) / (86400000 * 30.41)));
+        const months = parseInt(w.content.periodMonths) || 1;
+        const end = new Date(start); end.setMonth(start.getMonth() + months);
+        const monthsRem = Math.max(1, Math.ceil((end - new Date()) / (1000 * 60 * 60 * 24 * 30.41)));
+        
         let h = parseFloat(w.content.height); if(h > 3) h /= 100;
         return { 
-            mma: diff > 0 ? (diff / monthsRem).toFixed(2) : "0.00", 
+            mma: remaining > 0 ? (remaining / monthsRem).toFixed(2) : "0.00", 
             current, imc: h > 0 ? (current/(h*h)).toFixed(1) : "--", water: (current*0.035).toFixed(1) 
         };
     }
 
-    // --- Navigation ---
+    // --- Core Navigation ---
+    function navigate(id) { state.path.push(id); renderApp(); }
+    function goBack(idx) { state.path = state.path.slice(0, idx + 1); renderApp(); }
+
+    function renderApp() {
+        const currentId = state.path[state.path.length - 1];
+        const container = document.getElementById('app-view');
+        const bread = document.getElementById('breadcrumbs');
+
+        document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+        const activeTab = document.getElementById('tab-' + currentId);
+        if(activeTab) activeTab.classList.add('active');
+
+        bread.innerHTML = state.path.map((id, i) => {
+            const label = id === 'root' ? 'Início' : (ROOT_CATS.find(c=>c.id===id)?.name || state.items.find(it=>it.id===id)?.name || "...");
+            return `<span class="breadcrumb-item" onclick="goBack(${i})">${i>0?'<i data-lucide="chevron-right" style="width:12px"></i>':''} ${label}</span>`;
+        }).join('');
+
+        if (currentId === 'root') renderHome(container);
+        else if (currentId === 'saude') renderSaude(container);
+        else if (currentId === 'financeiro') renderFinance(container);
+        else if (currentId === 'biblia') renderBible(container);
+        else renderGeneralView(container, currentId);
+
+        if(window.lucide) lucide.createIcons();
+    }
+
     const ROOT_CATS = [
         { id: 'pessoal', name: 'Pessoal', icon: 'user' },
         { id: 'profissional', name: 'Profissional', icon: 'briefcase' },
@@ -207,93 +257,71 @@
         { id: 'biblia', name: 'Bíblia', icon: 'book-open' }
     ];
 
-    function navigate(id) { state.path.push(id); renderApp(); }
-    function goBack(idx) { state.path = state.path.slice(0, idx + 1); renderApp(); }
-
-    function renderApp() {
-        const cur = state.path[state.path.length - 1];
-        const main = document.getElementById('app-view');
-        const bread = document.getElementById('breadcrumbs');
-
-        document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-        const activeTab = document.getElementById('tab-' + cur);
-        if(activeTab) activeTab.classList.add('active');
-
-        bread.innerHTML = state.path.map((id, i) => {
-            const label = id === 'root' ? 'Início' : (ROOT_CATS.find(c=>c.id===id)?.name || state.items.find(it=>it.id===id)?.name || "...");
-            return `<span class="breadcrumb-item" onclick="goBack(${i})">${i>0?'<i data-lucide="chevron-right" style="width:12px"></i>':''} ${label}</span>`;
-        }).join('');
-
-        if (cur === 'root') renderHome(main);
-        else if (cur === 'saude') renderSaude(main);
-        else if (cur === 'financeiro') renderFinance(main);
-        else if (cur === 'biblia') renderBible(main);
-        else renderGeneralFolder(main, cur);
-
-        if(window.lucide) lucide.createIcons();
-    }
-
     function renderHome(el) {
-        el.innerHTML = `<h1 class="page-title">Organizador</h1><div class="grid-container">
-            ${ROOT_CATS.map(c => `<div class="card" style="display:flex; align-items:center; cursor:pointer;" onclick="navigate('${c.id}')">
-                <div style="width:50px; height:50px; background:var(--off-white); border-radius:15px; display:flex; align-items:center; justify-content:center; color:var(--gold); margin-right:15px;"><i data-lucide="${c.icon}"></i></div>
-                <b style="font-size:1rem; color:var(--chocolate)">${c.name}</b>
-            </div>`).join('')}
-            ${state.items.filter(i => i.type === 'custom_area' && i.parentId === 'root').map(i => `<div class="card" style="display:flex; align-items:center; cursor:pointer;" onclick="navigate('${i.id}')">
-                <div style="width:50px; height:50px; background:var(--off-white); border-radius:15px; display:flex; align-items:center; justify-content:center; color:var(--gold); margin-right:15px;"><i data-lucide="star"></i></div>
-                <b style="font-size:1rem; flex:1;">${i.name}</b>
-                <i data-lucide="trash-2" style="width:14px; opacity:0.2;" onclick="deleteItem('${i.id}', event)"></i>
-            </div>`).join('')}
+        el.innerHTML = `<h1 style="font-size:2.5rem; margin-bottom:30px; color:var(--chocolate)">Boas-vindas</h1>
+        <div class="grid-container">
+            ${ROOT_CATS.map(c => `
+                <div class="card" style="display:flex; align-items:center; cursor:pointer;" onclick="navigate('${c.id}')">
+                    <div style="width:55px; height:55px; background:var(--off-white); border-radius:18px; display:flex; align-items:center; justify-content:center; color:var(--gold); margin-right:18px;"><i data-lucide="${c.icon}"></i></div>
+                    <b style="font-size:1.1rem;">${c.name}</b>
+                </div>`).join('')}
+            ${state.items.filter(i => i.type === 'custom_area' && i.parentId === 'root').map(i => `
+                <div class="card" style="display:flex; align-items:center; cursor:pointer;" onclick="navigate('${i.id}')">
+                    <div style="width:55px; height:55px; background:var(--off-white); border-radius:18px; display:flex; align-items:center; justify-content:center; color:var(--gold); margin-right:18px;"><i data-lucide="star"></i></div>
+                    <b style="font-size:1.1rem; flex:1;">${i.name}</b>
+                    <i data-lucide="trash-2" style="width:16px; opacity:0.2;" onclick="deleteItem('${i.id}', event)"></i>
+                </div>`).join('')}
         </div>`;
     }
 
     function renderSaude(el) {
-        const stats = getWeightStats();
+        const stats = getWeightMetrics();
         const weightItem = state.items.find(i => i.type === 'health_weight');
         const diet = state.items.find(i => i.type === 'health_food') || { content: {} };
         const meds = state.items.filter(i => i.type === 'health_med');
 
         el.innerHTML = `
             <div class="hero-meta">
-                <span class="meta-label">Meta Mensal Restante</span>
-                <div class="meta-val">${stats ? stats.mma : '--'}<small style="font-size:1rem; color:var(--gold-light); margin-left:5px;">kg</small></div>
+                <span class="meta-label">Foco: Meta Mensal Restante</span>
+                <div class="meta-val">${stats ? stats.mma : '--'}<small class="meta-unit">kg</small></div>
                 <div class="stat-line">
-                    <div class="stat-box"><small>Peso Atual</small><b>${stats ? stats.current : '--'}kg</b></div>
+                    <div class="stat-box"><small>Peso Hoje</small><b>${stats ? stats.current : '--'}kg</b></div>
                     <div class="stat-box"><small>IMC</small><b>${stats ? stats.imc : '--'}</b></div>
-                    <div class="stat-box"><small>Meta Água</small><b>${stats ? stats.water : '--'}L</b></div>
+                    <div class="stat-box"><small>Água/Dia</small><b>${stats ? stats.water : '--'}L</b></div>
                 </div>
             </div>
 
             <div class="grid-container">
                 <div class="card" style="display:block;">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-                        <h2 style="font-size:1.1rem;">Alimentação</h2> <i data-lucide="edit-3" onclick="openModal('health_food')" style="color:var(--gold); cursor:pointer; width:18px;"></i>
+                        <h2 style="font-size:1.3rem;">Alimentação</h2> <i data-lucide="edit-3" onclick="openModal('health_food')" style="color:var(--gold); cursor:pointer; width:22px;"></i>
                     </div>
-                    <div class="info-pill"><b>Café:</b> <p>${diet.content.b || '-'}</p></div>
-                    <div class="info-pill"><b>Almoço:</b> <p>${diet.content.l || '-'}</p></div>
-                    <div class="info-pill"><b>Jantar:</b> <p>${diet.content.d || '-'}</p></div>
+                    <div class="info-pill"><b>Café da Manhã:</b> <p>${diet.content.b || 'Não definido'}</p></div>
+                    <div class="info-pill"><b>Almoço:</b> <p>${diet.content.l || 'Não definido'}</p></div>
+                    <div class="info-pill"><b>Jantar:</b> <p>${diet.content.d || 'Não definido'}</p></div>
+                    <div style="background:var(--chocolate); color:#fff; padding:18px; border-radius:20px; text-align:center; font-weight:800; font-size:0.85rem; letter-spacing:1px;">JEJUM: ${diet.content.fs||'00:00'} ⮕ ${diet.content.fe||'00:00'}</div>
                 </div>
 
                 <div class="card" style="display:block;">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-                        <h2 style="font-size:1.1rem;">Medicamentos</h2> <i data-lucide="plus-circle" onclick="openModal('health_med')" style="color:var(--gold); cursor:pointer; width:18px;"></i>
+                        <h2 style="font-size:1.3rem;">Medicamentos</h2> <i data-lucide="plus-circle" onclick="openModal('health_med')" style="color:var(--gold); cursor:pointer; width:22px;"></i>
                     </div>
-                    ${meds.map(m => `<div style="padding:10px 0; border-bottom:1px solid #f5f5f5; display:flex; justify-content:space-between; align-items:center;">
-                        <div><b style="font-size:0.85rem;">${m.name}</b><br><small style="color:var(--gold); font-weight:700;">${m.content.time} - ${m.content.dose}</small></div>
-                        <i data-lucide="trash-2" style="width:12px; color:var(--danger); opacity:0.3; cursor:pointer" onclick="deleteItem('${m.id}')"></i>
-                    </div>`).join('')}
+                    ${meds.length ? meds.map(m => `<div style="padding:15px 0; border-bottom:1px solid #f5f5f5; display:flex; justify-content:space-between; align-items:center;">
+                        <div><b style="font-size:1rem;">${m.name}</b><br><small style="color:var(--gold); font-weight:800;">${m.content.time} — ${m.content.dose}</small></div>
+                        <i data-lucide="trash-2" style="width:14px; color:var(--danger); opacity:0.3; cursor:pointer" onclick="deleteItem('${m.id}')"></i>
+                    </div>`).join('') : '<p style="opacity:0.4; font-size:0.9rem;">Lista vazia.</p>'}
                 </div>
 
                 <div class="card" style="display:block;">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-                        <h2 style="font-size:1.1rem;">Ciclo Menstrual</h2> <i data-lucide="settings" onclick="openModal('menstrual_config')" style="color:var(--gold); cursor:pointer; width:18px;"></i>
+                        <h2 style="font-size:1.3rem;">Ciclo Menstrual</h2> <i data-lucide="settings" onclick="openModal('menstrual_config')" style="color:var(--gold); cursor:pointer; width:22px;"></i>
                     </div>
                     ${renderMenstrualGrid()}
                 </div>
             </div>
             
-            <button class="btn-primary" style="margin-top:20px; font-size:1rem;" onclick="openModal('health_weight_register')">REGISTAR PESO HOJE</button>
-            ${weightItem ? `<button class="btn-primary" style="margin-top:10px; background:#f0f0f0; color:#888;" onclick="openModal('health_weight_config')">CONFIGURAR METAS</button>` : ''}
+            <button class="btn-primary" style="margin-top:25px; padding: 22px; font-size:1.1rem;" onclick="openModal('health_weight_register')">REGISTAR PESO</button>
+            ${weightItem ? `<button class="btn-primary" style="margin-top:12px; background:#f0f0f0; color:#aaa; box-shadow:none;" onclick="openModal('health_weight_config')">RECONFIGURAR METAS</button>` : ''}
         `;
     }
 
@@ -302,7 +330,7 @@
         const last = new Date(state.menstrual.last + 'T12:00:00');
         const cycle = parseInt(state.menstrual.cycle);
         const dur = parseInt(state.menstrual.flow);
-        let html = `<div style="display:grid; grid-template-columns: repeat(7, 1fr); text-align:center; font-size:0.6rem; font-weight:900; color:var(--gold); margin-bottom:10px;">
+        let html = `<div style="display:grid; grid-template-columns: repeat(7, 1fr); text-align:center; font-size:0.65rem; font-weight:900; color:var(--gold); margin-bottom:15px;">
             <div>D</div><div>S</div><div>T</div><div>Q</div><div>Q</div><div>S</div><div>S</div></div><div class="cal-grid">`;
         const startDay = new Date(now.getFullYear(), now.getMonth(), 1).getDay();
         const days = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
@@ -321,211 +349,245 @@
     }
 
     function renderFinance(el) {
-        const in_ = state.items.filter(i => i.type === 'finance_in');
-        const out_ = state.items.filter(i => i.type === 'finance_out');
-        const sumIn = in_.reduce((a,b)=>a+parseFloat(b.content.value||0), 0);
-        const sumOut = out_.reduce((a,b)=>a+parseFloat(b.content.value||0), 0);
+        const inc = state.items.filter(i => i.parentId === 'fin_in');
+        const exp = state.items.filter(i => i.parentId === 'fin_out');
+        const sumIn = inc.reduce((a,b)=>a+parseFloat(b.content.value||0), 0);
+        const sumOut = exp.reduce((a,b)=>a+parseFloat(b.content.value||0), 0);
 
         el.innerHTML = `
             <div class="hero-meta" style="background:#fff; color:var(--chocolate); border-color:#eee">
-                <span class="label">Balanço do Mês</span>
-                <div class="huge-number" style="color:var(--chocolate)">€ ${(sumIn-sumOut).toFixed(2)}</div>
+                <span class="label">Balanço Líquido</span>
+                <div class="huge-number" style="color:var(--chocolate); font-size:4rem;">€ ${(sumIn-sumOut).toFixed(2)}</div>
                 <div class="stat-line">
-                    <div class="stat-box"><small>Ganhos</small><b style="color:var(--success)">€ ${sumIn.toFixed(2)}</b></div>
-                    <div class="stat-box"><small>Gastos</small><b style="color:var(--danger)">€ ${sumOut.toFixed(2)}</b></div>
+                    <div class="stat-box"><small style="color:var(--success)">Ganhos</small><b style="color:var(--success)">€ ${sumIn.toFixed(2)}</b></div>
+                    <div class="stat-box"><small style="color:var(--danger)">Gastos</small><b style="color:var(--danger)">€ ${sumOut.toFixed(2)}</b></div>
                 </div>
             </div>
             <div class="grid-container">
-                <div class="card" onclick="navigate('folder_in')"><b>Receitas Mensais</b></div>
-                <div class="card" onclick="navigate('folder_out')"><b>Despesas Mensais</b></div>
-                <div class="card" onclick="navigate('folder_porquinhos')"><b>Porquinhos</b></div>
+                <div class="card" onclick="navigate('fin_in')"><b>Receitas</b></div>
+                <div class="card" onclick="navigate('fin_out')"><b>Despesas</b></div>
+                <div class="card" onclick="navigate('fin_invest')"><b>Porquinhos</b></div>
             </div>
         `;
     }
 
     async function renderBible(el) {
-        el.innerHTML = `<h2 class="page-title">Bíblia Sagrada</h2>
-        <div style="display:flex; gap:10px; margin-bottom:20px;">
-            <select id="b-book" class="form-control" style="flex:2;" onchange="state.bible.book=this.value; fetchB();"></select>
-            <input type="number" id="b-cap" class="form-control" style="flex:1;" value="${state.bible.cap}" onchange="state.bible.cap=this.value; fetchB();">
+        el.innerHTML = `<h2 style="font-size:2rem; margin-bottom:25px; color:var(--chocolate);">Bíblia NVI</h2>
+        <div style="display:flex; gap:12px; margin-bottom:25px;">
+            <select id="bib-b" class="form-control" style="flex:2;" onchange="state.bible.book=this.value; fetchBibleText();"></select>
+            <input type="number" id="bib-c" class="form-control" style="flex:1;" value="${state.bible.cap}" onchange="state.bible.cap=this.value; fetchBibleText();">
         </div>
-        <div id="bib-text" class="card" style="display:block; min-height:400px; line-height:2; font-size:1.1rem; color:#444;">Buscando...</div>`;
+        <div id="bib-text" class="card" style="display:block; min-height:450px; line-height:2.2; font-size:1.15rem; color:#444;">Carregando Escrituras...</div>`;
         const books = ["Gênesis", "Êxodo", "Levítico", "Números", "Deuteronômio", "Josué", "Juízes", "Rute", "1 Samuel", "2 Samuel", "1 Reis", "2 Reis", "1 Crônicas", "2 Crônicas", "Esdras", "Neemias", "Ester", "Jó", "Salmos", "Provérbios", "Eclesiastes", "Cânticos", "Isaías", "Jeremias", "Lamentações", "Ezequiel", "Daniel", "Oseias", "Joel", "Amós", "Obadias", "Jonas", "Miqueias", "Naum", "Habacuque", "Sofonias", "Ageu", "Zacarias", "Malaquias", "Mateus", "Marcos", "Lucas", "João", "Atos", "Romanos", "1 Coríntios", "2 Coríntios", "Gálatas", "Efésios", "Filipenses", "Colossenses", "1 Tessalonicenses", "2 Tessalonicenses", "1 Timóteo", "2 Timóteo", "Tito", "Filemom", "Hebreus", "Tiago", "1 Pedro", "2 Pedro", "1 João", "2 João", "3 João", "Judas", "Apocalipse"];
-        const sel = document.getElementById('b-book');
+        const sel = document.getElementById('bib-b');
         books.forEach(b => {
             const opt = document.createElement('option'); opt.value = b; opt.innerText = b;
             if(b === state.bible.book) opt.selected = true;
             sel.appendChild(opt);
         });
-        fetchB();
+        fetchBibleText();
     }
 
-    async function fetchB() {
-        const el = document.getElementById('bib-text');
+    async function fetchBibleText() {
+        const target = document.getElementById('bib-text');
         try {
             const res = await fetch('https://raw.githubusercontent.com/thiagobodruk/bible/master/json/pt_nvi.json');
             const data = await res.json();
             const book = data.find(b => b.name === state.bible.book);
             const verses = book.chapters[state.bible.cap - 1];
-            el.innerHTML = verses.map((v, i) => `<p style="margin-bottom:15px;"><sup style="color:var(--gold); font-weight:900; margin-right:8px;">${i+1}</sup>${v}</p>`).join('');
-        } catch(e) { el.innerHTML = "Erro ao conectar."; }
+            target.innerHTML = verses.map((v, i) => `<p style="margin-bottom:20px;"><sup style="color:var(--gold); font-weight:900; margin-right:12px; font-size:0.7rem;">${i+1}</sup>${v}</p>`).join('');
+        } catch(e) { target.innerHTML = "Falha ao obter escrituras. Verifique a ligação."; }
     }
 
-    function renderGeneralFolder(el, pid) {
+    function renderGeneralView(el, pid) {
         const folder = state.items.find(i => i.id === pid);
-        const items = state.items.filter(i => i.parentId === pid);
+        const children = state.items.filter(i => i.parentId === pid);
         
         if (folder?.type === 'visionboard') {
-            el.innerHTML = `<div class="section-header"><h2>Visionboard</h2><button class="btn-primary" style="width:auto; padding:10px 20px" onclick="openModal('vision_add', '${pid}')">Adicionar</button></div>
+            el.innerHTML = `<div class="section-header"><h2>${folder.name}</h2><button class="btn-primary" style="width:auto; padding:12px 25px" onclick="openModal('vision_add', '${pid}')">Adicionar Foto</button></div>
             <div class="mural-grid">${(folder.content.images || []).map((img, idx) => `
                 <div class="mural-item">
                     <img src="${img.data}" class="mural-img" onclick="showLightbox('${img.data}')">
                     <div class="mural-cap">${img.caption}</div>
-                    <button style="position:absolute; top:8px; right:8px; border:none; background:white; border-radius:50%; width:24px; height:24px" onclick="deleteVisionImg('${pid}', ${idx})">×</button>
+                    <button style="position:absolute; top:10px; right:10px; border:none; background:white; border-radius:50%; width:28px; height:28px; box-shadow:0 2px 5px rgba(0,0,0,0.2)" onclick="deleteVisionImg('${pid}', ${idx})">×</button>
                 </div>`).join('')}</div>`;
             return;
         }
 
         el.innerHTML = `<div class="section-header"><h2>${folder?.name || "Conteúdo"}</h2></div><div class="grid-container">
-            ${items.map(i => `
+            ${children.map(i => `
                 <div class="card" style="display:flex; justify-content:space-between; align-items:center;">
-                    <div onclick="navigate('${i.id}')" style="cursor:pointer; flex:1;">
-                        <i data-lucide="${i.type === 'folder' ? 'folder' : 'file'}" style="width:16px; margin-right:10px; color:var(--gold); vertical-align:middle"></i>
-                        <b style="font-size:0.95rem;">${i.name}</b>
+                    <div onclick="navigate('${i.id}')" style="cursor:pointer; flex:1; display:flex; align-items:center;">
+                        <i data-lucide="${i.type === 'folder' ? 'folder' : 'file-text'}" style="width:18px; margin-right:12px; color:var(--gold);"></i>
+                        <b style="font-size:1.1rem;">${i.name}</b>
                     </div>
-                    <i data-lucide="trash-2" style="width:14px; opacity:0.2; color:var(--danger); cursor:pointer" onclick="deleteItem('${i.id}')"></i>
+                    <i data-lucide="trash-2" style="width:16px; opacity:0.2; color:var(--danger); cursor:pointer" onclick="deleteItem('${i.id}')"></i>
                 </div>`).join('')}
         </div>`;
     }
 
-    // --- Modals ---
+    // --- Modal Engine ---
     function openModal(type, extra = null) {
         const overlay = document.getElementById('modal-overlay');
         const body = document.getElementById('mb');
         const title = document.getElementById('m-title');
-        const saveBtn = document.getElementById('m-save');
+        const save = document.getElementById('modal-save');
         overlay.style.display = 'flex';
         
         let html = '';
-        if (type === 'note') {
-            title.innerText = "Nova Nota";
-            html = `<div class="form-group"><label>Título</label><input id="f-name" class="form-control"></div>
-                    <div class="form-group"><label>Texto</label><textarea id="f-text" class="form-control"></textarea></div>`;
-        }
-        else if (type === 'health_food') {
+        if(type === 'health_food') {
             const d = state.items.find(i=>i.type === 'health_food') || {content:{}};
-            title.innerText = "Dieta";
-            html = `<div class="form-group"><label>Café</label><textarea id="f-b" class="form-control">${d.content.b||''}</textarea></div>
+            title.innerText = "Menu Nutricional";
+            html = `<div class="form-group"><label>Café da Manhã</label><textarea id="f-b" class="form-control">${d.content.b||''}</textarea></div>
                     <div class="form-group"><label>Almoço</label><textarea id="f-l" class="form-control">${d.content.l||''}</textarea></div>
-                    <div class="form-group"><label>Jantar</label><textarea id="f-d" class="form-control">${d.content.d||''}</textarea></div>`;
-        }
-        else if (type === 'health_med') {
-            title.innerText = "Novo Remédio";
-            html = `<div class="form-group"><label>Nome</label><input id="f-name" class="form-control"></div>
-                    <div class="form-group"><label>Dose</label><input id="f-dose" class="form-control"></div>
-                    <div class="form-group"><label>Hora</label><input type="time" id="f-time" class="form-control"></div>`;
-        }
-        else if (type === 'bank') {
-            title.innerText = "Banco";
-            html = `<div class="form-group"><label>Banco</label><input id="f-name" class="form-control"></div>
-                    <div class="form-group"><label>Agência/Conta</label><input id="f-acc" class="form-control"></div>
-                    <div class="form-group"><label>Titular/PIX</label><input id="f-pix" class="form-control"></div>`;
+                    <div class="form-group"><label>Jantar</label><textarea id="f-d" class="form-control">${d.content.d||''}</textarea></div>
+                    <div class="form-group"><label>Horário Jejum</label><div style="display:flex;gap:10px;"><input type="time" id="f-fs" class="form-control" value="${d.content.fs||'20:00'}"><input type="time" id="f-fe" class="form-control" value="${d.content.fe||'08:00'}"></div></div>`;
         }
         else if (type === 'health_weight_config') {
-            title.innerText = "Config Metas";
-            html = `<div class="form-group"><label>Meta (kg)</label><input type="number" id="f-target" class="form-control"></div>
-                    <div class="form-group"><label>Atual (kg)</label><input type="number" id="f-start" class="form-control"></div>
-                    <div class="form-group"><label>Altura</label><input type="number" id="f-height" class="form-control" step="0.01"></div>
-                    <div class="form-group"><label>Prazo (Meses)</label><input type="number" id="f-months" class="form-control"></div>
-                    <div class="form-group"><label>Início</label><input type="date" id="f-date" class="form-control"></div>`;
+            const w = state.items.find(i=>i.type === 'health_weight') || {content:{}};
+            title.innerText = "Configurar Metas";
+            html = `<div class="form-group"><label>Peso Inicial (kg)</label><input type="number" id="f-start" class="form-control" value="${w.content.startWeight||''}"></div>
+                    <div class="form-group"><label>Meta Final (kg)</label><input type="number" id="f-target" class="form-control" value="${w.content.target||''}"></div>
+                    <div class="form-group"><label>Altura (m)</label><input type="number" id="f-height" class="form-control" value="${w.content.height||''}" step="0.01"></div>
+                    <div class="form-group"><label>Prazo (Meses)</label><input type="number" id="f-months" class="form-control" value="${w.content.periodMonths||''}"></div>
+                    <div class="form-group"><label>Data Início</label><input type="date" id="f-date" class="form-control" value="${w.content.startDate||''}"></div>`;
         }
         else if (type === 'health_weight_register') {
-            title.innerText = "Novo Peso";
-            html = `<div class="form-group"><label>Peso (kg)</label><input type="number" id="f-weight" class="form-control" step="0.1"></div>
+            title.innerText = "Novo Registo";
+            html = `<div class="form-group"><label>Peso Hoje (kg)</label><input type="number" id="f-weight" class="form-control" step="0.1" autofocus></div>
                     <div class="form-group"><label>Data</label><input type="date" id="f-date" class="form-control" value="${new Date().toISOString().split('T')[0]}"></div>`;
         }
-        else if (type === 'folder' || type === 'custom_area' || type === 'visionboard') {
-            title.innerText = "Criar Item";
-            html = `<div class="form-group"><label>Nome</label><input id="f-name" class="form-control"></div>`;
+        else if (type === 'note') {
+            title.innerText = "Anotação";
+            html = `<div class="form-group"><label>Título</label><input id="f-name" class="form-control"></div>
+                    <div class="form-group"><label>Conteúdo</label><textarea id="f-text" class="form-control"></textarea></div>`;
         }
         else if (type === 'vision_add') {
-            title.innerText = "Foto Vision";
-            html = `<div class="form-group"><label>Imagem</label><input type="file" id="f-img" class="form-control"></div>
-                    <div class="form-group"><label>Legenda</label><textarea id="f-cap" class="form-control"></textarea></div>`;
+            title.innerText = "Adicionar Meta Visual";
+            html = `<div class="form-group"><label>Ficheiro Foto</label><input type="file" id="f-img" class="form-control"></div>
+                    <div class="form-group"><label>Legenda da Foto</label><textarea id="f-cap" class="form-control"></textarea></div>`;
         }
         else if (type === 'menstrual_config') {
-            title.innerText = "Ciclo";
-            html = `<div class="form-group"><label>Ciclo</label><input type="number" id="f-c" class="form-control" value="${state.menstrual.cycle}"></div>
-                    <div class="form-group"><label>Fluxo</label><input type="number" id="f-f" class="form-control" value="${state.menstrual.flow}"></div>
+            title.innerText = "Configurar Ciclo";
+            html = `<div class="form-group"><label>Média Ciclo (Dias)</label><input type="number" id="f-c" class="form-control" value="${state.menstrual.cycle}"></div>
+                    <div class="form-group"><label>Duração Fluxo (Dias)</label><input type="number" id="f-f" class="form-control" value="${state.menstrual.flow}"></div>
                     <div class="form-group"><label>Última Data</label><input type="date" id="f-l" class="form-control" value="${state.menstrual.last}"></div>`;
+        }
+        else if (type === 'bank') {
+            title.innerText = "Dados Bancários";
+            html = `<div class="form-group"><label>Banco</label><input id="f-name" class="form-control"></div>
+                    <div class="form-group"><label>Agência/Conta</label><input id="f-acc" class="form-control"></div>
+                    <div class="form-group"><label>PIX/Titular</label><input id="f-pix" class="form-control"></div>`;
+        }
+        else {
+            title.innerText = "Novo Item";
+            html = `<div class="form-group"><label>Nome</label><input id="f-name" class="form-control"></div>`;
         }
 
         body.innerHTML = html;
-        body.querySelectorAll('textarea').forEach(el => resizeTextArea(el));
-        saveBtn.onclick = () => handleSave(type, extra);
+        body.querySelectorAll('textarea').forEach(el => autoGrow(el));
+        save.onclick = () => handleSave(type, extra);
     }
 
     async function handleSave(type, extra) {
-        const v = id => document.getElementById(id)?.value;
+        const get = id => document.getElementById(id)?.value;
         const pid = state.path[state.path.length-1];
 
         if (type === 'note') {
-            state.items.push({ id: 'n'+Date.now(), parentId: pid, type, name: v('f-name'), content: { text: v('f-text') } });
+            state.items.push({ id: 'n'+Date.now(), parentId: pid, type, name: get('f-name'), content: { text: get('f-text') } });
         }
         else if (type === 'health_food') {
             let hf = state.items.find(i=>i.type === 'health_food');
-            if(!hf) state.items.push({ id: 'diet', type: 'health_food', parentId: 'saude', name: 'Dieta', content: { b: v('f-b'), l: v('f-l'), d: v('f-d') } });
-            else hf.content = { b: v('f-b'), l: v('f-l'), d: v('f-d') };
-        }
-        else if (type === 'health_med') {
-            state.items.push({ id: 'med'+Date.now(), type: 'health_med', parentId: 'saude', name: v('f-name'), content: { dose: v('f-dose'), time: v('f-time') } });
-        }
-        else if (type === 'bank') {
-            state.items.push({ id: 'bank'+Date.now(), parentId: pid, type, name: v('f-name'), content: { acc: v('f-acc'), pix: v('f-pix') } });
+            const d = { b: get('f-b'), l: get('f-l'), d: get('f-d'), fs: get('f-fs'), fe: get('f-fe') };
+            if(!hf) state.items.push({ id: 'diet', type: 'health_food', parentId: 'saude', name: 'Dieta', content: d });
+            else hf.content = d;
         }
         else if (type === 'health_weight_config') {
             let hw = state.items.find(i=>i.type === 'health_weight');
-            const d = { startWeight: parseFloat(v('f-start')), target: parseFloat(v('f-target')), height: parseFloat(v('f-height')), periodMonths: v('f-months'), startDate: v('f-date') };
+            const d = { startWeight: parseFloat(get('f-start')), target: parseFloat(get('f-target')), height: parseFloat(get('f-height')), periodMonths: get('f-months'), startDate: get('f-date') };
             if(!hw) state.items.push({ id: 'hw', type: 'health_weight', parentId: 'saude', name: 'Peso', content: { ...d, history: [] } });
             else hw.content = { ...hw.content, ...d };
         }
         else if (type === 'health_weight_register') {
             const hw = state.items.find(i=>i.type === 'health_weight');
             if(!hw.content.history) hw.content.history = [];
-            hw.content.history.push({ id: 'w'+Date.now(), date: v('f-date'), weight: parseFloat(v('f-weight')) });
+            hw.content.history.push({ id: 'w'+Date.now(), date: get('f-date'), weight: parseFloat(get('f-weight')) });
         }
         else if (type === 'vision_add') {
-            const f = document.getElementById('f-img').files[0];
-            if(f) {
+            const file = document.getElementById('f-img').files[0];
+            if(file) {
                 const r = new FileReader();
                 r.onload = e => {
                     const vb = state.items.find(i => i.id === extra);
                     if(!vb.content.images) vb.content.images = [];
-                    vb.content.images.push({ data: e.target.result, caption: v('f-cap') });
+                    vb.content.images.push({ data: e.target.result, caption: get('f-cap') });
                     sync(); closeModal();
                 };
-                r.readAsDataURL(f); return;
+                r.readAsDataURL(file); return;
             }
         }
         else if (type === 'menstrual_config') {
-            state.menstrual = { cycle: v('f-c'), flow: v('f-f'), last: v('f-l') };
+            state.menstrual = { cycle: get('f-c'), flow: get('f-f'), last: get('f-l') };
         }
-        else if (type === 'folder' || type === 'custom_area' || type === 'visionboard') {
-            state.items.push({ id: 'i'+Date.now(), parentId: pid, type, name: v('f-name'), content: {} });
+        else if (type === 'bank') {
+            state.items.push({ id: 'b'+Date.now(), parentId: pid, type, name: get('f-name'), content: { acc: get('f-acc'), pix: get('f-pix') } });
+        }
+        else {
+            state.items.push({ id: 'i'+Date.now(), parentId: pid, type, name: get('f-name'), content: {} });
         }
 
         sync(); closeModal();
     }
 
+    // --- Elite Backup & Restore System ---
+    function exportData() {
+        const backupObj = {
+            version: "1.0",
+            state: state,
+            timestamp: new Date().toISOString()
+        };
+        const blob = new Blob([JSON.stringify(backupObj)], {type: 'application/json'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `organizador_premium_backup_${new Date().toISOString().split('T')[0]}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+
+    function triggerImport() {
+        document.getElementById('import-input').click();
+    }
+
+    document.getElementById('import-input').onchange = e => {
+        const file = e.target.files[0];
+        if(!file) return;
+        const reader = new FileReader();
+        reader.onload = ev => {
+            try {
+                const imported = JSON.parse(ev.target.result);
+                if(confirm("ATENÇÃO: Restaurar este backup irá substituir todos os dados atuais. Continuar?")) {
+                    state = imported.state;
+                    sync();
+                    alert("Dados restaurados com sucesso!");
+                }
+            } catch(err) { alert("Erro ao ler o ficheiro de backup. Certifique-se que é um JSON válido."); }
+        };
+        reader.readAsText(file);
+    };
+
     // --- Helpers ---
     function closeModal() { document.getElementById('modal-overlay').style.display = 'none'; }
-    function toggleFabMenu(e) { e.stopPropagation(); document.getElementById('fab-overlay').style.display = 'block'; }
-    function deleteItem(id, e) { if(e) e.stopPropagation(); if(confirm("Apagar?")) { state.items = state.items.filter(i=>i.id !== id); sync(); } }
-    function deleteVisionImg(vid, idx) { if(confirm("Apagar?")) { state.items.find(i=>i.id===vid).content.images.splice(idx,1); sync(); } }
     function showLightbox(s) { document.getElementById('li').src=s; document.getElementById('lightbox').style.display='flex'; }
-    function exportData() { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(state)], {type: 'application/json'})); a.download = 'organizador_backup.json'; a.click(); }
-    function importData() { const input = document.createElement('input'); input.type = 'file'; input.onchange = e => { const r = new FileReader(); r.onload = ev => { state = JSON.parse(ev.target.result); sync(); }; r.readAsText(e.target.files[0]); }; input.click(); }
+    function toggleFab(e) { e.stopPropagation(); document.getElementById('fab-overlay').style.display = 'block'; }
+    function deleteItem(id, e) { if(e) e.stopPropagation(); if(confirm("Apagar permanentemente?")) { state.items = state.items.filter(i=>i.id !== id); sync(); } }
+    function deleteVisionImg(vid, idx) { if(confirm("Apagar foto?")) { state.items.find(i=>i.id===vid).content.images.splice(idx,1); sync(); } }
 
+    document.addEventListener('click', () => { document.getElementById('fab-overlay').style.display = 'none'; });
+
+    // Init
     renderApp();
 </script>
 </body>
