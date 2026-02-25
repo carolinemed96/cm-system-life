@@ -16,15 +16,14 @@
             --gold: #C5A059;
             --gold-light: #E0C080;
             --text-main: #3E2723;
-            --success: #558B2F;
-            --danger: #C62828;
             --bg-card: #FFFFFF;
             --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             --shadow: 0 10px 30px -5px rgba(62, 39, 35, 0.1);
-            --shadow-hover: 0 15px 35px -5px rgba(197, 160, 89, 0.2);
+            --danger: #C62828;
+            --success: #558B2F;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; -webkit-tap-highlight-color: transparent; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; }
         h1, h2, h3, .monogram { font-family: 'Playfair Display', serif; }
 
         body { background-color: var(--off-white); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
@@ -33,78 +32,74 @@
         #lock-screen { position: fixed; inset: 0; background: var(--off-white); z-index: 2000; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.5s ease; }
         .lock-input { text-align: center; font-size: 1.5rem; letter-spacing: 8px; border-radius: 50px; border: 2px solid var(--gold); padding: 15px; width: 220px; outline: none; background: #fff; color: var(--chocolate); margin-bottom: 20px; }
 
-        /* --- Header & Nav --- */
-        header { padding: 25px 20px; text-align: center; background: #fff; border-bottom: 1px solid rgba(197, 160, 89, 0.2); position: sticky; top: 0; z-index: 100; }
-        .monogram { font-size: 2.5rem; color: var(--chocolate); line-height: 1; margin-bottom: 5px; }
-        .brand-name { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 4px; color: var(--gold); font-weight: 700; }
+        /* --- Header & Navigation --- */
+        header { padding: 20px; text-align: center; background: #fff; border-bottom: 1px solid rgba(197, 160, 89, 0.2); position: sticky; top: 0; z-index: 100; }
+        .monogram { font-size: 2.2rem; color: var(--chocolate); line-height: 1; }
+        .brand-name { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 3px; color: var(--gold); font-weight: 700; margin-top: 4px; }
         
-        .navigation-bar { padding: 12px 5%; background: #fff; display: flex; align-items: center; gap: 10px; font-size: 0.85rem; border-bottom: 1px solid #f0f0f0; overflow-x: auto; }
-        .breadcrumb-item { cursor: pointer; color: var(--chocolate-light); font-weight: 600; display: flex; align-items: center; gap: 4px; white-space: nowrap; }
+        .navigation-bar { padding: 12px 5%; background: #fff; display: flex; align-items: center; gap: 8px; font-size: 0.8rem; border-bottom: 1px solid #f0f0f0; overflow-x: auto; white-space: nowrap; }
+        .breadcrumb-item { cursor: pointer; color: var(--chocolate-light); font-weight: 600; display: flex; align-items: center; gap: 4px; }
 
-        /* --- UI Components --- */
+        /* --- Main Content --- */
         main { flex: 1; padding: 20px 5%; max-width: 1000px; margin: 0 auto; width: 100%; animation: fadeIn 0.4s ease; }
-        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
-        
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
-        .card { background: var(--bg-card); padding: 20px; border-radius: 20px; box-shadow: var(--shadow); transition: var(--transition); border: 1px solid rgba(0,0,0,0.02); position: relative; }
-        .card:hover { transform: translateY(-3px); box-shadow: var(--shadow-hover); }
+        .card { background: var(--bg-card); padding: 20px; border-radius: 20px; box-shadow: var(--shadow); border: 1px solid rgba(0,0,0,0.02); }
 
-        /* --- Weight Monitor Destaque --- */
-        .highlight-card { background: var(--chocolate); color: white; padding: 30px 20px; border-radius: 24px; text-align: center; margin-bottom: 20px; border: 2px solid var(--gold); box-shadow: 0 15px 35px rgba(62, 39, 35, 0.2); }
-        .meta-label { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 2px; color: var(--gold-light); font-weight: 700; margin-bottom: 15px; }
-        .meta-value { font-size: 4rem; font-weight: 900; line-height: 0.9; color: #fff; margin-bottom: 5px; }
+        /* --- Weight Monitor Hero --- */
+        .weight-hero { background: var(--chocolate); color: white; padding: 35px 20px; border-radius: 24px; text-align: center; margin-bottom: 20px; border: 2px solid var(--gold); }
+        .meta-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; color: var(--gold-light); font-weight: 700; margin-bottom: 10px; }
+        .meta-value { font-size: 4.5rem; font-weight: 900; line-height: 1; color: #fff; }
         .meta-unit { font-size: 1.2rem; color: var(--gold); font-weight: 600; }
 
-        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 25px; border-top: 1px solid rgba(255,255,255,0.1); pt: 20px; }
-        .stat-item { padding: 10px; }
-        .stat-label { font-size: 0.7rem; text-transform: uppercase; color: var(--gold-light); font-weight: 700; display: block; margin-bottom: 5px; }
-        .stat-num { font-size: 1.4rem; font-weight: 800; color: #fff; }
+        .stat-sub-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 25px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; }
+        .stat-box .label { font-size: 0.65rem; text-transform: uppercase; color: var(--gold-light); font-weight: 700; display: block; margin-bottom: 5px; }
+        .stat-box .value { font-size: 1.5rem; font-weight: 800; color: #fff; }
 
-        .water-card { background: #fff; border: 1px solid rgba(197, 160, 89, 0.3); padding: 18px; border-radius: 20px; display: flex; justify-content: space-between; align-items: center; margin-top: 15px; }
+        /* --- Menstrual Calendar --- */
+        .cal-header { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-size: 0.7rem; font-weight: 800; color: var(--gold); margin-bottom: 10px; }
+        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
+        .cal-day { aspect-ratio: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 50%; font-size: 0.85rem; font-weight: 700; cursor: pointer; position: relative; color: var(--chocolate); transition: 0.3s; }
+        .cal-day:hover { background: var(--off-white); }
+        .cal-day.today { border: 2px solid var(--gold); }
+        .cal-day.period { background: rgba(198, 40, 40, 0.15); color: var(--danger); }
+        .cal-day.fertile { background: rgba(197, 160, 89, 0.15); color: var(--gold); }
+        .cal-indicator { position: absolute; bottom: 4px; display: flex; gap: 2px; }
+        .dot { width: 4px; height: 4px; border-radius: 50%; }
+        .dot-sex { background: var(--chocolate); }
 
-        /* --- Vision Board Mural --- */
+        /* --- Vision Board --- */
         .vision-mural { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; margin-top: 10px; }
-        .vision-item { position: relative; border-radius: 15px; overflow: hidden; aspect-ratio: 3/4; box-shadow: var(--shadow); cursor: pointer; background: #eee; border: 1px solid #eee; }
-        .vision-img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
-        .vision-overlay { position: absolute; bottom: 0; left: 0; right: 0; padding: 15px 10px; background: linear-gradient(transparent, rgba(62, 39, 35, 0.95)); color: white; font-size: 0.8rem; font-weight: 600; text-align: center; }
-        .vision-actions { position: absolute; top: 10px; right: 10px; display: flex; gap: 5px; opacity: 0; transition: 0.3s; }
-        .vision-item:hover .vision-actions { opacity: 1; }
-        .mini-btn { width: 32px; height: 32px; border-radius: 50%; background: #fff; display: flex; align-items: center; justify-content: center; color: var(--chocolate); border: none; cursor: pointer; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .vision-item { position: relative; border-radius: 15px; overflow: hidden; aspect-ratio: 3/4; box-shadow: var(--shadow); cursor: pointer; background: #eee; }
+        .vision-img { width: 100%; height: 100%; object-fit: cover; }
+        .vision-caption-tag { position: absolute; bottom: 0; left: 0; right: 0; padding: 12px 8px; background: rgba(62, 39, 35, 0.85); color: white; font-size: 0.75rem; text-align: center; font-weight: 600; }
+        .vision-ctrl { position: absolute; top: 8px; right: 8px; display: flex; gap: 4px; opacity: 0; transition: 0.3s; }
+        .vision-item:hover .vision-ctrl { opacity: 1; }
+        .btn-mini { width: 28px; height: 28px; border-radius: 50%; background: #fff; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--chocolate); box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
 
-        /* --- Form & Inputs --- */
-        .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--chocolate); margin-bottom: 8px; letter-spacing: 1px; }
-        .form-control { width: 100%; padding: 14px; border: 1px solid #eee; border-radius: 12px; font-size: 1rem; background: #fafafa; outline: none; transition: 0.3s; color: var(--chocolate); }
-        .form-control:focus { border-color: var(--gold); background: #fff; box-shadow: 0 0 0 4px rgba(197,160,89,0.1); }
-        textarea.form-control { min-height: 60px; resize: none; overflow: hidden; line-height: 1.5; }
+        /* --- Inputs --- */
+        .form-group { margin-bottom: 18px; }
+        .form-group label { display: block; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: var(--chocolate); margin-bottom: 6px; letter-spacing: 1px; }
+        .form-control { width: 100%; padding: 14px; border: 1px solid #eee; border-radius: 12px; font-size: 0.95rem; background: #fafafa; outline: none; color: var(--chocolate); }
+        .form-control:focus { border-color: var(--gold); background: #fff; box-shadow: 0 0 0 3px rgba(197,160,89,0.1); }
+        textarea.form-control { min-height: 50px; resize: none; overflow: hidden; line-height: 1.5; }
 
         /* --- Buttons --- */
-        .btn-add { background: var(--chocolate); color: #fff; border: none; padding: 12px 25px; border-radius: 50px; font-weight: 700; cursor: pointer; transition: 0.3s; font-size: 0.85rem; letter-spacing: 0.5px; }
-        .btn-add:hover { background: var(--chocolate-light); transform: translateY(-2px); }
-        .btn-cancel { background: #f5f5f5; color: #777; border: none; padding: 12px 25px; border-radius: 50px; font-weight: 700; cursor: pointer; }
+        .btn-add { background: var(--chocolate); color: #fff; border: none; padding: 12px 24px; border-radius: 50px; font-weight: 700; cursor: pointer; transition: 0.3s; font-size: 0.8rem; }
+        .btn-cancel { background: #f5f5f5; color: #888; border: none; padding: 12px 24px; border-radius: 50px; font-weight: 700; cursor: pointer; }
 
         /* --- Modals --- */
-        #modal-overlay { position: fixed; inset: 0; background: rgba(62, 39, 35, 0.4); backdrop-filter: blur(8px); z-index: 500; display: none; justify-content: center; align-items: center; padding: 20px; }
-        .modal { background: #fff; width: 100%; max-width: 500px; border-radius: 24px; padding: 30px; max-height: 90vh; overflow-y: auto; animation: slideUp 0.3s ease; }
-        
-        /* Lightbox */
-        #lightbox { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 1000; display: none; justify-content: center; align-items: center; cursor: zoom-out; }
-        #lightbox img { max-width: 95%; max-height: 90vh; border-radius: 10px; }
+        #modal-overlay { position: fixed; inset: 0; background: rgba(62, 39, 35, 0.5); backdrop-filter: blur(8px); z-index: 500; display: none; justify-content: center; align-items: center; padding: 20px; }
+        .modal { background: #fff; width: 100%; max-width: 480px; border-radius: 24px; padding: 25px; max-height: 90vh; overflow-y: auto; animation: slideUp 0.3s ease; }
+        #lightbox { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 1000; display: none; justify-content: center; align-items: center; cursor: zoom-out; }
+        #lightbox img { max-width: 90%; max-height: 85vh; border-radius: 12px; }
 
-        /* --- Calendar --- */
-        .cal-day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 0.9rem; font-weight: 600; cursor: pointer; color: #555; }
-        .cal-day.period { background: rgba(198, 40, 40, 0.1); color: var(--danger); }
-        .cal-day.fertile { background: rgba(85, 139, 47, 0.1); color: var(--success); }
-        .cal-day.today { border: 2px solid var(--gold); }
+        .fab { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; background: var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; box-shadow: 0 8px 20px rgba(197,160,89,0.4); cursor: pointer; z-index: 150; transition: 0.3s; }
+        .create-menu { position: absolute; bottom: 75px; right: 0; background: #fff; border-radius: 15px; box-shadow: var(--shadow); width: 200px; display: none; overflow: hidden; border: 1px solid #eee; }
+        .menu-item { padding: 14px 18px; display: flex; align-items: center; gap: 10px; font-size: 0.8rem; color: var(--chocolate); font-weight: 700; cursor: pointer; border-bottom: 1px solid #f9f9f9; }
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-
-        .fab { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; background: var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; box-shadow: 0 10px 25px rgba(197,160,89,0.5); cursor: pointer; z-index: 150; transition: 0.3s; }
-        .fab:hover { transform: scale(1.1); }
-        .create-menu-dropdown { position: absolute; bottom: 80px; right: 0; background: #fff; border-radius: 20px; box-shadow: var(--shadow); width: 220px; display: none; overflow: hidden; border: 1px solid #f0f0f0; }
-        .create-menu-item { padding: 15px 20px; display: flex; align-items: center; gap: 12px; font-size: 0.85rem; color: var(--chocolate); font-weight: 700; cursor: pointer; }
-        .create-menu-item:hover { background: var(--off-white); color: var(--gold); }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
     </style>
 </head>
 <body autocomplete="off">
@@ -113,83 +108,84 @@
     <div class="monogram">CM</div>
     <div class="brand-name" style="margin-bottom:30px;">Caroline Medeiros</div>
     <input type="password" id="lock-input" class="lock-input" placeholder="SENHA" maxlength="4" autocomplete="off">
-    <div id="lock-error" style="color:var(--danger); font-size:0.8rem; height:20px; margin-top:-10px; margin-bottom:10px; font-weight:700;"></div>
-    <button onclick="checkAccess()" class="btn-add">ACESSAR ORGANIZADOR</button>
+    <div id="lock-error" style="color:var(--danger); font-size:0.75rem; font-weight:700; margin-top:-10px; margin-bottom:10px;"></div>
+    <button onclick="checkAccess()" class="btn-add">ENTRAR</button>
 </div>
 
 <header>
     <div class="monogram">CM</div>
     <div class="brand-name">Caroline Medeiros</div>
-    <div id="clock" style="font-size:0.75rem; color:var(--gold); margin-top:8px; font-weight:700; text-transform:uppercase;"></div>
 </header>
 
 <div class="navigation-bar" id="breadcrumbs"></div>
 
 <main id="app-content"></main>
 
-<div class="fab" onclick="toggleMenu(event)">
+<div class="fab" onclick="toggleFabMenu(event)">
     <i data-lucide="plus" id="fab-icon"></i>
-    <div class="create-menu-dropdown" id="create-menu">
-        <div class="create-menu-item" onclick="openModal('custom_area')"><i data-lucide="layout-grid"></i> Nova Área</div>
-        <div class="create-menu-item" onclick="openModal('visionboard')"><i data-lucide="image"></i> Visionboard</div>
-        <div class="create-menu-item" onclick="exportData()"><i data-lucide="download"></i> Backup Dados</div>
-        <div class="create-menu-item" onclick="importData()"><i data-lucide="upload"></i> Restaurar</div>
+    <div class="create-menu" id="fab-menu">
+        <div class="menu-item" onclick="openModal('custom_area')"><i data-lucide="layout-grid"></i> Nova Área</div>
+        <div class="menu-item" onclick="openModal('visionboard')"><i data-lucide="image"></i> Visionboard</div>
+        <div class="menu-item" onclick="exportData()"><i data-lucide="download"></i> Backup Dados</div>
+        <div class="menu-item" onclick="importData()"><i data-lucide="upload"></i> Restaurar</div>
     </div>
 </div>
 
 <div id="modal-overlay">
     <div class="modal">
-        <h3 id="modal-title" class="modal-title"></h3>
+        <h3 id="modal-title" style="text-align:center; margin-bottom:20px; color:var(--chocolate)"></h3>
         <div id="modal-body"></div>
-        <div style="display:flex; gap:12px; justify-content:flex-end; margin-top:30px;">
+        <div style="display:flex; gap:10px; justify-content:flex-end; margin-top:25px;">
             <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
             <button class="btn-add" id="modal-save-btn">Guardar</button>
         </div>
     </div>
 </div>
 
-<div id="lightbox" onclick="this.style.display='none'">
-    <img id="lightbox-img" src="">
-</div>
+<div id="lightbox" onclick="this.style.display='none'"><img id="lightbox-img"></div>
 
 <script>
+    // --- State Manager ---
     let state = {
         path: ['root'],
-        items: JSON.parse(localStorage.getItem('cm_premium_data')) || [],
-        editingId: null
+        items: JSON.parse(localStorage.getItem('cm_premium_v5')) || [],
+        editingId: null,
+        menstrual: JSON.parse(localStorage.getItem('cm_menstrual')) || {
+            cycleDays: 28,
+            periodDays: 5,
+            lastPeriod: "",
+            logs: {} // Formato: "YYYY-MM-DD": { sex: true, prot: true, flow: 'high' }
+        }
     };
 
-    // --- Auto-Resize Global para Textareas ---
-    function autoResize(el) {
+    function applyAutoResize(el) {
         el.style.height = 'auto';
         el.style.height = el.scrollHeight + 'px';
     }
 
-    document.addEventListener('input', function(e) {
-        if(e.target.tagName.toLowerCase() === 'textarea') {
-            autoResize(e.target);
-        }
+    document.addEventListener('input', (e) => {
+        if(e.target.tagName.toLowerCase() === 'textarea') applyAutoResize(e.target);
     });
 
     function checkAccess() {
         const val = document.getElementById('lock-input').value;
-        const err = document.getElementById('lock-error');
-        if(val === "2405") { 
+        if(val === "2405") {
             document.getElementById('lock-screen').style.opacity = '0';
             setTimeout(() => document.getElementById('lock-screen').style.display = 'none', 500);
         } else {
-            err.innerText = "SENHA INCORRETA";
+            document.getElementById('lock-error').innerText = "SENHA INCORRETA";
             document.getElementById('lock-input').value = "";
-            setTimeout(() => err.innerText = "", 2000);
         }
     }
 
-    function save() {
-        localStorage.setItem('cm_premium_data', JSON.stringify(state.items));
-        render();
+    function saveState() {
+        localStorage.setItem('cm_premium_v5', JSON.stringify(state.items));
+        localStorage.setItem('cm_menstrual', JSON.stringify(state.menstrual));
+        renderApp();
     }
 
-    const ROOT_AREAS = [
+    // --- Navigation ---
+    const CATEGORIES = [
         { id: 'pessoal', name: 'Pessoal', icon: 'user' },
         { id: 'profissional', name: 'Profissional', icon: 'briefcase' },
         { id: 'financeiro', name: 'Financeiro', icon: 'trending-up' },
@@ -197,402 +193,280 @@
         { id: 'biblia', name: 'Bíblia', icon: 'book-open' }
     ];
 
-    function navigate(id) {
-        state.path.push(id);
-        render();
-    }
+    function navigate(id) { state.path.push(id); renderApp(); }
+    function goBack(idx) { state.path = state.path.slice(0, idx + 1); renderApp(); }
 
-    function goBack(idx) {
-        state.path = state.path.slice(0, idx + 1);
-        render();
-    }
-
-    function render() {
+    // --- Renderers ---
+    function renderApp() {
         const currentId = state.path[state.path.length - 1];
-        const container = document.getElementById('app-content');
+        const main = document.getElementById('app-content');
         const bread = document.getElementById('breadcrumbs');
         
         bread.innerHTML = state.path.map((id, i) => {
-            const label = id === 'root' ? 'Início' : (ROOT_AREAS.find(a=>a.id===id)?.name || state.items.find(it=>it.id===id)?.name || id);
+            const label = id === 'root' ? 'Início' : (CATEGORIES.find(c=>c.id===id)?.name || state.items.find(it=>it.id===id)?.name || id);
             return `<span class="breadcrumb-item" onclick="goBack(${i})">${i>0?'<i data-lucide="chevron-right" style="width:12px;opacity:0.3"></i>':''} ${label}</span>`;
         }).join('');
 
-        if (currentId === 'root') renderDashboard(container);
-        else if (currentId === 'saude') renderHealth(container);
-        else renderFolder(container, currentId);
+        if (currentId === 'root') renderDashboard(main);
+        else if (currentId === 'saude') renderHealth(main);
+        else renderFolder(main, currentId);
 
         if(window.lucide) lucide.createIcons();
     }
 
     function renderDashboard(el) {
-        el.innerHTML = `<h2 style="margin-bottom:20px;">Minhas Áreas</h2><div class="grid-container" id="dash-grid"></div>`;
+        el.innerHTML = `<h2 style="margin-bottom:20px; color:var(--chocolate)">Minhas Áreas</h2><div class="grid-container" id="dash-grid"></div>`;
         const grid = el.querySelector('#dash-grid');
-        
-        ROOT_AREAS.forEach(area => {
+        CATEGORIES.forEach(cat => {
             const card = document.createElement('div');
             card.className = 'card';
-            card.innerHTML = `<i data-lucide="${area.icon}" style="color:var(--gold); margin-right:15px;"></i><b style="font-size:1.1rem; color:var(--chocolate)">${area.name}</b>`;
-            card.onclick = () => navigate(area.id);
+            card.style.cursor = 'pointer';
+            card.innerHTML = `<i data-lucide="${cat.icon}" style="color:var(--gold); margin-right:15px;"></i><b style="font-size:1rem; color:var(--chocolate)">${cat.name}</b>`;
+            card.onclick = () => navigate(cat.id);
             grid.appendChild(card);
         });
-
-        state.items.filter(i => i.type === 'custom_area' && i.parentId === 'root').forEach(item => {
-            const card = document.createElement('div');
-            card.className = 'card';
-            card.innerHTML = `<i data-lucide="${item.icon || 'star'}" style="color:var(--gold); margin-right:15px;"></i><b style="font-size:1.1rem; flex:1; color:var(--chocolate)">${item.name}</b><i data-lucide="trash-2" onclick="deleteItem('${item.id}', event)" style="width:16px; opacity:0.3; color:var(--danger)"></i>`;
-            card.onclick = () => navigate(item.id);
-            grid.appendChild(card);
-        });
-    }
-
-    function calculateStats(w) {
-        if(!w || !w.content || !w.content.target) return null;
-        const history = w.content.history || [];
-        const current = history.length ? history.sort((a,b)=>new Date(b.date)-new Date(a.date))[0].weight : w.content.startWeight;
-        const remainingWeight = current - w.content.target;
-        
-        const start = new Date(w.content.startDate);
-        const period = parseInt(w.content.periodMonths) || 1;
-        const end = new Date(start); 
-        end.setMonth(start.getMonth() + period);
-        
-        const diffDays = Math.ceil((end - new Date()) / (1000 * 60 * 60 * 24));
-        const monthsRem = Math.max(1, Math.ceil(diffDays / 30.41));
-        
-        const mma = remainingWeight > 0 ? (remainingWeight / monthsRem).toFixed(2) : "0.00";
-        
-        let h = parseFloat(w.content.height);
-        if(h > 3) h = h/100;
-        const imc = h > 0 ? (current / (h * h)).toFixed(1) : "--";
-        
-        return { mma, current, imc, water: (current * 0.035).toFixed(1), monthsRemaining: monthsRem };
     }
 
     function renderHealth(el) {
-        const weightItem = state.items.find(i => i.type === 'health_weight');
+        const wItem = state.items.find(i => i.type === 'health_weight') || { content: { history: [] } };
         const diet = state.items.find(i => i.type === 'health_food') || { content: {} };
-        const stats = calculateStats(weightItem);
+        const stats = calculateWeight(wItem);
 
         el.innerHTML = `
-            <div class="section-header"><h2>Gestão de Saúde</h2></div>
+            <div class="section-header"><h2>Saúde</h2></div>
             
             ${stats ? `
-            <div class="highlight-card">
+            <div class="weight-hero">
                 <div class="meta-label">Meta de Perda Mensal</div>
                 <div class="meta-value">${stats.mma} <span class="meta-unit">kg</span></div>
-                <div class="stat-grid">
-                    <div class="stat-item"><span class="stat-label">Peso Atual</span><span class="stat-num">${stats.current}kg</span></div>
-                    <div class="stat-item"><span class="stat-label">IMC</span><span class="stat-num">${stats.imc}</span></div>
+                <div class="stat-sub-grid">
+                    <div class="stat-box"><span class="label">Peso Atual</span><span class="value">${stats.current}kg</span></div>
+                    <div class="stat-box"><span class="label">IMC</span><span class="value">${stats.imc}</span></div>
                 </div>
             </div>
-
-            <div class="water-card">
+            <div class="water-highlight">
                 <div style="display:flex; align-items:center; gap:12px;">
                     <div style="color:var(--gold)"><i data-lucide="droplet"></i></div>
-                    <div><b style="font-size:0.95rem; color:var(--chocolate)">Meta de Água</b><br><small style="color:var(--chocolate-light); font-weight:600">35ml por kg</small></div>
-                </div>
-                <b style="font-size:1.6rem; color:var(--gold)">${stats.water}L</b>
-            </div>
-            ` : `<div class="card" style="text-align:center; padding:40px; color:var(--gold); border: 2px dashed var(--gold); cursor:pointer" onclick="openModal('health_weight_config')">Configurar Monitor de Peso</div>`}
-
-            <div class="grid-container" style="margin-top:20px;">
-                <div class="card" style="display:block;">
-                    <div style="display:flex; justify-content:space-between; margin-bottom:15px; border-bottom:1px solid #eee; padding-bottom:10px">
-                        <b style="color:var(--chocolate)">Histórico de Peso</b>
-                        <button class="btn-add" style="padding:5px 15px; font-size:0.75rem;" onclick="openModal('health_weight_register')">Pesar</button>
-                    </div>
-                    <div style="max-height:200px; overflow-y:auto;">
-                        ${weightItem && weightItem.content.history ? weightItem.content.history.sort((a,b)=>new Date(b.date)-new Date(a.date)).map((h) => `
-                            <div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #fafafa; font-size:0.9rem;">
-                                <span>${new Date(h.date + 'T12:00:00').toLocaleDateString()}</span>
-                                <div style="display:flex; align-items:center; gap:15px">
-                                    <b style="color:var(--chocolate)">${h.weight}kg</b>
-                                    <i data-lucide="edit-2" style="width:14px; cursor:pointer; color:var(--gold)" onclick="editWeightEntry('${h.id}')"></i>
-                                    <i data-lucide="trash-2" style="width:14px; cursor:pointer; color:var(--danger)" onclick="deleteWeightEntry('${h.id}')"></i>
-                                </div>
-                            </div>
-                        `).join('') : '<small style="opacity:0.5">Sem registos.</small>'}
-                    </div>
-                    ${weightItem ? `<button class="btn-cancel" style="width:100%; margin-top:15px; font-size:0.75rem;" onclick="openModal('health_weight_config', '${weightItem.id}')">Ajustar Metas</button>` : ''}
-                </div>
-
-                <div class="card" style="display:block;">
-                    <div style="display:flex; justify-content:space-between; margin-bottom:15px; border-bottom:1px solid #eee; padding-bottom:10px">
-                        <b style="color:var(--chocolate)">Plano de Dieta</b>
-                        <i data-lucide="edit" style="width:18px; cursor:pointer; color:var(--gold)" onclick="openModal('health_food')"></i>
-                    </div>
-                    <div style="display:flex; flex-direction:column; gap:12px; font-size:0.85rem;">
-                        <div style="background:var(--off-white); padding:10px; border-radius:12px; border:1px solid #eee">
-                            <b style="color:var(--gold)">Café (${diet.content.bt || '00:00'})</b><div style="margin-top:5px; white-space:pre-wrap">${diet.content.b || 'Não definido'}</div>
-                        </div>
-                        <div style="background:var(--off-white); padding:10px; border-radius:12px; border:1px solid #eee">
-                            <b style="color:var(--gold)">Almoço (${diet.content.lt || '00:00'})</b><div style="margin-top:5px; white-space:pre-wrap">${diet.content.l || 'Não definido'}</div>
-                        </div>
-                        <div style="background:var(--off-white); padding:10px; border-radius:12px; border:1px solid #eee">
-                            <b style="color:var(--gold)">Jantar (${diet.content.dt || '00:00'})</b><div style="margin-top:5px; white-space:pre-wrap">${diet.content.d || 'Não definido'}</div>
-                        </div>
-                        <div style="background:var(--chocolate); color:#fff; padding:10px; border-radius:12px; text-align:center;">
-                            <b style="color:var(--gold-light)">JEJUM: ${diet.content.fs || '00:00'} às ${diet.content.fe || '00:00'}</b>
-                        </div>
-                    </div>
+                    <div><b style="font-size:0.9rem;">Água Diária</b><br><small>Meta: ${stats.water}L</small></div>
                 </div>
             </div>
+            ` : `<div class="card" onclick="openModal('health_weight_config')">Configurar Monitor de Peso</div>`}
+
+            <!-- Dieta -->
+            <div class="card" style="margin: 20px 0; display:block;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                    <b>Plano Alimentar</b> <i data-lucide="edit-3" style="width:16px; cursor:pointer; color:var(--gold)" onclick="openModal('health_food')"></i>
+                </div>
+                <div style="display:grid; gap:10px; font-size:0.8rem;">
+                    <div style="background:var(--off-white); padding:10px; border-radius:10px;"><b>Café (${diet.content.bt || '00:00'}):</b> ${diet.content.b || '-'}</div>
+                    <div style="background:var(--off-white); padding:10px; border-radius:10px;"><b>Almoço (${diet.content.lt || '00:00'}):</b> ${diet.content.l || '-'}</div>
+                    <div style="background:var(--off-white); padding:10px; border-radius:10px;"><b>Jantar (${diet.content.dt || '00:00'}):</b> ${diet.content.d || '-'}</div>
+                    <div style="background:var(--chocolate); color:#fff; padding:10px; border-radius:10px; text-align:center;">Jejum: ${diet.content.fs || '00:00'} às ${diet.content.fe || '00:00'}</div>
+                </div>
+            </div>
+
+            <!-- Calendário Menstrual -->
+            <div class="card" style="display:block;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                    <b>Calendário Menstrual</b>
+                    <button class="btn-mini" onclick="openModal('menstrual_config')"><i data-lucide="settings" style="width:14px"></i></button>
+                </div>
+                ${renderMenstrualCalendar()}
+                <div class="cal-legend">
+                    <span><span class="legend-dot" style="background:var(--danger)"></span> Período</span>
+                    <span><span class="legend-dot" style="background:var(--gold)"></span> Fértil</span>
+                </div>
+            </div>
+            
+            <button class="btn-add" style="width:100%; margin-top:20px;" onclick="openModal('health_weight_register')">Registar Peso</button>
         `;
+    }
+
+    function renderMenstrualCalendar() {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = now.getMonth();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        const firstDay = new Date(year, month, 1).getDay();
+
+        // Lógica de cálculo simplificada
+        const last = new Date(state.menstrual.lastPeriod + 'T12:00:00');
+        const cycle = parseInt(state.menstrual.cycleDays);
+        const dur = parseInt(state.menstrual.periodDays);
+
+        let html = `<div class="cal-header"><div>D</div><div>S</div><div>T</div><div>Q</div><div>Q</div><div>S</div><div>S</div></div>`;
+        html += `<div class="cal-grid">`;
+        
+        for(let i=0; i<firstDay; i++) html += `<div></div>`;
+
+        for(let d=1; d<=daysInMonth; d++) {
+            const currentLoopDate = new Date(year, month, d);
+            const diffDays = Math.floor((currentLoopDate - last) / (1000 * 60 * 60 * 24));
+            const dayInCycle = ((diffDays % cycle) + cycle) % cycle;
+
+            let classes = "cal-day";
+            if(d === now.getDate()) classes += " today";
+            if(dayInCycle < dur) classes += " period";
+            if(dayInCycle >= cycle - 16 && dayInCycle <= cycle - 11) classes += " fertile";
+
+            html += `<div class="${classes}" onclick="openMenstrualDay('${year}-${month+1}-${d}')">${d}</div>`;
+        }
+        html += `</div>`;
+        return html;
+    }
+
+    function openMenstrualDay(dateStr) {
+        openModal('menstrual_day', dateStr);
+    }
+
+    function calculateWeight(w) {
+        if(!w || !w.content || !w.content.target) return null;
+        const current = w.content.history.length ? w.content.history.sort((a,b)=>new Date(b.date)-new Date(a.date))[0].weight : w.content.startWeight;
+        const diffWeight = current - w.content.target;
+        const end = new Date(w.content.startDate);
+        end.setMonth(end.getMonth() + (parseInt(w.content.periodMonths) || 1));
+        const monthsRem = Math.max(1, Math.ceil((end - new Date()) / (1000 * 60 * 60 * 24 * 30.41)));
+        
+        let h = parseFloat(w.content.height); if(h > 3) h = h/100;
+        return { 
+            mma: diffWeight > 0 ? (diffWeight / monthsRem).toFixed(2) : "0.00", 
+            current, imc: h > 0 ? (current / (h * h)).toFixed(1) : "--", 
+            water: (current * 0.035).toFixed(1) 
+        };
     }
 
     function renderFolder(el, pid) {
         const folder = state.items.find(i => i.id === pid);
         const items = state.items.filter(i => i.parentId === pid);
-
         if (folder?.type === 'visionboard') {
-            el.innerHTML = `
-                <div class="section-header">
-                    <h2>Mural de Metas</h2>
-                    <button class="btn-add" onclick="openModal('vision_add', '${pid}')"><i data-lucide="camera"></i> Adicionar Foto</button>
-                </div>
-                <div class="vision-mural">
-                    ${(folder.content.images || []).map((img, idx) => `
-                        <div class="vision-item">
-                            <img src="${img.data}" class="vision-img" onclick="showLightbox('${img.data}')">
-                            <div class="vision-overlay">${img.caption}</div>
-                            <div class="vision-actions">
-                                <button class="mini-btn" onclick="deleteVisionImg('${pid}', ${idx})"><i data-lucide="trash-2" style="width:14px; color:var(--danger)"></i></button>
-                            </div>
-                        </div>
-                    `).join('')}
-                </div>
-            `;
+            el.innerHTML = `<div class="section-header"><h2>${folder.name}</h2><button class="btn-add" onclick="openModal('vision_add', '${pid}')">Adicionar</button></div>
+            <div class="vision-mural">${(folder.content.images || []).map((img, idx) => `
+                <div class="vision-item">
+                    <img src="${img.data}" class="vision-img" onclick="showLightbox('${img.data}')">
+                    <div class="vision-caption-tag">${img.caption}</div>
+                    <div class="vision-ctrl"><button class="btn-mini" onclick="deleteVisionImg('${pid}', ${idx})"><i data-lucide="trash-2" style="width:14px"></i></button></div>
+                </div>`).join('')}</div>`;
             return;
         }
-
         el.innerHTML = `<div class="section-header"><h2>Conteúdo</h2></div><div class="grid-container" id="folder-grid"></div>`;
-        const grid = el.querySelector('#folder-grid');
         items.forEach(i => {
             const card = document.createElement('div');
-            card.className = 'card';
-            card.innerHTML = `<i data-lucide="folder" style="color:var(--gold); margin-right:15px;"></i><b style="flex:1; color:var(--chocolate)">${i.name}</b>`;
+            card.className = 'card'; card.innerHTML = `<b>${i.name}</b>`;
             card.onclick = () => navigate(i.id);
-            grid.appendChild(card);
+            el.querySelector('#folder-grid').appendChild(card);
         });
     }
 
+    // --- Modal Logic ---
     function openModal(type, extra = null) {
+        state.editingId = extra;
         const modal = document.getElementById('modal-overlay');
         const body = document.getElementById('modal-body');
         const title = document.getElementById('modal-title');
         const saveBtn = document.getElementById('modal-save-btn');
-        
         modal.style.display = 'flex';
         let html = '';
 
-        if (type === 'custom_area') {
-            title.innerText = "Criar Área";
-            html = `<div class="form-group"><label>Nome da Área</label><input id="f-name" class="form-control" autocomplete="off"></div>`;
-        } 
-        else if (type === 'visionboard') {
-            title.innerText = "Criar Mural";
-            html = `<div class="form-group"><label>Título do Mural</label><input id="f-name" class="form-control" autocomplete="off"></div>`;
+        if (type === 'health_food') {
+            const d = state.items.find(i=>i.type === 'health_food') || {content:{}};
+            title.innerText = "Plano de Dieta";
+            html = `
+                <div class="form-group"><label>Café</label><input type="time" id="f-bt" class="form-control" value="${d.content.bt||'08:00'}"><textarea id="f-b" class="form-control">${d.content.b||''}</textarea></div>
+                <div class="form-group"><label>Almoço</label><input type="time" id="f-lt" class="form-control" value="${d.content.lt||'12:30'}"><textarea id="f-l" class="form-control">${d.content.l||''}</textarea></div>
+                <div class="form-group"><label>Jantar</label><input type="time" id="f-dt" class="form-control" value="${d.content.dt||'19:30'}"><textarea id="f-d" class="form-control">${d.content.d||''}</textarea></div>
+                <div class="form-group"><label>Jejum (Início/Fim)</label><div style="display:flex;gap:5px;"><input type="time" id="f-fs" class="form-control" value="${d.content.fs||'20:00'}"><input type="time" id="f-fe" class="form-control" value="${d.content.fe||'08:00'}"></div></div>
+            `;
+        }
+        else if (type === 'menstrual_config') {
+            title.innerText = "Configurar Ciclo";
+            html = `
+                <div class="form-group"><label>Duração Média Ciclo (dias)</label><input type="number" id="f-cycle" class="form-control" value="${state.menstrual.cycleDays}"></div>
+                <div class="form-group"><label>Duração Fluxo (dias)</label><input type="number" id="f-period" class="form-control" value="${state.menstrual.periodDays}"></div>
+                <div class="form-group"><label>Última Menstruação</label><input type="date" id="f-last" class="form-control" value="${state.menstrual.lastPeriod}"></div>
+            `;
         }
         else if (type === 'vision_add') {
             title.innerText = "Nova Imagem";
-            html = `
-                <div class="form-group"><label>Selecionar Foto</label><input type="file" id="f-img" class="form-control" accept="image/*"></div>
-                <div class="form-group"><label>Legenda da Foto</label><textarea id="f-cap" class="form-control" placeholder="O que esta imagem representa?"></textarea></div>
-            `;
+            html = `<div class="form-group"><label>Foto</label><input type="file" id="f-img" class="form-control"></div>
+                    <div class="form-group"><label>Legenda</label><textarea id="f-cap" class="form-control"></textarea></div>`;
         }
         else if (type === 'health_weight_config') {
             const w = state.items.find(i=>i.type === 'health_weight') || {content:{}};
-            title.innerText = "Configuração Peso";
-            html = `
-                <div class="form-group"><label>Peso Inicial (kg)</label><input type="number" id="f-start" class="form-control" value="${w.content.startWeight||''}" step="0.1"></div>
-                <div class="form-group"><label>Meta Final (kg)</label><input type="number" id="f-target" class="form-control" value="${w.content.target||''}" step="0.1"></div>
-                <div class="form-group"><label>Altura (ex: 1.70)</label><input type="number" id="f-height" class="form-control" value="${w.content.height||''}" step="0.01"></div>
-                <div class="form-group"><label>Prazo em Meses</label><input type="number" id="f-months" class="form-control" value="${w.content.periodMonths||''}"></div>
-                <div class="form-group"><label>Início da Jornada</label><input type="date" id="f-date" class="form-control" value="${w.content.startDate||new Date().toISOString().split('T')[0]}"></div>
-            `;
+            title.innerText = "Configurar Metas";
+            html = `<div class="form-group"><label>Peso Inicial</label><input type="number" id="f-start" class="form-control" value="${w.content.startWeight||''}"></div>
+                    <div class="form-group"><label>Meta Final</label><input type="number" id="f-target" class="form-control" value="${w.content.target||''}"></div>
+                    <div class="form-group"><label>Altura</label><input type="number" id="f-height" class="form-control" value="${w.content.height||''}" step="0.01"></div>
+                    <div class="form-group"><label>Prazo (Meses)</label><input type="number" id="f-months" class="form-control" value="${w.content.periodMonths||''}"></div>
+                    <div class="form-group"><label>Início</label><input type="date" id="f-date" class="form-control" value="${w.content.startDate||''}"></div>`;
         }
         else if (type === 'health_weight_register') {
-            title.innerText = "Novo Peso";
-            html = `
-                <div class="form-group"><label>Peso Hoje (kg)</label><input type="number" id="f-weight" class="form-control" step="0.1" autofocus></div>
-                <div class="form-group"><label>Data</label><input type="date" id="f-date" class="form-control" value="${new Date().toISOString().split('T')[0]}"></div>
-            `;
+            title.innerText = "Registo de Peso";
+            html = `<div class="form-group"><label>Peso Hoje (kg)</label><input type="number" id="f-weight" class="form-control" step="0.1"></div>
+                    <div class="form-group"><label>Data</label><input type="date" id="f-date" class="form-control" value="${new Date().toISOString().split('T')[0]}"></div>`;
         }
-        else if (type === 'health_food') {
-            const d = state.items.find(i=>i.type === 'health_food') || {content:{}};
-            title.innerText = "Plano Alimentar";
-            html = `
-                <div class="form-group">
-                    <label>☕ Café da Manhã</label>
-                    <div style="display:flex; gap:10px; margin-bottom:5px"><input type="time" id="f-bt" class="form-control" style="width:120px" value="${d.content.bt||'08:00'}"></div>
-                    <textarea id="f-b" class="form-control">${d.content.b||''}</textarea>
-                </div>
-                <div class="form-group">
-                    <label>🍲 Almoço</label>
-                    <div style="display:flex; gap:10px; margin-bottom:5px"><input type="time" id="f-lt" class="form-control" style="width:120px" value="${d.content.lt||'12:30'}"></div>
-                    <textarea id="f-l" class="form-control">${d.content.l||''}</textarea>
-                </div>
-                <div class="form-group">
-                    <label>🥗 Jantar</label>
-                    <div style="display:flex; gap:10px; margin-bottom:5px"><input type="time" id="f-dt" class="form-control" style="width:120px" value="${d.content.dt||'19:30'}"></div>
-                    <textarea id="f-d" class="form-control">${d.content.d||''}</textarea>
-                </div>
-                <div class="form-group" style="background:var(--off-white); padding:15px; border-radius:15px; border:1px solid var(--gold)">
-                    <label>⏳ Janela de Jejum</label>
-                    <div style="display:flex; gap:10px; align-items:center;">
-                        <input type="time" id="f-fs" class="form-control" value="${d.content.fs||'20:00'}"> 
-                        <span style="font-weight:700">ATÉ</span>
-                        <input type="time" id="f-fe" class="form-control" value="${d.content.fe||'08:00'}">
-                    </div>
-                </div>
-            `;
+        else if (type === 'custom_area') {
+            title.innerText = "Nova Área";
+            html = `<div class="form-group"><label>Nome</label><input id="f-name" class="form-control"></div>`;
         }
 
         body.innerHTML = html;
-        
-        // Ativar autoResize nas textareas abertas no modal
-        setTimeout(() => {
-            body.querySelectorAll('textarea').forEach(autoResize);
-        }, 100);
-
-        saveBtn.onclick = () => handleSave(type, extra);
+        body.querySelectorAll('textarea').forEach(applyAutoResize);
+        saveBtn.onclick = () => handleModalSave(type, extra);
     }
 
-    async function handleSave(type, extra) {
-        const getVal = id => document.getElementById(id).value;
-        
-        if (type === 'custom_area') {
-            state.items.push({ id: 'area_'+Date.now(), parentId: 'root', type: 'custom_area', name: getVal('f-name') });
+    async function handleModalSave(type, extra) {
+        const getV = id => document.getElementById(id).value;
+        if (type === 'health_food') {
+            let hf = state.items.find(i=>i.type === 'health_food');
+            const data = { bt: getV('f-bt'), b: getV('f-b'), lt: getV('f-lt'), l: getV('f-l'), dt: getV('f-dt'), d: getV('f-d'), fs: getV('f-fs'), fe: getV('f-fe') };
+            if(!hf) state.items.push({ id: 'diet', type: 'health_food', parentId: 'saude', name: 'Dieta', content: data });
+            else hf.content = data;
         }
-        else if (type === 'visionboard') {
-            state.items.push({ id: 'vb_'+Date.now(), parentId: state.path[state.path.length-1], type: 'visionboard', name: getVal('f-name'), content: { images: [] } });
+        else if (type === 'menstrual_config') {
+            state.menstrual.cycleDays = getV('f-cycle');
+            state.menstrual.periodDays = getV('f-period');
+            state.menstrual.lastPeriod = getV('f-last');
         }
         else if (type === 'vision_add') {
-            const file = document.getElementById('f-img').files[0];
-            const caption = getVal('f-cap');
-            if(!file) return alert("Escolha uma imagem.");
+            const f = document.getElementById('f-img').files[0];
             const reader = new FileReader();
             reader.onload = (e) => {
                 const vb = state.items.find(i => i.id === extra);
                 if(!vb.content.images) vb.content.images = [];
-                vb.content.images.push({ data: e.target.result, caption: caption });
-                save();
-                closeModal();
+                vb.content.images.push({ data: e.target.result, caption: getV('f-cap') });
+                saveState(); closeModal();
             };
-            reader.readAsDataURL(file);
+            if(f) reader.readAsDataURL(f);
             return;
         }
         else if (type === 'health_weight_config') {
             let hw = state.items.find(i=>i.type === 'health_weight');
-            const data = { 
-                startWeight: parseFloat(getVal('f-start')), 
-                target: parseFloat(getVal('f-target')), 
-                height: parseFloat(getVal('f-height')), 
-                periodMonths: getVal('f-months'), 
-                startDate: getVal('f-date') 
-            };
-            if(!hw) state.items.push({ id: 'hw_1', type: 'health_weight', parentId: 'saude', name: 'Peso', content: { ...data, history: [] } });
+            const data = { startWeight: getV('f-start'), target: getV('f-target'), height: getV('f-height'), periodMonths: getV('f-months'), startDate: getV('f-date') };
+            if(!hw) state.items.push({ id: 'hw', type: 'health_weight', parentId: 'saude', name: 'Peso', content: { ...data, history: [] } });
             else hw.content = { ...hw.content, ...data };
         }
         else if (type === 'health_weight_register') {
             const hw = state.items.find(i=>i.type === 'health_weight');
-            if(!hw.content.history) hw.content.history = [];
-            hw.content.history.push({ id: 'w_'+Date.now(), date: getVal('f-date'), weight: parseFloat(getVal('f-weight')) });
+            hw.content.history.push({ id: 'w'+Date.now(), date: getV('f-date'), weight: getV('f-weight') });
         }
-        else if (type === 'health_food') {
-            let hf = state.items.find(i=>i.type === 'health_food');
-            const data = { bt: getVal('f-bt'), b: getVal('f-b'), lt: getVal('f-lt'), l: getVal('f-l'), dt: getVal('f-dt'), d: getVal('f-d'), fs: getVal('f-fs'), fe: getVal('f-fe') };
-            if(!hf) state.items.push({ id: 'hf_1', type: 'health_food', parentId: 'saude', name: 'Dieta', content: data });
-            else hf.content = data;
+        else if (type === 'custom_area') {
+            state.items.push({ id: 'area'+Date.now(), parentId: 'root', type: 'custom_area', name: getV('f-name') });
         }
 
-        save();
-        closeModal();
+        saveState(); closeModal();
     }
 
-    function closeModal() {
-        document.getElementById('modal-overlay').style.display = 'none';
-    }
+    function closeModal() { document.getElementById('modal-overlay').style.display = 'none'; }
+    function showLightbox(src) { document.getElementById('lightbox-img').src = src; document.getElementById('lightbox').style.display = 'flex'; }
+    function toggleFabMenu(e) { e.stopPropagation(); const m = document.getElementById('fab-menu'); m.style.display = m.style.display === 'block' ? 'none' : 'block'; }
+    function deleteVisionImg(vid, idx) { if(confirm("Apagar?")) { state.items.find(i=>i.id===vid).content.images.splice(idx,1); saveState(); } }
+    function deleteWeightEntry(id) { if(confirm("Apagar?")) { const hw = state.items.find(i=>i.type==='health_weight'); hw.content.history = hw.content.history.filter(h=>h.id!==id); saveState(); } }
+    function deleteGlobalItem(id, e) { e.stopPropagation(); if(confirm("Apagar?")) { state.items = state.items.filter(i=>i.id!==id); saveState(); } }
+    function exportData() { const blob = new Blob([JSON.stringify({items: state.items, menstrual: state.menstrual})], {type: 'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'organizador_backup.json'; a.click(); }
+    function importData() { const input = document.createElement('input'); input.type = 'file'; input.onchange = e => { const r = new FileReader(); r.onload = ev => { const d = JSON.parse(ev.target.result); state.items = d.items; state.menstrual = d.menstrual; saveState(); }; r.readAsText(e.target.files[0]); }; input.click(); }
+    document.addEventListener('click', () => { document.getElementById('fab-menu').style.display = 'none'; });
 
-    function showLightbox(src) {
-        const lb = document.getElementById('lightbox');
-        document.getElementById('lightbox-img').src = src;
-        lb.style.display = 'flex';
-    }
-
-    function editWeightEntry(id) {
-        const hw = state.items.find(i=>i.type==='health_weight');
-        const entry = hw.content.history.find(h=>h.id===id);
-        const newW = prompt("Novo peso (kg):", entry.weight);
-        if(newW) {
-            entry.weight = parseFloat(newW);
-            save();
-        }
-    }
-
-    function deleteWeightEntry(id) {
-        if(!confirm("Remover este registo?")) return;
-        const hw = state.items.find(i=>i.type==='health_weight');
-        hw.content.history = hw.content.history.filter(h=>h.id !== id);
-        save();
-    }
-
-    function deleteVisionImg(vbId, idx) {
-        if(!confirm("Eliminar foto do mural?")) return;
-        const vb = state.items.find(i=>i.id===vbId);
-        vb.content.images.splice(idx, 1);
-        save();
-    }
-
-    function deleteItem(id, e) {
-        e.stopPropagation();
-        if(!confirm("Eliminar permanentemente?")) return;
-        state.items = state.items.filter(i=>i.id !== id);
-        save();
-    }
-
-    function toggleMenu(e) {
-        e.stopPropagation();
-        const menu = document.getElementById('create-menu');
-        const icon = document.getElementById('fab-icon');
-        const isOpen = menu.style.display === 'block';
-        menu.style.display = isOpen ? 'none' : 'block';
-        icon.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(45deg)';
-    }
-
-    document.addEventListener('click', () => {
-        document.getElementById('create-menu').style.display = 'none';
-        document.getElementById('fab-icon').style.transform = 'rotate(0deg)';
-    });
-
-    function exportData() {
-        const blob = new Blob([JSON.stringify(state.items)], {type: 'application/json'});
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = `organizador_backup_${new Date().toISOString().slice(0,10)}.json`;
-        a.click();
-    }
-
-    function importData() {
-        const input = document.createElement('input');
-        input.type = 'file';
-        input.onchange = (e) => {
-            const reader = new FileReader();
-            reader.onload = (ev) => {
-                state.items = JSON.parse(ev.target.result);
-                save();
-            };
-            reader.readAsText(e.target.files[0]);
-        };
-        input.click();
-    }
-
-    setInterval(() => {
-        const now = new Date();
-        document.getElementById('clock').innerText = now.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
-    }, 1000);
-
-    render();
+    renderApp();
 </script>
 </body>
 </html>
