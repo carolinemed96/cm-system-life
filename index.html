@@ -26,154 +26,116 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; -webkit-font-smoothing: antialiased; }
         h1, h2, h3, .monogram, .huge-number { font-family: 'Playfair Display', serif; }
 
-        body { 
-            background-color: var(--off-white); 
-            color: var(--text-main); 
-            min-height: 100vh; 
-            display: flex; 
-            flex-direction: column;
-            padding-bottom: 100px;
-        }
+        body { background-color: var(--off-white); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; padding-bottom: 100px; }
 
-        /* --- Access Control --- */
-        #lock-screen { 
-            position: fixed; inset: 0; background: var(--off-white); z-index: 9999; 
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .lock-container { text-align: center; width: 80%; max-width: 320px; }
-        .lock-input { 
-            width: 100%; text-align: center; font-size: 2rem; letter-spacing: 15px; 
-            border: none; border-bottom: 2px solid var(--gold); background: transparent;
-            padding: 15px; outline: none; color: var(--chocolate); margin-bottom: 30px;
-        }
+        /* --- Lock Screen (Majestic Size) --- */
+        #lock-screen { position: fixed; inset: 0; background: var(--off-white); z-index: 5000; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: all 0.6s ease; }
+        .lock-container { text-align: center; width: 90%; max-width: 450px; }
+        .lock-monogram { font-size: 6rem; color: var(--chocolate); font-weight: 900; line-height: 1; margin-bottom: 10px; }
+        .lock-brand { font-size: 1.2rem; text-transform: uppercase; letter-spacing: 8px; color: var(--gold); font-weight: 800; margin-bottom: 50px; }
+        .lock-input { width: 100%; text-align: center; font-size: 3rem; letter-spacing: 20px; border: none; border-bottom: 3px solid var(--gold); background: transparent; padding: 20px; outline: none; color: var(--chocolate); margin-bottom: 40px; font-weight: 900; }
+        .lock-input::placeholder { font-size: 1rem; letter-spacing: 2px; opacity: 0.3; }
 
-        /* --- Navigation --- */
-        header { 
-            padding: 40px 20px; text-align: center; background: #fff; 
-            border-bottom: 1px solid rgba(197, 160, 89, 0.1); position: sticky; top: 0; z-index: 100;
-        }
-        .monogram { font-size: 3rem; color: var(--chocolate); font-weight: 900; line-height: 0.8; }
-        .brand-name { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 6px; color: var(--gold); font-weight: 800; margin-top: 10px; }
+        /* --- UI Framework --- */
+        header { padding: 30px 20px; text-align: center; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(15px); border-bottom: 1px solid rgba(197, 160, 89, 0.1); position: sticky; top: 0; z-index: 100; }
+        .header-monogram { font-size: 2.2rem; color: var(--chocolate); font-weight: 900; line-height: 1; }
+        .header-brand { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 5px; color: var(--gold); font-weight: 800; margin-top: 5px; }
 
-        .bottom-nav {
-            position: fixed; bottom: 20px; left: 20px; right: 20px; height: 70px;
-            background: rgba(62, 39, 35, 0.98); backdrop-filter: blur(10px);
-            border-radius: 25px; display: flex; justify-content: space-around; align-items: center;
-            z-index: 500; box-shadow: 0 15px 35px rgba(0,0,0,0.2);
-        }
-        .nav-item { color: #fff; opacity: 0.4; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; transition: 0.3s; }
-        .nav-item.active { opacity: 1; color: var(--gold); }
-        .nav-item span { font-size: 0.55rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
+        .navigation-bar { padding: 12px 5%; background: #fff; display: flex; align-items: center; gap: 8px; font-size: 0.75rem; border-bottom: 1px solid #f0f0f0; overflow-x: auto; white-space: nowrap; }
+        .breadcrumb-item { cursor: pointer; color: var(--chocolate-light); font-weight: 700; opacity: 0.5; display: flex; align-items: center; gap: 4px; }
+        .breadcrumb-item:last-child { opacity: 1; color: var(--gold); }
 
-        /* --- Main Content --- */
-        main { flex: 1; padding: 30px 6%; max-width: 1200px; margin: 0 auto; width: 100%; animation: fadeIn 0.6s ease; }
-        .page-title { font-size: 2.2rem; font-weight: 900; color: var(--chocolate); margin-bottom: 30px; }
-        
-        .card { 
-            background: var(--bg-card); border-radius: 30px; padding: 25px; 
-            box-shadow: var(--shadow-premium); border: 1px solid rgba(0,0,0,0.02);
-            margin-bottom: 20px; transition: var(--transition);
-        }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 75px; background: #fff; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #f0f0f0; z-index: 400; box-shadow: 0 -5px 25px rgba(0,0,0,0.03); }
+        .nav-tab { display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--chocolate-light); cursor: pointer; transition: 0.3s; flex: 1; opacity: 0.4; }
+        .nav-tab.active { opacity: 1; color: var(--gold); }
+        .nav-tab span { font-size: 0.6rem; font-weight: 800; text-transform: uppercase; }
 
-        /* --- Module: Weight Focus --- */
-        .hero-meta { 
-            background: var(--chocolate); color: #fff; padding: 40px 20px; border-radius: 35px;
-            text-align: center; border: 1px solid var(--gold); position: relative; overflow: hidden;
-        }
-        .hero-meta .label { font-size: 0.8rem; font-weight: 800; text-transform: uppercase; color: var(--gold); letter-spacing: 2px; }
-        .hero-meta .huge-number { font-size: 5.5rem; font-weight: 900; margin: 10px 0; line-height: 1; }
-        .hero-meta .unit { font-size: 1.5rem; color: var(--gold-light); }
+        main { flex: 1; padding: 25px 6%; max-width: 1200px; margin: 0 auto; width: 100%; animation: fadeIn 0.4s ease; }
+        .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        .card { background: var(--bg-card); padding: 25px; border-radius: 28px; box-shadow: var(--shadow-premium); border: 1px solid rgba(0,0,0,0.02); transition: var(--transition); position: relative; }
+        .card:hover { transform: translateY(-4px); }
 
-        .stat-line { 
-            display: flex; justify-content: space-around; margin-top: 30px; 
-            padding-top: 25px; border-top: 1px solid rgba(255,255,255,0.1); 
-        }
-        .stat-box { text-align: center; }
-        .stat-box small { font-size: 0.6rem; font-weight: 800; color: var(--gold-light); text-transform: uppercase; display: block; }
-        .stat-box b { font-size: 1.3rem; font-weight: 700; }
+        /* --- Widgets --- */
+        .hero-meta { background: var(--chocolate); color: white; padding: 40px 20px; border-radius: 35px; text-align: center; border: 1px solid var(--gold); margin-bottom: 25px; box-shadow: var(--shadow-elevated); }
+        .meta-label { font-size: 0.8rem; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; color: var(--gold-light); }
+        .meta-val { font-size: 5rem; font-weight: 900; line-height: 1; color: #fff; margin: 10px 0; }
+        .stat-line { display: flex; justify-content: space-around; margin-top: 30px; padding-top: 25px; border-top: 1px solid rgba(255,255,255,0.1); }
+        .stat-box small { font-size: 0.6rem; font-weight: 800; color: var(--gold-light); text-transform: uppercase; display: block; margin-bottom: 5px; }
+        .stat-box b { font-size: 1.4rem; font-weight: 800; color: #fff; }
 
-        /* --- Dieta & Saúde --- */
-        .info-pill { 
-            background: var(--off-white); padding: 15px; border-radius: 20px; margin-bottom: 12px;
-            border-left: 4px solid var(--gold);
-        }
+        .info-pill { background: var(--off-white); padding: 15px; border-radius: 20px; margin-bottom: 12px; border-left: 4px solid var(--gold); }
         .info-pill b { display: block; font-size: 0.75rem; color: var(--gold); margin-bottom: 5px; text-transform: uppercase; font-weight: 800; }
         .info-pill p { font-size: 0.95rem; line-height: 1.5; color: var(--chocolate-light); white-space: pre-wrap; }
 
-        /* --- Forms & Buttons --- */
+        /* --- Forms --- */
         .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; font-size: 0.7rem; font-weight: 800; color: var(--gold); margin-bottom: 8px; text-transform: uppercase; }
-        .form-control { 
-            width: 100%; padding: 16px; border: 1px solid #eee; border-radius: 16px;
-            font-size: 1rem; background: #fafafa; outline: none; color: var(--chocolate);
-        }
-        textarea.form-control { min-height: 60px; resize: none; overflow: hidden; }
+        .form-group label { display: block; font-size: 0.7rem; font-weight: 800; color: var(--gold); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+        .form-control { width: 100%; padding: 16px; border: 1px solid #eee; border-radius: 16px; font-size: 1rem; background: #fafafa; outline: none; transition: 0.3s; color: var(--chocolate); }
+        .form-control:focus { border-color: var(--gold); background: #fff; box-shadow: 0 0 0 4px rgba(197,160,89,0.1); }
+        textarea.form-control { min-height: 60px; resize: none; overflow: hidden; line-height: 1.5; }
 
-        .btn-main { 
-            background: var(--chocolate); color: white; border: none; padding: 16px 30px;
-            border-radius: 50px; font-weight: 800; font-size: 0.85rem; cursor: pointer; width: 100%;
-            transition: 0.3s; letter-spacing: 1px;
-        }
+        .btn-primary { background: var(--chocolate); color: white; border: none; padding: 16px 30px; border-radius: 50px; font-weight: 800; font-size: 0.85rem; cursor: pointer; transition: 0.3s; box-shadow: 0 10px 20px rgba(62, 39, 35, 0.15); width: 100%; }
+        .btn-primary:active { transform: scale(0.97); }
 
-        /* --- Menstrual --- */
-        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; margin-top: 20px; }
-        .cal-day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.8rem; border-radius: 50%; cursor: pointer; color: var(--chocolate); }
-        .cal-day.period { background: rgba(166, 33, 33, 0.1); color: var(--danger); border: 1px solid rgba(166, 33, 33, 0.2); }
-        .cal-day.fertile { background: rgba(197, 160, 89, 0.15); color: var(--gold); }
-        .cal-day.today { border: 2px solid var(--chocolate); }
+        #modal-overlay { position: fixed; inset: 0; background: rgba(62, 39, 35, 0.6); backdrop-filter: blur(10px); z-index: 1000; display: none; justify-content: center; align-items: center; padding: 20px; }
+        .modal { background: #fff; width: 100%; max-width: 480px; border-radius: 40px; padding: 35px; max-height: 85vh; overflow-y: auto; }
+
+        .mural-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; }
+        .mural-item { border-radius: 20px; overflow: hidden; position: relative; aspect-ratio: 3/4; background: #eee; }
+        .mural-img { width: 100%; height: 100%; object-fit: cover; }
+        .mural-cap { position: absolute; bottom: 0; width: 100%; padding: 10px; background: rgba(62, 39, 35, 0.8); color: white; font-size: 0.7rem; font-weight: 700; text-align: center; }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-        
-        #modal-overlay { position: fixed; inset: 0; background: rgba(62, 39, 35, 0.7); backdrop-filter: blur(10px); z-index: 1000; display: none; justify-content: center; align-items: center; padding: 20px; }
-        .modal { background: #fff; width: 100%; max-width: 480px; border-radius: 40px; padding: 35px; max-height: 85vh; overflow-y: auto; }
     </style>
 </head>
-<body>
+<body autocomplete="off">
 
 <div id="lock-screen">
     <div class="lock-container">
-        <div class="monogram">CM</div>
-        <div class="brand-name" style="margin-bottom:50px;">Private Organizer</div>
-        <input type="password" id="pin" class="lock-input" placeholder="••••" maxlength="4" autocomplete="off">
-        <button onclick="access()" class="btn-main">ENTRAR NO SISTEMA</button>
+        <div class="lock-monogram">CM</div>
+        <div class="lock-brand">Caroline Medeiros</div>
+        <input type="password" id="pin-input" class="lock-input" placeholder="PALAVRA-PASSE" maxlength="4" autocomplete="off">
+        <div id="pin-error" style="color:var(--danger); font-size:0.8rem; font-weight:800; margin-bottom:20px; height:20px;"></div>
+        <button onclick="unlockApp()" class="btn-primary" style="font-size:1rem; padding: 20px;">ACEDER AGORA</button>
     </div>
 </div>
 
 <header>
-    <div class="monogram">CM</div>
-    <div class="brand-name">Caroline Medeiros</div>
+    <div class="header-monogram">CM</div>
+    <div class="header-brand">Caroline Medeiros</div>
 </header>
 
 <div class="navigation-bar" id="breadcrumbs"></div>
 
-<main id="view"></main>
+<main id="app-view"></main>
 
 <nav class="bottom-nav">
-    <div class="nav-item active" onclick="goBack(0)"><i data-lucide="layout"></i><span>Home</span></div>
-    <div class="nav-item" onclick="navigate('saude')"><i data-lucide="heart-pulse"></i><span>Health</span></div>
-    <div class="nav-item" onclick="navigate('financeiro')"><i data-lucide="wallet"></i><span>Money</span></div>
-    <div class="nav-item" onclick="navigate('biblia')"><i data-lucide="book-marked"></i><span>Bible</span></div>
-    <div class="nav-item" onclick="toggleFab()"><i data-lucide="plus-circle"></i><span>Novo</span></div>
+    <div class="nav-tab" id="tab-root" onclick="goBack(0)"><i data-lucide="layout"></i><span>Home</span></div>
+    <div class="nav-tab" id="tab-saude" onclick="navigate('saude')"><i data-lucide="heart-pulse"></i><span>Saúde</span></div>
+    <div class="nav-tab" id="tab-financeiro" onclick="navigate('financeiro')"><i data-lucide="wallet"></i><span>Finanças</span></div>
+    <div class="nav-tab" id="tab-biblia" onclick="navigate('biblia')"><i data-lucide="book-marked"></i><span>Bíblia</span></div>
+    <div class="nav-tab" onclick="toggleFabMenu(event)"><i data-lucide="plus-circle"></i><span>Menu</span></div>
 </nav>
 
-<!-- FAB Menu -->
-<div id="fab-overlay" style="position:fixed; inset:0; z-index:450; display:none;" onclick="this.style.display='none'">
-    <div style="position:absolute; bottom:100px; right:30px; background:#fff; border-radius:25px; box-shadow:var(--shadow-elevated); width:200px; overflow:hidden;">
-        <div style="padding:18px; font-size:0.8rem; font-weight:800; border-bottom:1px solid #f5f5f5;" onclick="openModal('custom_area')">Nova Área</div>
-        <div style="padding:18px; font-size:0.8rem; font-weight:800; border-bottom:1px solid #f5f5f5;" onclick="openModal('visionboard')">Visionboard</div>
-        <div style="padding:18px; font-size:0.8rem; font-weight:800; border-bottom:1px solid #f5f5f5;" onclick="exportData()">Exportar Backup</div>
-        <div style="padding:18px; font-size:0.8rem; font-weight:800;" onclick="importData()">Importar Dados</div>
+<!-- FAB Multi-Menu -->
+<div id="fab-overlay" style="position:fixed; inset:0; z-index:350; display:none;" onclick="this.style.display='none'">
+    <div style="position:absolute; bottom:90px; right:20px; background:#fff; border-radius:25px; box-shadow:0 20px 50px rgba(0,0,0,0.2); width:210px; overflow:hidden; border:1px solid #eee;">
+        <div style="padding:15px; font-size:0.8rem; font-weight:800; border-bottom:1px solid #f9f9f9; cursor:pointer;" onclick="openModal('folder')"><i data-lucide="folder" style="width:16px; margin-right:8px; vertical-align:middle;"></i> Nova Pasta</div>
+        <div style="padding:15px; font-size:0.8rem; font-weight:800; border-bottom:1px solid #f9f9f9; cursor:pointer;" onclick="openModal('note')"><i data-lucide="file-text" style="width:16px; margin-right:8px; vertical-align:middle;"></i> Nova Nota</div>
+        <div style="padding:15px; font-size:0.8rem; font-weight:800; border-bottom:1px solid #f9f9f9; cursor:pointer;" onclick="openModal('checklist')"><i data-lucide="check-square" style="width:16px; margin-right:8px; vertical-align:middle;"></i> Checklist</div>
+        <div style="padding:15px; font-size:0.8rem; font-weight:800; border-bottom:1px solid #f9f9f9; cursor:pointer;" onclick="openModal('visionboard')"><i data-lucide="image" style="width:16px; margin-right:8px; vertical-align:middle;"></i> Visionboard</div>
+        <div style="padding:15px; font-size:0.8rem; font-weight:800; border-bottom:1px solid #f9f9f9; cursor:pointer;" onclick="openModal('bank')"><i data-lucide="credit-card" style="width:16px; margin-right:8px; vertical-align:middle;"></i> Dados Bancários</div>
+        <div style="padding:15px; font-size:0.8rem; font-weight:800; cursor:pointer; color:var(--gold);" onclick="exportData()"><i data-lucide="download" style="width:16px; margin-right:8px; vertical-align:middle;"></i> Backup</div>
     </div>
 </div>
 
 <div id="modal-overlay">
     <div class="modal">
-        <h2 id="modal-title" style="margin-bottom:25px; color:var(--chocolate); text-align:center;"></h2>
-        <div id="modal-body"></div>
+        <h2 id="m-title" style="text-align:center; margin-bottom:25px; color:var(--chocolate)"></h2>
+        <div id="m-body"></div>
         <div style="display:flex; gap:12px; margin-top:30px;">
-            <button class="btn-main" style="background:#f0f0f0; color:#888;" onclick="closeModal()">Sair</button>
-            <button class="btn-main" id="modal-save">Salvar</button>
+            <button class="btn-primary" style="background:#f5f5f5; color:#888;" onclick="closeModal()">Sair</button>
+            <button class="btn-primary" id="m-save">Guardar</button>
         </div>
     </div>
 </div>
@@ -183,29 +145,41 @@
 </div>
 
 <script>
-    // --- State ---
+    // --- Database Key (Persistência) ---
+    const DB_KEY = "cm_luxury_v10";
+
     let state = {
         path: ['root'],
-        items: JSON.parse(localStorage.getItem('cm_db_v8')) || [],
-        menstrual: JSON.parse(localStorage.getItem('cm_men_v8')) || { cycle: 28, flow: 5, last: "" }
+        items: JSON.parse(localStorage.getItem(DB_KEY + "_items")) || [],
+        menstrual: JSON.parse(localStorage.getItem(DB_KEY + "_men")) || { last: "2024-01-01", cycle: 28, flow: 5 },
+        bible: { book: "Gênesis", cap: 1 }
     };
 
-    function save() {
-        localStorage.setItem('cm_db_v8', JSON.stringify(state.items));
-        localStorage.setItem('cm_men_v8', JSON.stringify(state.menstrual));
-        render();
+    function sync() {
+        localStorage.setItem(DB_KEY + "_items", JSON.stringify(state.items));
+        localStorage.setItem(DB_KEY + "_men", JSON.stringify(state.menstrual));
+        renderApp();
     }
 
-    function access() {
-        if(document.getElementById('pin').value === "2405") {
-            document.getElementById('lock-screen').style.transform = 'scale(1.1)';
+    function unlockApp() {
+        if(document.getElementById('pin-input').value === "2405") {
             document.getElementById('lock-screen').style.opacity = '0';
             setTimeout(() => document.getElementById('lock-screen').style.display = 'none', 600);
+        } else {
+            document.getElementById('pin-error').innerText = "SENHA INVÁLIDA";
+            document.getElementById('pin-input').value = "";
         }
     }
 
-    function navigate(id) { state.path.push(id); render(); }
-    function goBack(idx) { state.path = state.path.slice(0, idx + 1); render(); }
+    // Auto-expand engine
+    function resizeTextArea(el) {
+        el.style.height = 'auto';
+        el.style.height = el.scrollHeight + 'px';
+    }
+
+    document.addEventListener('input', e => {
+        if(e.target.tagName === 'TEXTAREA') resizeTextArea(e.target);
+    });
 
     // --- Core Logic ---
     function getWeightStats() {
@@ -219,54 +193,58 @@
         let h = parseFloat(w.content.height); if(h > 3) h /= 100;
         return { 
             mma: diff > 0 ? (diff / monthsRem).toFixed(2) : "0.00", 
-            current, imc: h > 0 ? (current / (h * h)).toFixed(1) : "--", 
-            water: (current * 0.035).toFixed(1) 
+            current, imc: h > 0 ? (current/(h*h)).toFixed(1) : "--", water: (current*0.035).toFixed(1) 
         };
     }
 
-    // --- Renderers ---
-    function render() {
+    // --- Navigation ---
+    const ROOT_CATS = [
+        { id: 'pessoal', name: 'Pessoal', icon: 'user' },
+        { id: 'profissional', name: 'Profissional', icon: 'briefcase' },
+        { id: 'financeiro', name: 'Finanças', icon: 'trending-up' },
+        { id: 'saude', name: 'Saúde', icon: 'heart' },
+        { id: 'lifestyle', name: 'Lifestyle', icon: 'sparkles' },
+        { id: 'biblia', name: 'Bíblia', icon: 'book-open' }
+    ];
+
+    function navigate(id) { state.path.push(id); renderApp(); }
+    function goBack(idx) { state.path = state.path.slice(0, idx + 1); renderApp(); }
+
+    function renderApp() {
         const cur = state.path[state.path.length - 1];
-        const main = document.getElementById('view');
+        const main = document.getElementById('app-view');
         const bread = document.getElementById('breadcrumbs');
 
-        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        const tab = document.querySelector(`.nav-item[onclick*="${cur}"]`);
-        if(tab) tab.classList.add('active');
+        document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+        const activeTab = document.getElementById('tab-' + cur);
+        if(activeTab) activeTab.classList.add('active');
 
         bread.innerHTML = state.path.map((id, i) => {
-            const label = id === 'root' ? 'Início' : (CATEGORIES.find(c=>c.id===id)?.name || state.items.find(it=>it.id===id)?.name || id);
+            const label = id === 'root' ? 'Início' : (ROOT_CATS.find(c=>c.id===id)?.name || state.items.find(it=>it.id===id)?.name || "...");
             return `<span class="breadcrumb-item" onclick="goBack(${i})">${i>0?'<i data-lucide="chevron-right" style="width:12px"></i>':''} ${label}</span>`;
         }).join('');
 
         if (cur === 'root') renderHome(main);
         else if (cur === 'saude') renderSaude(main);
-        else if (cur === 'financeiro') renderFinanceiro(main);
-        else if (cur === 'biblia') renderBiblia(main);
+        else if (cur === 'financeiro') renderFinance(main);
+        else if (cur === 'biblia') renderBible(main);
         else renderGeneralFolder(main, cur);
 
         if(window.lucide) lucide.createIcons();
     }
 
     function renderHome(el) {
-        el.innerHTML = `
-            <div class="page-title">Bem-vinda, Caroline</div>
-            <div class="grid-container">
-                ${CATEGORIES.map(c => `
-                    <div class="card" style="display:flex; align-items:center; cursor:pointer;" onclick="navigate('${c.id}')">
-                        <div style="width:50px; height:50px; background:var(--off-white); border-radius:15px; display:flex; align-items:center; justify-content:center; color:var(--gold); margin-right:15px;"><i data-lucide="${c.icon}"></i></div>
-                        <b style="font-size:1.1rem; color:var(--chocolate)">${c.name}</b>
-                    </div>
-                `).join('')}
-                ${state.items.filter(i => i.type === 'custom_area' && i.parentId === 'root').map(i => `
-                    <div class="card" style="display:flex; align-items:center; cursor:pointer;" onclick="navigate('${i.id}')">
-                        <div style="width:50px; height:50px; background:var(--off-white); border-radius:15px; display:flex; align-items:center; justify-content:center; color:var(--gold); margin-right:15px;"><i data-lucide="star"></i></div>
-                        <b style="font-size:1.1rem; color:var(--chocolate); flex:1">${i.name}</b>
-                        <i data-lucide="trash-2" style="width:16px; opacity:0.2;" onclick="deleteItem('${i.id}', event)"></i>
-                    </div>
-                `).join('')}
-            </div>
-        `;
+        el.innerHTML = `<h1 class="page-title">Organizador</h1><div class="grid-container">
+            ${ROOT_CATS.map(c => `<div class="card" style="display:flex; align-items:center; cursor:pointer;" onclick="navigate('${c.id}')">
+                <div style="width:50px; height:50px; background:var(--off-white); border-radius:15px; display:flex; align-items:center; justify-content:center; color:var(--gold); margin-right:15px;"><i data-lucide="${c.icon}"></i></div>
+                <b style="font-size:1rem; color:var(--chocolate)">${c.name}</b>
+            </div>`).join('')}
+            ${state.items.filter(i => i.type === 'custom_area' && i.parentId === 'root').map(i => `<div class="card" style="display:flex; align-items:center; cursor:pointer;" onclick="navigate('${i.id}')">
+                <div style="width:50px; height:50px; background:var(--off-white); border-radius:15px; display:flex; align-items:center; justify-content:center; color:var(--gold); margin-right:15px;"><i data-lucide="star"></i></div>
+                <b style="font-size:1rem; flex:1;">${i.name}</b>
+                <i data-lucide="trash-2" style="width:14px; opacity:0.2;" onclick="deleteItem('${i.id}', event)"></i>
+            </div>`).join('')}
+        </div>`;
     }
 
     function renderSaude(el) {
@@ -277,104 +255,101 @@
 
         el.innerHTML = `
             <div class="hero-meta">
-                <span class="label">Meta Mensal Restante</span>
-                <div class="huge-number">${stats ? stats.mma : '--'}<small class="unit">kg</small></div>
+                <span class="meta-label">Meta Mensal Restante</span>
+                <div class="meta-val">${stats ? stats.mma : '--'}<small style="font-size:1rem; color:var(--gold-light); margin-left:5px;">kg</small></div>
                 <div class="stat-line">
                     <div class="stat-box"><small>Peso Atual</small><b>${stats ? stats.current : '--'}kg</b></div>
-                    <div class="stat-box"><small>IMC Corporal</small><b>${stats ? stats.imc : '--'}</b></div>
+                    <div class="stat-box"><small>IMC</small><b>${stats ? stats.imc : '--'}</b></div>
                     <div class="stat-box"><small>Meta Água</small><b>${stats ? stats.water : '--'}L</b></div>
                 </div>
             </div>
 
-            <div class="grid-container" style="margin-top:20px;">
+            <div class="grid-container">
                 <div class="card" style="display:block;">
-                    <div class="section-header"><h2>Alimentação</h2><i data-lucide="utensils" onclick="openModal('health_food')" style="color:var(--gold); cursor:pointer;"></i></div>
-                    <div class="info-pill"><b>Café (${diet.content.bt||'--'})</b><p>${diet.content.b||'Nenhum plano'}</p></div>
-                    <div class="info-pill"><b>Almoço (${diet.content.lt||'--'})</b><p>${diet.content.l||'Nenhum plano'}</p></div>
-                    <div class="info-pill"><b>Jantar (${diet.content.dt||'--'})</b><p>${diet.content.d||'Nenhum plano'}</p></div>
-                    <div style="background:var(--chocolate); color:#fff; padding:15px; border-radius:15px; text-align:center; font-weight:700; font-size:0.8rem;">JEJUM: ${diet.content.fs||'00:00'} às ${diet.content.fe||'00:00'}</div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                        <h2 style="font-size:1.1rem;">Alimentação</h2> <i data-lucide="edit-3" onclick="openModal('health_food')" style="color:var(--gold); cursor:pointer; width:18px;"></i>
+                    </div>
+                    <div class="info-pill"><b>Café:</b> <p>${diet.content.b || '-'}</p></div>
+                    <div class="info-pill"><b>Almoço:</b> <p>${diet.content.l || '-'}</p></div>
+                    <div class="info-pill"><b>Jantar:</b> <p>${diet.content.d || '-'}</p></div>
                 </div>
 
                 <div class="card" style="display:block;">
-                    <div class="section-header"><h2>Medicamentos</h2><i data-lucide="plus-circle" onclick="openModal('health_med')" style="color:var(--gold); cursor:pointer;"></i></div>
-                    ${meds.length ? meds.map(m => `
-                        <div style="display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid #f5f5f5;">
-                            <div><b style="font-size:0.9rem;">${m.name}</b><br><small style="color:var(--gold); font-weight:700;">${m.content.time} - ${m.content.dose}</small></div>
-                            <i data-lucide="trash-2" style="width:14px; color:var(--danger); opacity:0.3; cursor:pointer" onclick="deleteItem('${m.id}')"></i>
-                        </div>
-                    `).join('') : '<p style="font-size:0.8rem; opacity:0.5;">Nenhum medicamento listado.</p>'}
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                        <h2 style="font-size:1.1rem;">Medicamentos</h2> <i data-lucide="plus-circle" onclick="openModal('health_med')" style="color:var(--gold); cursor:pointer; width:18px;"></i>
+                    </div>
+                    ${meds.map(m => `<div style="padding:10px 0; border-bottom:1px solid #f5f5f5; display:flex; justify-content:space-between; align-items:center;">
+                        <div><b style="font-size:0.85rem;">${m.name}</b><br><small style="color:var(--gold); font-weight:700;">${m.content.time} - ${m.content.dose}</small></div>
+                        <i data-lucide="trash-2" style="width:12px; color:var(--danger); opacity:0.3; cursor:pointer" onclick="deleteItem('${m.id}')"></i>
+                    </div>`).join('')}
                 </div>
 
                 <div class="card" style="display:block;">
-                    <div class="section-header"><h2>Ciclo Menstrual</h2><i data-lucide="settings" onclick="openModal('menstrual_config')" style="color:var(--gold); cursor:pointer;"></i></div>
-                    ${renderMenstrualCalendar()}
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                        <h2 style="font-size:1.1rem;">Ciclo Menstrual</h2> <i data-lucide="settings" onclick="openModal('menstrual_config')" style="color:var(--gold); cursor:pointer; width:18px;"></i>
+                    </div>
+                    ${renderMenstrualGrid()}
                 </div>
             </div>
-
-            <button class="btn-main" style="margin-top:20px;" onclick="openModal('health_weight_register')">REGISTAR NOVO PESO</button>
-            ${weightItem ? `<button class="btn-main" style="margin-top:10px; background:#f0f0f0; color:#888;" onclick="openModal('health_weight_config')">CONFIGURAR METAS</button>` : ''}
+            
+            <button class="btn-primary" style="margin-top:20px; font-size:1rem;" onclick="openModal('health_weight_register')">REGISTAR PESO HOJE</button>
+            ${weightItem ? `<button class="btn-primary" style="margin-top:10px; background:#f0f0f0; color:#888;" onclick="openModal('health_weight_config')">CONFIGURAR METAS</button>` : ''}
         `;
     }
 
-    function renderMenstrualCalendar() {
+    function renderMenstrualGrid() {
         const now = new Date();
         const last = new Date(state.menstrual.last + 'T12:00:00');
         const cycle = parseInt(state.menstrual.cycle);
         const dur = parseInt(state.menstrual.flow);
-        
         let html = `<div style="display:grid; grid-template-columns: repeat(7, 1fr); text-align:center; font-size:0.6rem; font-weight:900; color:var(--gold); margin-bottom:10px;">
             <div>D</div><div>S</div><div>T</div><div>Q</div><div>Q</div><div>S</div><div>S</div></div><div class="cal-grid">`;
-        
         const startDay = new Date(now.getFullYear(), now.getMonth(), 1).getDay();
         const days = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
-
         for(let i=0; i<startDay; i++) html += `<div></div>`;
         for(let d=1; d<=days; d++) {
             const current = new Date(now.getFullYear(), now.getMonth(), d);
-            const diff = Math.floor((current - last) / (86400000));
+            const diff = Math.floor((current - last) / 86400000);
             const dayInCycle = ((diff % cycle) + cycle) % cycle;
-            
             let cls = "cal-day";
             if(dayInCycle < dur) cls += " period";
             if(dayInCycle >= cycle - 16 && dayInCycle <= cycle - 11) cls += " fertile";
             if(d === now.getDate()) cls += " today";
-
             html += `<div class="${cls}">${d}</div>`;
         }
         return html + `</div>`;
     }
 
-    function renderFinanceiro(el) {
-        const income = state.items.filter(i => i.type === 'finance_in');
-        const expense = state.items.filter(i => i.type === 'finance_out');
-        const totalIn = income.reduce((a,b)=>a+parseFloat(b.content.value||0), 0);
-        const totalOut = expense.reduce((a,b)=>a+parseFloat(b.content.value||0), 0);
+    function renderFinance(el) {
+        const in_ = state.items.filter(i => i.type === 'finance_in');
+        const out_ = state.items.filter(i => i.type === 'finance_out');
+        const sumIn = in_.reduce((a,b)=>a+parseFloat(b.content.value||0), 0);
+        const sumOut = out_.reduce((a,b)=>a+parseFloat(b.content.value||0), 0);
 
         el.innerHTML = `
-            <div class="hero-meta" style="background:#fff; border-color:#eee; color:var(--chocolate);">
-                <span class="label" style="color:var(--gold)">Balanço Mensal</span>
-                <div class="huge-number" style="color:var(--chocolate)">€ ${(totalIn - totalOut).toFixed(2)}</div>
+            <div class="hero-meta" style="background:#fff; color:var(--chocolate); border-color:#eee">
+                <span class="label">Balanço do Mês</span>
+                <div class="huge-number" style="color:var(--chocolate)">€ ${(sumIn-sumOut).toFixed(2)}</div>
                 <div class="stat-line">
-                    <div class="stat-box"><small>Entradas</small><b style="color:var(--success)">€ ${totalIn.toFixed(2)}</b></div>
-                    <div class="stat-box"><small>Saídas</small><b style="color:var(--danger)">€ ${totalOut.toFixed(2)}</b></div>
+                    <div class="stat-box"><small>Ganhos</small><b style="color:var(--success)">€ ${sumIn.toFixed(2)}</b></div>
+                    <div class="stat-box"><small>Gastos</small><b style="color:var(--danger)">€ ${sumOut.toFixed(2)}</b></div>
                 </div>
             </div>
             <div class="grid-container">
-                <div class="card" onclick="navigate('folder_in')"><b style="font-size:1.1rem; color:var(--chocolate)">Receitas</b></div>
-                <div class="card" onclick="navigate('folder_out')"><b style="font-size:1.1rem; color:var(--chocolate)">Despesas</b></div>
-                <div class="card" onclick="navigate('folder_invest')"><b style="font-size:1.1rem; color:var(--chocolate)">Investimentos</b></div>
+                <div class="card" onclick="navigate('folder_in')"><b>Receitas Mensais</b></div>
+                <div class="card" onclick="navigate('folder_out')"><b>Despesas Mensais</b></div>
+                <div class="card" onclick="navigate('folder_porquinhos')"><b>Porquinhos</b></div>
             </div>
         `;
     }
 
-    async function renderBiblia(el) {
-        el.innerHTML = `<h2 class="page-title">Bíblia NVI</h2>
+    async function renderBible(el) {
+        el.innerHTML = `<h2 class="page-title">Bíblia Sagrada</h2>
         <div style="display:flex; gap:10px; margin-bottom:20px;">
-            <select id="b-book" class="form-control" style="flex:2;" onchange="state.bible.book=this.value; fetchBible();"></select>
-            <input type="number" id="b-cap" class="form-control" style="flex:1;" value="${state.bible.chapter}" onchange="state.bible.chapter=this.value; fetchBible();">
+            <select id="b-book" class="form-control" style="flex:2;" onchange="state.bible.book=this.value; fetchB();"></select>
+            <input type="number" id="b-cap" class="form-control" style="flex:1;" value="${state.bible.cap}" onchange="state.bible.cap=this.value; fetchB();">
         </div>
-        <div id="bib-text" class="card" style="display:block; min-height:400px; line-height:1.8; font-size:1rem; color:#444;">Buscando Escrituras...</div>`;
-        
+        <div id="bib-text" class="card" style="display:block; min-height:400px; line-height:2; font-size:1.1rem; color:#444;">Buscando...</div>`;
         const books = ["Gênesis", "Êxodo", "Levítico", "Números", "Deuteronômio", "Josué", "Juízes", "Rute", "1 Samuel", "2 Samuel", "1 Reis", "2 Reis", "1 Crônicas", "2 Crônicas", "Esdras", "Neemias", "Ester", "Jó", "Salmos", "Provérbios", "Eclesiastes", "Cânticos", "Isaías", "Jeremias", "Lamentações", "Ezequiel", "Daniel", "Oseias", "Joel", "Amós", "Obadias", "Jonas", "Miqueias", "Naum", "Habacuque", "Sofonias", "Ageu", "Zacarias", "Malaquias", "Mateus", "Marcos", "Lucas", "João", "Atos", "Romanos", "1 Coríntios", "2 Coríntios", "Gálatas", "Efésios", "Filipenses", "Colossenses", "1 Tessalonicenses", "2 Tessalonicenses", "1 Timóteo", "2 Timóteo", "Tito", "Filemom", "Hebreus", "Tiago", "1 Pedro", "2 Pedro", "1 João", "2 João", "3 João", "Judas", "Apocalipse"];
         const sel = document.getElementById('b-book');
         books.forEach(b => {
@@ -382,18 +357,18 @@
             if(b === state.bible.book) opt.selected = true;
             sel.appendChild(opt);
         });
-        fetchBible();
+        fetchB();
     }
 
-    async function fetchBible() {
+    async function fetchB() {
         const el = document.getElementById('bib-text');
         try {
             const res = await fetch('https://raw.githubusercontent.com/thiagobodruk/bible/master/json/pt_nvi.json');
             const data = await res.json();
             const book = data.find(b => b.name === state.bible.book);
-            const verses = book.chapters[state.bible.chapter - 1];
+            const verses = book.chapters[state.bible.cap - 1];
             el.innerHTML = verses.map((v, i) => `<p style="margin-bottom:15px;"><sup style="color:var(--gold); font-weight:900; margin-right:8px;">${i+1}</sup>${v}</p>`).join('');
-        } catch(e) { el.innerHTML = "Escrituras não encontradas no momento."; }
+        } catch(e) { el.innerHTML = "Erro ao conectar."; }
     }
 
     function renderGeneralFolder(el, pid) {
@@ -401,125 +376,142 @@
         const items = state.items.filter(i => i.parentId === pid);
         
         if (folder?.type === 'visionboard') {
-            el.innerHTML = `<div class="section-header"><h2>Mural</h2><button class="btn-main" style="width:auto; padding:10px 20px" onclick="openModal('vision_add', '${pid}')">Adicionar</button></div>
+            el.innerHTML = `<div class="section-header"><h2>Visionboard</h2><button class="btn-primary" style="width:auto; padding:10px 20px" onclick="openModal('vision_add', '${pid}')">Adicionar</button></div>
             <div class="mural-grid">${(folder.content.images || []).map((img, idx) => `
                 <div class="mural-item">
                     <img src="${img.data}" class="mural-img" onclick="showLightbox('${img.data}')">
                     <div class="mural-cap">${img.caption}</div>
-                    <button class="btn-mini" style="position:absolute; top:8px; right:8px; background:rgba(255,255,255,0.8)" onclick="deleteVisionImg('${pid}', ${idx})"><i data-lucide="x" style="width:14px"></i></button>
+                    <button style="position:absolute; top:8px; right:8px; border:none; background:white; border-radius:50%; width:24px; height:24px" onclick="deleteVisionImg('${pid}', ${idx})">×</button>
                 </div>`).join('')}</div>`;
             return;
         }
 
-        el.innerHTML = `<div class="section-header"><h2>Conteúdo</h2><i data-lucide="plus-circle" onclick="openModal('item_add', '${pid}')" style="color:var(--gold); cursor:pointer"></i></div><div class="grid-container">${items.map(i => `
-            <div class="card" style="display:flex; justify-content:space-between; align-items:center;">
-                <b onclick="navigate('${i.id}')" style="cursor:pointer; flex:1;">${i.name}</b>
-                <i data-lucide="trash-2" style="width:14px; opacity:0.2; color:var(--danger); cursor:pointer" onclick="deleteItem('${i.id}')"></i>
-            </div>`).join('')}</div>`;
+        el.innerHTML = `<div class="section-header"><h2>${folder?.name || "Conteúdo"}</h2></div><div class="grid-container">
+            ${items.map(i => `
+                <div class="card" style="display:flex; justify-content:space-between; align-items:center;">
+                    <div onclick="navigate('${i.id}')" style="cursor:pointer; flex:1;">
+                        <i data-lucide="${i.type === 'folder' ? 'folder' : 'file'}" style="width:16px; margin-right:10px; color:var(--gold); vertical-align:middle"></i>
+                        <b style="font-size:0.95rem;">${i.name}</b>
+                    </div>
+                    <i data-lucide="trash-2" style="width:14px; opacity:0.2; color:var(--danger); cursor:pointer" onclick="deleteItem('${i.id}')"></i>
+                </div>`).join('')}
+        </div>`;
     }
 
-    // --- Modal Logic ---
+    // --- Modals ---
     function openModal(type, extra = null) {
-        const modal = document.getElementById('modal-overlay');
+        const overlay = document.getElementById('modal-overlay');
         const body = document.getElementById('mb');
-        const title = document.getElementById('mt');
-        const saveBtn = document.getElementById('modal-save');
-        modal.style.display = 'flex';
+        const title = document.getElementById('m-title');
+        const saveBtn = document.getElementById('m-save');
+        overlay.style.display = 'flex';
         
         let html = '';
-        if(type === 'health_food') {
+        if (type === 'note') {
+            title.innerText = "Nova Nota";
+            html = `<div class="form-group"><label>Título</label><input id="f-name" class="form-control"></div>
+                    <div class="form-group"><label>Texto</label><textarea id="f-text" class="form-control"></textarea></div>`;
+        }
+        else if (type === 'health_food') {
             const d = state.items.find(i=>i.type === 'health_food') || {content:{}};
-            title.innerText = "Dieta e Jejum";
-            html = `<div class="form-group"><label>Café</label><input type="time" id="f-bt" class="form-control" value="${d.content.bt||'08:00'}"><textarea id="f-b" class="form-control">${d.content.b||''}</textarea></div>
-                    <div class="form-group"><label>Almoço</label><input type="time" id="f-lt" class="form-control" value="${d.content.lt||'12:30'}"><textarea id="f-l" class="form-control">${d.content.l||''}</textarea></div>
-                    <div class="form-group"><label>Jantar</label><input type="time" id="f-dt" class="form-control" value="${d.content.dt||'19:30'}"><textarea id="f-d" class="form-control">${d.content.d||''}</textarea></div>
-                    <div class="form-group"><label>Jejum (Início/Fim)</label><div style="display:flex;gap:5px;"><input type="time" id="f-fs" class="form-control" value="${d.content.fs||'20:00'}"><input type="time" id="f-fe" class="form-control" value="${d.content.fe||'08:00'}"></div></div>`;
+            title.innerText = "Dieta";
+            html = `<div class="form-group"><label>Café</label><textarea id="f-b" class="form-control">${d.content.b||''}</textarea></div>
+                    <div class="form-group"><label>Almoço</label><textarea id="f-l" class="form-control">${d.content.l||''}</textarea></div>
+                    <div class="form-group"><label>Jantar</label><textarea id="f-d" class="form-control">${d.content.d||''}</textarea></div>`;
         }
         else if (type === 'health_med') {
-            title.innerText = "Novo Medicamento";
+            title.innerText = "Novo Remédio";
             html = `<div class="form-group"><label>Nome</label><input id="f-name" class="form-control"></div>
-                    <div class="form-group"><label>Dose</label><input id="f-dose" class="form-control" placeholder="ex: 500mg"></div>
-                    <div class="form-group"><label>Horário</label><input type="time" id="f-time" class="form-control"></div>`;
+                    <div class="form-group"><label>Dose</label><input id="f-dose" class="form-control"></div>
+                    <div class="form-group"><label>Hora</label><input type="time" id="f-time" class="form-control"></div>`;
+        }
+        else if (type === 'bank') {
+            title.innerText = "Banco";
+            html = `<div class="form-group"><label>Banco</label><input id="f-name" class="form-control"></div>
+                    <div class="form-group"><label>Agência/Conta</label><input id="f-acc" class="form-control"></div>
+                    <div class="form-group"><label>Titular/PIX</label><input id="f-pix" class="form-control"></div>`;
         }
         else if (type === 'health_weight_config') {
-            const w = state.items.find(i=>i.type === 'health_weight') || {content:{}};
-            title.innerText = "Ajustar Metas";
-            html = `<div class="form-group"><label>Peso Inicial (kg)</label><input type="number" id="f-start" class="form-control" value="${w.content.startWeight||''}"></div>
-                    <div class="form-group"><label>Meta Final (kg)</label><input type="number" id="f-target" class="form-control" value="${w.content.target||''}"></div>
-                    <div class="form-group"><label>Altura (m)</label><input type="number" id="f-height" class="form-control" value="${w.content.height||''}" step="0.01"></div>
-                    <div class="form-group"><label>Prazo (Meses)</label><input type="number" id="f-months" class="form-control" value="${w.content.periodMonths||''}"></div>
-                    <div class="form-group"><label>Data Início</label><input type="date" id="f-date" class="form-control" value="${w.content.startDate||''}"></div>`;
+            title.innerText = "Config Metas";
+            html = `<div class="form-group"><label>Meta (kg)</label><input type="number" id="f-target" class="form-control"></div>
+                    <div class="form-group"><label>Atual (kg)</label><input type="number" id="f-start" class="form-control"></div>
+                    <div class="form-group"><label>Altura</label><input type="number" id="f-height" class="form-control" step="0.01"></div>
+                    <div class="form-group"><label>Prazo (Meses)</label><input type="number" id="f-months" class="form-control"></div>
+                    <div class="form-group"><label>Início</label><input type="date" id="f-date" class="form-control"></div>`;
         }
         else if (type === 'health_weight_register') {
             title.innerText = "Novo Peso";
-            html = `<div class="form-group"><label>Peso (kg)</label><input type="number" id="f-weight" class="form-control" step="0.1" autofocus></div>
+            html = `<div class="form-group"><label>Peso (kg)</label><input type="number" id="f-weight" class="form-control" step="0.1"></div>
                     <div class="form-group"><label>Data</label><input type="date" id="f-date" class="form-control" value="${new Date().toISOString().split('T')[0]}"></div>`;
+        }
+        else if (type === 'folder' || type === 'custom_area' || type === 'visionboard') {
+            title.innerText = "Criar Item";
+            html = `<div class="form-group"><label>Nome</label><input id="f-name" class="form-control"></div>`;
+        }
+        else if (type === 'vision_add') {
+            title.innerText = "Foto Vision";
+            html = `<div class="form-group"><label>Imagem</label><input type="file" id="f-img" class="form-control"></div>
+                    <div class="form-group"><label>Legenda</label><textarea id="f-cap" class="form-control"></textarea></div>`;
         }
         else if (type === 'menstrual_config') {
             title.innerText = "Ciclo";
-            html = `<div class="form-group"><label>Ciclo (Dias)</label><input type="number" id="f-c" class="form-control" value="${state.menstrual.cycle}"></div>
-                    <div class="form-group"><label>Fluxo (Dias)</label><input type="number" id="f-f" class="form-control" value="${state.menstrual.flow}"></div>
-                    <div class="form-group"><label>Última Menstruação</label><input type="date" id="f-l" class="form-control" value="${state.menstrual.last}"></div>`;
-        }
-        else if (type === 'custom_area') {
-            title.innerText = "Nova Área";
-            html = `<div class="form-group"><label>Nome</label><input id="f-name" class="form-control"></div>`;
-        }
-        else if (type === 'visionboard') {
-            title.innerText = "Mural";
-            html = `<div class="form-group"><label>Título</label><input id="f-name" class="form-control"></div>`;
-        }
-        else if (type === 'vision_add') {
-            title.innerText = "Nova Meta";
-            html = `<div class="form-group"><label>Foto</label><input type="file" id="f-img" class="form-control"></div>
-                    <div class="form-group"><label>Legenda</label><textarea id="f-cap" class="form-control"></textarea></div>`;
+            html = `<div class="form-group"><label>Ciclo</label><input type="number" id="f-c" class="form-control" value="${state.menstrual.cycle}"></div>
+                    <div class="form-group"><label>Fluxo</label><input type="number" id="f-f" class="form-control" value="${state.menstrual.flow}"></div>
+                    <div class="form-group"><label>Última Data</label><input type="date" id="f-l" class="form-control" value="${state.menstrual.last}"></div>`;
         }
 
         body.innerHTML = html;
+        body.querySelectorAll('textarea').forEach(el => resizeTextArea(el));
         saveBtn.onclick = () => handleSave(type, extra);
     }
 
     async function handleSave(type, extra) {
-        const val = id => document.getElementById(id)?.value;
-        if(type === 'health_food') {
-            let hf = state.items.find(i=>i.type === 'health_food');
-            const data = { bt: val('f-bt'), b: val('f-b'), lt: val('f-lt'), l: val('f-l'), dt: val('f-dt'), d: val('f-d'), fs: val('f-fs'), fe: val('f-fe') };
-            if(!hf) state.items.push({ id: 'diet', type: 'health_food', parentId: 'saude', name: 'Dieta', content: data });
-            else hf.content = data;
+        const v = id => document.getElementById(id)?.value;
+        const pid = state.path[state.path.length-1];
+
+        if (type === 'note') {
+            state.items.push({ id: 'n'+Date.now(), parentId: pid, type, name: v('f-name'), content: { text: v('f-text') } });
         }
-        else if(type === 'health_med') {
-            state.items.push({ id: 'med'+Date.now(), type: 'health_med', parentId: 'saude', name: val('f-name'), content: { dose: val('f-dose'), time: val('f-time') } });
+        else if (type === 'health_food') {
+            let hf = state.items.find(i=>i.type === 'health_food');
+            if(!hf) state.items.push({ id: 'diet', type: 'health_food', parentId: 'saude', name: 'Dieta', content: { b: v('f-b'), l: v('f-l'), d: v('f-d') } });
+            else hf.content = { b: v('f-b'), l: v('f-l'), d: v('f-d') };
+        }
+        else if (type === 'health_med') {
+            state.items.push({ id: 'med'+Date.now(), type: 'health_med', parentId: 'saude', name: v('f-name'), content: { dose: v('f-dose'), time: v('f-time') } });
+        }
+        else if (type === 'bank') {
+            state.items.push({ id: 'bank'+Date.now(), parentId: pid, type, name: v('f-name'), content: { acc: v('f-acc'), pix: v('f-pix') } });
         }
         else if (type === 'health_weight_config') {
             let hw = state.items.find(i=>i.type === 'health_weight');
-            const data = { startWeight: parseFloat(val('f-start')), target: parseFloat(val('f-target')), height: parseFloat(val('f-height')), periodMonths: val('f-months'), startDate: val('f-date') };
-            if(!hw) state.items.push({ id: 'hw', type: 'health_weight', parentId: 'saude', name: 'Peso', content: { ...data, history: [] } });
-            else hw.content = { ...hw.content, ...data };
+            const d = { startWeight: parseFloat(v('f-start')), target: parseFloat(v('f-target')), height: parseFloat(v('f-height')), periodMonths: v('f-months'), startDate: v('f-date') };
+            if(!hw) state.items.push({ id: 'hw', type: 'health_weight', parentId: 'saude', name: 'Peso', content: { ...d, history: [] } });
+            else hw.content = { ...hw.content, ...d };
         }
         else if (type === 'health_weight_register') {
             const hw = state.items.find(i=>i.type === 'health_weight');
             if(!hw.content.history) hw.content.history = [];
-            hw.content.history.push({ id: 'w'+Date.now(), date: val('f-date'), weight: parseFloat(val('f-weight')) });
-        }
-        else if (type === 'menstrual_config') {
-            state.menstrual = { cycle: val('f-c'), flow: val('f-f'), last: val('f-l') };
-        }
-        else if (type === 'custom_area') {
-            state.items.push({ id: 'a'+Date.now(), parentId: 'root', type: 'custom_area', name: val('f-name') });
-        }
-        else if (type === 'visionboard') {
-            state.items.push({ id: 'vb'+Date.now(), parentId: state.path[state.path.length-1], type: 'visionboard', name: val('f-name'), content: { images: [] } });
+            hw.content.history.push({ id: 'w'+Date.now(), date: v('f-date'), weight: parseFloat(v('f-weight')) });
         }
         else if (type === 'vision_add') {
             const f = document.getElementById('f-img').files[0];
-            const r = new FileReader();
-            r.onload = (e) => {
-                const vb = state.items.find(i => i.id === extra);
-                if(!vb.content.images) vb.content.images = [];
-                vb.content.images.push({ data: e.target.result, caption: val('f-cap') });
-                sync(); closeModal();
-            };
-            if(f) r.readAsDataURL(f); return;
+            if(f) {
+                const r = new FileReader();
+                r.onload = e => {
+                    const vb = state.items.find(i => i.id === extra);
+                    if(!vb.content.images) vb.content.images = [];
+                    vb.content.images.push({ data: e.target.result, caption: v('f-cap') });
+                    sync(); closeModal();
+                };
+                r.readAsDataURL(f); return;
+            }
+        }
+        else if (type === 'menstrual_config') {
+            state.menstrual = { cycle: v('f-c'), flow: v('f-f'), last: v('f-l') };
+        }
+        else if (type === 'folder' || type === 'custom_area' || type === 'visionboard') {
+            state.items.push({ id: 'i'+Date.now(), parentId: pid, type, name: v('f-name'), content: {} });
         }
 
         sync(); closeModal();
@@ -527,16 +519,14 @@
 
     // --- Helpers ---
     function closeModal() { document.getElementById('modal-overlay').style.display = 'none'; }
-    function showLightbox(src) { document.getElementById('li').src = src; document.getElementById('lightbox').style.display = 'flex'; }
-    function toggleFab() { document.getElementById('fab-overlay').style.display = 'block'; }
+    function toggleFabMenu(e) { e.stopPropagation(); document.getElementById('fab-overlay').style.display = 'block'; }
     function deleteItem(id, e) { if(e) e.stopPropagation(); if(confirm("Apagar?")) { state.items = state.items.filter(i=>i.id !== id); sync(); } }
     function deleteVisionImg(vid, idx) { if(confirm("Apagar?")) { state.items.find(i=>i.id===vid).content.images.splice(idx,1); sync(); } }
-    function editWeight(hid) { const hw = state.items.find(i=>i.type==='health_weight'); const h = hw.content.history.find(x=>x.id===hid); const nw = prompt("Peso (kg):", h.weight); if(nw){ h.weight=parseFloat(nw); sync(); } }
-    function deleteWeight(hid) { if(confirm("Apagar?")) { const hw = state.items.find(i=>i.type==='health_weight'); hw.content.history = hw.content.history.filter(x=>x.id!==hid); sync(); } }
-    function exportData() { const blob = new Blob([JSON.stringify(state)], {type: 'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'organizador_caroline.json'; a.click(); }
+    function showLightbox(s) { document.getElementById('li').src=s; document.getElementById('lightbox').style.display='flex'; }
+    function exportData() { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(state)], {type: 'application/json'})); a.download = 'organizador_backup.json'; a.click(); }
     function importData() { const input = document.createElement('input'); input.type = 'file'; input.onchange = e => { const r = new FileReader(); r.onload = ev => { state = JSON.parse(ev.target.result); sync(); }; r.readAsText(e.target.files[0]); }; input.click(); }
 
-    render();
+    renderApp();
 </script>
 </body>
 </html>
