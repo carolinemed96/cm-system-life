@@ -19,6 +19,7 @@
             --bg-card: #FFFFFF;
             --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
             --shadow-premium: 0 20px 40px rgba(62, 39, 35, 0.08);
+            --shadow-elevated: 0 15px 45px rgba(62, 39, 35, 0.15);
             --danger: #A62121;
             --success: #3E6B27;
         }
@@ -26,101 +27,100 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; -webkit-font-smoothing: antialiased; }
         h1, h2, h3, .monogram, .huge-number { font-family: 'Playfair Display', serif; }
 
-        body { background-color: var(--off-white); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; padding-bottom: 100px; }
+        body { background-color: var(--off-white); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
 
         /* --- Lock Screen Majestic --- */
         #lock-screen { position: fixed; inset: 0; background: var(--off-white); z-index: 5000; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: all 0.6s ease; }
         .lock-container { text-align: center; width: 95%; max-width: 600px; }
-        .lock-monogram { font-size: 12rem; color: var(--chocolate); font-weight: 900; line-height: 1; margin-bottom: 10px; }
-        .lock-brand { font-size: 1.8rem; text-transform: uppercase; letter-spacing: 15px; color: var(--gold); font-weight: 800; margin-bottom: 60px; }
-        .lock-input { width: 100%; text-align: center; font-size: 5rem; letter-spacing: 30px; border: none; border-bottom: 5px solid var(--gold); background: transparent; padding: 20px; outline: none; color: var(--chocolate); margin-bottom: 40px; font-weight: 900; }
+        .lock-monogram { font-size: 15rem; color: var(--chocolate); font-weight: 900; line-height: 1; margin-bottom: 0px; }
+        .lock-brand { font-size: 2.2rem; text-transform: uppercase; letter-spacing: 12px; color: var(--gold); font-weight: 800; margin-bottom: 60px; }
+        .lock-input { width: 100%; text-align: center; font-size: 6rem; letter-spacing: 30px; border: none; border-bottom: 6px solid var(--gold); background: transparent; padding: 20px; outline: none; color: var(--chocolate); margin-bottom: 40px; font-weight: 900; }
 
         /* --- UI Framework --- */
-        header { padding: 30px 20px; text-align: center; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(15px); border-bottom: 1px solid rgba(197, 160, 89, 0.1); position: sticky; top: 0; z-index: 100; }
-        .header-monogram { font-size: 2.2rem; color: var(--chocolate); font-weight: 900; line-height: 1; }
-        .header-brand { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 5px; color: var(--gold); font-weight: 800; margin-top: 5px; }
+        header { padding: 40px 20px; text-align: center; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(15px); border-bottom: 1px solid rgba(197, 160, 89, 0.1); position: sticky; top: 0; z-index: 100; }
+        .header-monogram { font-size: 2.8rem; color: var(--chocolate); font-weight: 900; line-height: 1; }
+        .header-brand { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 6px; color: var(--gold); font-weight: 800; margin-top: 5px; }
 
-        .navigation-bar { padding: 12px 5%; background: #fff; display: flex; align-items: center; gap: 8px; font-size: 0.75rem; border-bottom: 1px solid #f0f0f0; overflow-x: auto; white-space: nowrap; }
+        .navigation-bar { padding: 15px 5%; background: #fff; display: flex; align-items: center; gap: 8px; font-size: 0.85rem; border-bottom: 1px solid #f0f0f0; overflow-x: auto; white-space: nowrap; }
         .breadcrumb-item { cursor: pointer; color: var(--chocolate-light); font-weight: 700; opacity: 0.5; display: flex; align-items: center; gap: 4px; }
         .breadcrumb-item:last-child { opacity: 1; color: var(--gold); }
 
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 75px; background: #fff; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #f0f0f0; z-index: 400; box-shadow: 0 -5px 25px rgba(0,0,0,0.03); }
-        .nav-tab { display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--chocolate-light); cursor: pointer; transition: 0.3s; flex: 1; opacity: 0.4; }
-        .nav-tab.active { opacity: 1; color: var(--gold); }
-        .nav-tab span { font-size: 0.6rem; font-weight: 800; text-transform: uppercase; }
-
-        main { flex: 1; padding: 25px 6%; max-width: 1200px; margin: 0 auto; width: 100%; animation: fadeIn 0.4s ease; }
+        main { flex: 1; padding: 30px 6%; max-width: 1200px; margin: 0 auto; width: 100%; animation: fadeIn 0.4s ease; }
         .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
-        .card { background: var(--bg-card); padding: 25px; border-radius: 28px; box-shadow: var(--shadow-premium); border: 1px solid rgba(0,0,0,0.02); transition: var(--transition); position: relative; }
+        .card { background: var(--bg-card); padding: 30px; border-radius: 32px; box-shadow: var(--shadow-premium); border: 1px solid rgba(0,0,0,0.02); transition: var(--transition); position: relative; }
+        .card:hover { transform: translateY(-5px); }
 
-        /* --- Weight Monitor Hero --- */
-        .weight-hero { background: var(--chocolate); color: white; padding: 45px 20px; border-radius: 40px; text-align: center; border: 1px solid var(--gold); margin-bottom: 25px; box-shadow: var(--shadow-elevated); }
-        .meta-label { font-size: 0.9rem; font-weight: 800; text-transform: uppercase; letter-spacing: 3px; color: var(--gold-light); margin-bottom: 15px; }
-        .meta-val { font-size: 5.5rem; font-weight: 900; line-height: 0.8; color: #fff; }
-        .meta-unit { font-size: 1.5rem; color: var(--gold); font-weight: 800; margin-left: 5px; }
-        .stat-line { display: flex; justify-content: space-around; margin-top: 40px; padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.1); }
-        .stat-box small { font-size: 0.65rem; font-weight: 800; color: var(--gold-light); text-transform: uppercase; display: block; margin-bottom: 6px; }
-        .stat-box b { font-size: 1.6rem; font-weight: 800; color: #fff; }
+        /* --- Weight Monitor: Meta em Destaque --- */
+        .weight-hero { background: var(--chocolate); color: white; padding: 60px 20px; border-radius: 40px; text-align: center; border: 1px solid var(--gold); margin-bottom: 30px; box-shadow: var(--shadow-elevated); }
+        .meta-label { font-size: 1.1rem; font-weight: 800; text-transform: uppercase; letter-spacing: 4px; color: var(--gold-light); margin-bottom: 15px; }
+        .meta-val { font-size: 8rem; font-weight: 900; line-height: 0.8; color: #fff; }
+        .meta-unit { font-size: 2rem; color: var(--gold); font-weight: 800; margin-left: 10px; }
+        .stat-line { display: flex; justify-content: space-around; margin-top: 40px; padding-top: 40px; border-top: 1px solid rgba(255,255,255,0.1); }
+        .stat-box small { font-size: 0.8rem; font-weight: 800; color: var(--gold-light); text-transform: uppercase; display: block; margin-bottom: 10px; }
+        .stat-box b { font-size: 2.2rem; font-weight: 800; color: #fff; }
 
-        .info-pill { background: var(--off-white); padding: 15px; border-radius: 20px; margin-bottom: 12px; border-left: 5px solid var(--gold); }
-        .info-pill b { display: block; font-size: 0.8rem; color: var(--gold); margin-bottom: 5px; text-transform: uppercase; font-weight: 800; }
-        .info-pill p { font-size: 1rem; line-height: 1.6; color: var(--chocolate-light); white-space: pre-wrap; }
+        .water-card { background: var(--off-white); border: 2.5px solid var(--gold); padding: 25px; border-radius: 25px; display: flex; justify-content: space-between; align-items: center; margin-top: 25px; }
+
+        /* --- Tools & Checklists --- */
+        .tool-list-item { display: flex; justify-content: space-between; align-items: center; padding: 20px 0; border-bottom: 1px solid #f5f5f5; }
+        .info-pill { background: var(--off-white); padding: 20px; border-radius: 22px; margin-bottom: 15px; border-left: 6px solid var(--gold); }
+        .info-pill b { display: block; font-size: 0.85rem; color: var(--gold); margin-bottom: 8px; text-transform: uppercase; font-weight: 800; }
+        .info-pill p { font-size: 1.1rem; line-height: 1.6; color: var(--chocolate-light); white-space: pre-wrap; }
+
+        .checklist-item { display: flex; align-items: center; gap: 15px; padding: 15px 0; border-bottom: 1px solid #f9f9f9; }
+        .check-circle { width: 28px; height: 28px; border-radius: 50%; border: 3px solid var(--gold); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.3s; }
+        .check-circle.checked { background: var(--gold); color: white; }
 
         /* --- Menstrual --- */
-        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin-top: 15px; }
-        .cal-day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 0.9rem; font-weight: 800; cursor: pointer; position: relative; color: var(--chocolate); }
-        .cal-day.period { background: rgba(166, 33, 33, 0.15); color: var(--danger); }
-        .cal-day.fertile { background: rgba(197, 160, 89, 0.15); color: var(--gold); }
-        .cal-day.today { border: 2.5px solid var(--chocolate); }
+        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; margin-top: 20px; }
+        .cal-day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 1rem; font-weight: 800; cursor: pointer; position: relative; color: var(--chocolate); }
+        .cal-day.period { background: rgba(166, 33, 33, 0.2); color: var(--danger); }
+        .cal-day.fertile { background: rgba(197, 160, 89, 0.2); color: var(--gold); }
+        .cal-day.today { border: 3px solid var(--chocolate); }
+
+        /* --- Inputs --- */
+        .form-group { margin-bottom: 30px; }
+        .form-group label { display: block; font-size: 0.8rem; font-weight: 800; color: var(--gold); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; }
+        .form-control { width: 100%; padding: 20px; border: 1px solid #eee; border-radius: 20px; font-size: 1.1rem; background: #fafafa; outline: none; transition: 0.3s; color: var(--chocolate); }
+        .form-control:focus { border-color: var(--gold); background: #fff; box-shadow: 0 0 0 6px rgba(197,160,89,0.1); }
+        textarea.form-control { min-height: 100px; resize: none; overflow: hidden; }
+
+        .btn-primary { background: var(--chocolate); color: white; border: none; padding: 22px 45px; border-radius: 60px; font-weight: 800; font-size: 1rem; cursor: pointer; transition: 0.3s; box-shadow: 0 10px 30px rgba(62, 39, 35, 0.25); width: 100%; }
+        .btn-primary:active { transform: scale(0.96); }
 
         /* --- Vision Board --- */
-        .mural-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; margin-top: 10px; }
-        .mural-item { border-radius: 20px; overflow: hidden; position: relative; aspect-ratio: 3/4; background: #eee; box-shadow: var(--shadow-soft); cursor: pointer; }
-        .mural-img { width: 100%; height: 100%; object-fit: cover; transition: 0.4s; }
-        .mural-item:hover .mural-img { transform: scale(1.05); }
-        .mural-cap { position: absolute; bottom: 0; width: 100%; padding: 12px; background: rgba(62, 39, 35, 0.85); color: white; font-size: 0.75rem; font-weight: 700; text-align: center; }
+        .mural-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; }
+        .mural-item { border-radius: 25px; overflow: hidden; position: relative; aspect-ratio: 3/4; background: #eee; box-shadow: var(--shadow-elevated); cursor: pointer; }
+        .mural-img { width: 100%; height: 100%; object-fit: cover; }
+        .mural-cap { position: absolute; bottom: 0; width: 100%; padding: 15px; background: rgba(62, 39, 35, 0.85); color: white; font-size: 0.8rem; font-weight: 700; text-align: center; }
 
-        /* --- Checklists --- */
-        .check-item { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid #f9f9f9; }
-        .check-box { width: 22px; height: 22px; border-radius: 6px; border: 2px solid var(--gold); cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        .check-box.checked { background: var(--gold); color: #fff; }
-        .check-text { font-size: 0.95rem; color: var(--chocolate); }
-        .check-text.done { text-decoration: line-through; opacity: 0.5; }
+        /* --- FAB & Menu --- */
+        .fab { position: fixed; bottom: 40px; right: 40px; width: 80px; height: 80px; background: var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; box-shadow: 0 15px 40px rgba(197,160,89,0.6); cursor: pointer; z-index: 500; transition: 0.4s; }
+        .fab:hover { transform: scale(1.1) rotate(90deg); }
+        .fab-menu { position: fixed; bottom: 135px; right: 40px; background: #fff; border-radius: 35px; box-shadow: 0 30px 80px rgba(0,0,0,0.3); width: 250px; display: none; overflow-y: auto; max-height: 60vh; border: 1px solid #eee; z-index: 501; animation: slideUp 0.3s ease; }
+        .menu-opt { padding: 22px 30px; display: flex; align-items: center; gap: 15px; font-size: 0.95rem; color: var(--chocolate); font-weight: 800; cursor: pointer; border-bottom: 1px solid #f9f9f9; }
+        .menu-opt:hover { background: var(--off-white); color: var(--gold); }
 
-        /* --- Form Elements --- */
-        .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; font-size: 0.75rem; font-weight: 800; color: var(--gold); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
-        .form-control { width: 100%; padding: 18px; border: 1px solid #eee; border-radius: 16px; font-size: 1.1rem; background: #fafafa; outline: none; transition: 0.3s; color: var(--chocolate); }
-        .form-control:focus { border-color: var(--gold); background: #fff; box-shadow: 0 0 0 4px rgba(197,160,89,0.1); }
-        textarea.form-control { min-height: 80px; resize: none; overflow: hidden; line-height: 1.6; }
+        #modal-overlay { position: fixed; inset: 0; background: rgba(62, 39, 35, 0.75); backdrop-filter: blur(15px); z-index: 1000; display: none; justify-content: center; align-items: center; padding: 20px; }
+        .modal { background: #fff; width: 100%; max-width: 550px; border-radius: 50px; padding: 50px; max-height: 85vh; overflow-y: auto; }
+        
+        #lightbox { position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 2000; display: none; justify-content: center; align-items: center; cursor: zoom-out; }
+        #lightbox img { max-width: 95%; max-height: 90vh; border-radius: 20px; }
 
-        .btn-primary { background: var(--chocolate); color: white; border: none; padding: 18px 35px; border-radius: 50px; font-weight: 800; font-size: 0.9rem; cursor: pointer; transition: 0.3s; box-shadow: 0 10px 20px rgba(62, 39, 35, 0.15); width: 100%; }
-        .btn-primary:active { transform: scale(0.97); }
-
-        #modal-overlay { position: fixed; inset: 0; background: rgba(62, 39, 35, 0.6); backdrop-filter: blur(10px); z-index: 1000; display: none; justify-content: center; align-items: center; padding: 20px; }
-        .modal { background: #fff; width: 100%; max-width: 500px; border-radius: 40px; padding: 40px; max-height: 85vh; overflow-y: auto; box-shadow: var(--shadow-elevated); }
-
-        /* --- FAB Menu Deluxe --- */
-        .fab-menu { position: absolute; bottom: 85px; right: 0; background: #fff; border-radius: 25px; box-shadow: 0 20px 60px rgba(0,0,0,0.25); width: 230px; display: none; overflow-y: auto; max-height: 400px; border: 1px solid #eee; z-index: 450; }
-        .menu-option { padding: 18px 22px; display: flex; align-items: center; gap: 12px; font-size: 0.85rem; color: var(--chocolate); font-weight: 800; cursor: pointer; border-bottom: 1px solid #f9f9f9; }
-        .menu-option:last-child { border-bottom: none; }
-        .menu-option:hover { background: var(--off-white); color: var(--gold); }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-        #lightbox { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 2000; display: none; justify-content: center; align-items: center; cursor: zoom-out; }
-        #lightbox img { max-width: 90%; max-height: 85vh; border-radius: 15px; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideUp { from { transform: translateY(40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
     </style>
 </head>
 <body autocomplete="off">
 
-<!-- Ecrã de Segurança Monumental -->
+<!-- Bloqueio Monumental -->
 <div id="lock-screen">
     <div class="lock-container">
         <div class="lock-monogram">CM</div>
         <div class="lock-brand">Caroline Medeiros</div>
         <input type="password" id="pin-field" class="lock-input" placeholder="••••" maxlength="4" autocomplete="off">
-        <div id="pin-err" style="color:var(--danger); font-size:0.9rem; font-weight:800; margin-bottom:25px; height:20px;"></div>
-        <button onclick="checkPin()" class="btn-primary" style="font-size:1.2rem; letter-spacing:2px; padding: 25px;">DESBLOQUEAR SISTEMA</button>
+        <div id="pin-err" style="color:var(--danger); font-size:1.1rem; font-weight:900; margin-bottom:30px; height:20px;"></div>
+        <button onclick="unlockApp()" class="btn-primary" style="font-size:1.3rem; letter-spacing:2px; padding: 28px;">AUTENTICAR</button>
     </div>
 </div>
 
@@ -133,40 +133,35 @@
 
 <main id="app-view"></main>
 
-<!-- Barra Inferior Premium -->
-<nav class="bottom-nav">
-    <div class="nav-tab active" id="tab-root" onclick="goBack(0)"><i data-lucide="home"></i><span>Home</span></div>
-    <div class="nav-tab" id="tab-saude" onclick="navigate('saude')"><i data-lucide="heart-pulse"></i><span>Saúde</span></div>
-    <div class="nav-tab" id="tab-financeiro" onclick="navigate('financeiro')"><i data-lucide="trending-up"></i><span>Finanças</span></div>
-    <div class="nav-tab" id="tab-biblia" onclick="navigate('biblia')"><i data-lucide="book-marked"></i><span>Bíblia</span></div>
-    <div class="nav-tab" onclick="toggleFabMenu(event)"><i data-lucide="plus-circle"></i><span>Novo</span></div>
-</nav>
+<!-- FAB Universal (Todas as Funções) -->
+<div class="fab" onclick="toggleFab(event)">
+    <i data-lucide="plus" style="width:40px; height:40px;"></i>
+</div>
 
-<!-- FAB Menu Completo (9+ Opções) -->
-<div id="fab-overlay" style="position:fixed; inset:0; z-index:350; display:none;" onclick="this.style.display='none'">
+<div id="fab-overlay" style="position:fixed; inset:0; z-index:499; display:none;" onclick="hideFab()">
     <div class="fab-menu" id="fab-dropdown">
-        <div class="menu-option" onclick="openModal('folder')"><i data-lucide="folder"></i> Nova Pasta</div>
-        <div class="menu-option" onclick="openModal('note')"><i data-lucide="file-text"></i> Nova Nota</div>
-        <div class="menu-option" onclick="openModal('checklist')"><i data-lucide="check-square"></i> Nova Checklist</div>
-        <div class="menu-option" onclick="openModal('visionboard')"><i data-lucide="image"></i> Visionboard</div>
-        <div class="menu-option" onclick="openModal('finance_in')"><i data-lucide="plus-circle"></i> Entrada de Dinheiro</div>
-        <div class="menu-option" onclick="openModal('finance_out')"><i data-lucide="minus-circle"></i> Saída de Dinheiro</div>
-        <div class="menu-option" onclick="openModal('finance_pig')"><i data-lucide="piggy-bank"></i> Novo Porquinho</div>
-        <div class="menu-option" onclick="openModal('health_med')"><i data-lucide="pill"></i> Novo Remédio</div>
-        <div class="menu-option" onclick="openModal('bank')"><i data-lucide="credit-card"></i> Dados Bancários</div>
-        <div class="menu-option" onclick="openModal('social')"><i data-lucide="user-lock"></i> Logins Sociais</div>
-        <div class="menu-option" style="color:var(--gold); border-top: 2px solid #f0f0f0;" onclick="exportData()"><i data-lucide="download"></i> Fazer Backup</div>
-        <div class="menu-option" style="color:var(--gold);" onclick="triggerImport()"><i data-lucide="upload"></i> Restaurar Backup</div>
+        <div class="menu-opt" onclick="openModal('folder')"><i data-lucide="folder"></i> Pasta</div>
+        <div class="menu-opt" onclick="openModal('note')"><i data-lucide="file-text"></i> Nota</div>
+        <div class="menu-opt" onclick="openModal('checklist')"><i data-lucide="check-square"></i> Checklist</div>
+        <div class="menu-opt" onclick="openModal('visionboard')"><i data-lucide="image"></i> Visionboard</div>
+        <div class="menu-opt" onclick="openModal('finance_in')"><i data-lucide="trending-up"></i> Entrada (R$)</div>
+        <div class="menu-opt" onclick="openModal('finance_out')"><i data-lucide="trending-down"></i> Saída (R$)</div>
+        <div class="menu-opt" onclick="openModal('finance_pig')"><i data-lucide="piggy-bank"></i> Porquinho</div>
+        <div class="menu-opt" onclick="openModal('health_med')"><i data-lucide="pill"></i> Medicamento</div>
+        <div class="menu-opt" onclick="openModal('bank')"><i data-lucide="credit-card"></i> Banco</div>
+        <div class="menu-opt" onclick="openModal('social')"><i data-lucide="user-lock"></i> Login Social</div>
+        <div class="menu-opt" style="color:var(--gold); border-top: 3px solid #eee;" onclick="exportData()"><i data-lucide="download"></i> Backup</div>
+        <div class="menu-opt" style="color:var(--gold);" onclick="triggerImport()"><i data-lucide="upload"></i> Restaurar</div>
     </div>
 </div>
 
 <div id="modal-overlay">
     <div class="modal">
-        <h2 id="m-title" style="text-align:center; margin-bottom:30px; color:var(--chocolate); font-size:1.8rem;"></h2>
+        <h2 id="m-title" style="text-align:center; margin-bottom:35px; color:var(--chocolate)"></h2>
         <div id="m-body"></div>
-        <div style="display:flex; gap:15px; margin-top:35px;">
-            <button class="btn-primary" style="background:#f2f2f2; color:#999; box-shadow:none;" onclick="closeModal()">Cancelar</button>
-            <button class="btn-primary" id="modal-save">Guardar</button>
+        <div style="display:flex; gap:15px; margin-top:45px;">
+            <button class="btn-primary" style="background:#f5f5f5; color:#aaa; box-shadow:none;" onclick="closeModal()">Cancelar</button>
+            <button class="btn-primary" id="m-save">Guardar</button>
         </div>
     </div>
 </div>
@@ -175,25 +170,26 @@
 <input type="file" id="import-input" style="display:none" accept=".json">
 
 <script>
-    // --- Database Key ---
-    const DB_NAME = "cm_luxury_v11_br";
+    // --- Database Engine ---
+    const DB_KEY = "cm_premium_master_final_v1";
 
     let state = {
         path: ['root'],
-        items: JSON.parse(localStorage.getItem(DB_NAME + "_data")) || [],
-        menstrual: JSON.parse(localStorage.getItem(DB_NAME + "_men")) || { last: "2024-01-01", cycle: 28, flow: 5 },
+        items: JSON.parse(localStorage.getItem(DB_KEY + "_items")) || [],
+        menstrual: JSON.parse(localStorage.getItem(DB_KEY + "_men")) || { last: "2024-01-01", cycle: 28, flow: 5 },
         bible: { book: "Gênesis", cap: 1 }
     };
 
     function sync() {
-        localStorage.setItem(DB_NAME + "_data", JSON.stringify(state.items));
-        localStorage.setItem(DB_NAME + "_men", JSON.stringify(state.menstrual));
+        localStorage.setItem(DB_KEY + "_items", JSON.stringify(state.items));
+        localStorage.setItem(DB_KEY + "_men", JSON.stringify(state.menstrual));
         renderApp();
     }
 
-    function checkPin() {
+    function unlockApp() {
         if(document.getElementById('pin-field').value === "2405") {
             document.getElementById('lock-screen').style.opacity = '0';
+            document.getElementById('lock-screen').style.transform = 'scale(1.2)';
             setTimeout(() => document.getElementById('lock-screen').style.display = 'none', 600);
         } else {
             document.getElementById('pin-err').innerText = "SENHA INCORRETA";
@@ -201,58 +197,47 @@
         }
     }
 
-    // Auto-expand para todos os campos de texto
-    function autoGrow(el) {
+    // Auto-Resize Engine
+    function autoResize(el) {
         el.style.height = 'auto';
         el.style.height = el.scrollHeight + 'px';
     }
-
-    document.addEventListener('input', e => {
-        if(e.target.tagName === 'TEXTAREA') autoGrow(e.target);
-    });
+    document.addEventListener('input', e => { if(e.target.tagName === 'TEXTAREA') autoResize(e.target); });
 
     // --- Math Engine ---
-    function getWeightMetrics() {
+    function getWeightStats() {
         const w = state.items.find(i => i.type === 'health_weight');
         if(!w || !w.content.target) return null;
-        const history = w.content.history || [];
-        const current = history.length ? history.sort((a,b)=>new Date(b.date)-new Date(a.date))[0].weight : w.content.startWeight;
-        const remaining = current - w.content.target;
+        const current = w.content.history?.length ? w.content.history.sort((a,b)=>new Date(b.date)-new Date(a.date))[0].weight : w.content.startWeight;
+        const diff = current - w.content.target;
         const start = new Date(w.content.startDate);
-        const months = parseInt(w.content.periodMonths) || 1;
-        const end = new Date(start); end.setMonth(start.getMonth() + months);
-        const monthsRem = Math.max(1, Math.ceil((end - new Date()) / (1000 * 60 * 60 * 24 * 30.41)));
-        
+        const monthsRem = Math.max(1, Math.ceil((new Date(start).setMonth(start.getMonth() + (parseInt(w.content.periodMonths)||1)) - new Date()) / (86400000 * 30.41)));
         let h = parseFloat(w.content.height); if(h > 3) h /= 100;
         return { 
-            mma: remaining > 0 ? (remaining / monthsRem).toFixed(2) : "0.00", 
+            mma: diff > 0 ? (diff / monthsRem).toFixed(2) : "0.00", 
             current, imc: h > 0 ? (current/(h*h)).toFixed(1) : "--", water: (current*0.035).toFixed(1) 
         };
     }
 
-    // --- Navigation ---
+    // --- Core Nav ---
     function navigate(id) { state.path.push(id); renderApp(); }
     function goBack(idx) { state.path = state.path.slice(0, idx + 1); renderApp(); }
 
     function renderApp() {
-        const currentId = state.path[state.path.length - 1];
-        const container = document.getElementById('app-view');
+        const cur = state.path[state.path.length - 1];
+        const view = document.getElementById('app-view');
         const bread = document.getElementById('breadcrumbs');
-
-        document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-        const activeTab = document.getElementById('tab-' + currentId);
-        if(activeTab) activeTab.classList.add('active');
 
         bread.innerHTML = state.path.map((id, i) => {
             const label = id === 'root' ? 'Início' : (ROOT_CATS.find(c=>c.id===id)?.name || state.items.find(it=>it.id===id)?.name || "...");
             return `<span class="breadcrumb-item" onclick="goBack(${i})">${i>0?'<i data-lucide="chevron-right" style="width:12px"></i>':''} ${label}</span>`;
         }).join('');
 
-        if (currentId === 'root') renderHome(container);
-        else if (currentId === 'saude') renderSaude(container);
-        else if (currentId === 'financeiro') renderFinance(container);
-        else if (currentId === 'biblia') renderBible(container);
-        else renderGeneralView(container, currentId);
+        if (cur === 'root') renderHome(view);
+        else if (cur === 'saude') renderSaude(view);
+        else if (cur === 'financeiro') renderFinance(view);
+        else if (cur === 'biblia') renderBible(view);
+        else renderDynamicView(view, cur);
 
         if(window.lucide) lucide.createIcons();
     }
@@ -267,141 +252,120 @@
     ];
 
     function renderHome(el) {
-        el.innerHTML = `<h1 style="font-size:2.5rem; margin-bottom:30px; color:var(--chocolate)">Painel Elite</h1>
+        el.innerHTML = `<h1 style="font-size:2.8rem; margin-bottom:30px; color:var(--chocolate)">Boas-vindas</h1>
         <div class="grid-container">
-            ${ROOT_CATS.map(c => `
-                <div class="card" style="display:flex; align-items:center; cursor:pointer;" onclick="navigate('${c.id}')">
-                    <div style="width:55px; height:55px; background:var(--off-white); border-radius:18px; display:flex; align-items:center; justify-content:center; color:var(--gold); margin-right:18px;"><i data-lucide="${c.icon}"></i></div>
-                    <b style="font-size:1.1rem;">${c.name}</b>
-                </div>`).join('')}
+            ${ROOT_CATS.map(c => `<div class="card" style="display:flex; align-items:center; cursor:pointer;" onclick="navigate('${c.id}')">
+                <div style="width:60px; height:60px; background:var(--off-white); border-radius:18px; display:flex; align-items:center; justify-content:center; color:var(--gold); margin-right:20px;"><i data-lucide="${c.icon}"></i></div>
+                <b style="font-size:1.2rem;">${c.name}</b>
+            </div>`).join('')}
             ${state.items.filter(i => i.type === 'custom_area' && i.parentId === 'root').map(i => `
                 <div class="card" style="display:flex; align-items:center; cursor:pointer;" onclick="navigate('${i.id}')">
-                    <div style="width:55px; height:55px; background:var(--off-white); border-radius:18px; display:flex; align-items:center; justify-content:center; color:var(--gold); margin-right:18px;"><i data-lucide="star"></i></div>
-                    <b style="font-size:1.1rem; flex:1;">${i.name}</b>
-                    <i data-lucide="trash-2" style="width:16px; opacity:0.2;" onclick="deleteItem('${i.id}', event)"></i>
+                    <div style="width:60px; height:60px; background:var(--off-white); border-radius:18px; display:flex; align-items:center; justify-content:center; color:var(--gold); margin-right:20px;"><i data-lucide="star"></i></div>
+                    <b style="font-size:1.2rem; flex:1;">${i.name}</b>
+                    <i data-lucide="trash-2" style="width:18px; opacity:0.2; color:var(--danger)" onclick="deleteItem('${i.id}', event)"></i>
                 </div>`).join('')}
         </div>`;
     }
 
     function renderSaude(el) {
-        const stats = getWeightMetrics();
-        const weightItem = state.items.find(i => i.type === 'health_weight');
-        const diet = state.items.find(i => i.type === 'health_food') || { content: {} };
-        const meds = state.items.filter(i => i.type === 'health_med');
+        const s = getWeightStats();
+        const d = state.items.find(i => i.type === 'health_food') || { content: {} };
+        const m = state.items.filter(i => i.type === 'health_med');
 
         el.innerHTML = `
             <div class="weight-hero">
-                <span class="meta-label">Meta Mensal Restante</span>
-                <div class="meta-val">${stats ? stats.mma : '--'}<small class="meta-unit">kg</small></div>
+                <span class="meta-label">Meta de Perda Mensal</span>
+                <div class="meta-val">${s ? s.mma : '--'}<small class="meta-unit">kg</small></div>
                 <div class="stat-line">
-                    <div class="stat-box"><small>Peso Atual</small><b>${stats ? stats.current : '--'}kg</b></div>
-                    <div class="stat-box"><small>IMC</small><b>${stats ? stats.imc : '--'}</b></div>
-                    <div class="stat-box"><small>Água/Dia</small><b>${stats ? stats.water : '--'}L</b></div>
+                    <div class="stat-box"><small>Atual</small><b>${s ? s.current : '--'}kg</b></div>
+                    <div class="stat-box"><small>IMC</small><b>${s ? s.imc : '--'}</b></div>
+                    <div class="stat-box"><small>Água</small><b>${s ? s.water : '--'}L</b></div>
                 </div>
             </div>
 
             <div class="grid-container">
                 <div class="card" style="display:block;">
-                    <div class="section-header"><h2>Alimentação</h2> <i data-lucide="edit-3" onclick="openModal('health_food')" style="color:var(--gold); cursor:pointer; width:22px;"></i></div>
-                    <div class="info-pill"><b>Café da Manhã:</b> <p>${diet.content.b || 'Não definido'}</p></div>
-                    <div class="info-pill"><b>Almoço:</b> <p>${diet.content.l || 'Não definido'}</p></div>
-                    <div class="info-pill"><b>Jantar:</b> <p>${diet.content.d || 'Não definido'}</p></div>
-                    <div style="background:var(--chocolate); color:#fff; padding:18px; border-radius:20px; text-align:center; font-weight:800; font-size:0.85rem; letter-spacing:1px;">JEJUM: ${diet.content.fs||'00:00'} ⮕ ${diet.content.fe||'00:00'}</div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                        <h2>Dieta</h2> <i data-lucide="edit-3" onclick="openModal('health_food')" style="color:var(--gold); cursor:pointer;"></i>
+                    </div>
+                    <div class="info-pill"><b>Café:</b> <p>${d.content.b || '-'}</p></div>
+                    <div class="info-pill"><b>Almoço:</b> <p>${d.content.l || '-'}</p></div>
+                    <div class="info-pill"><b>Jantar:</b> <p>${d.content.d || '-'}</p></div>
+                    <div style="background:var(--chocolate); color:#fff; padding:20px; border-radius:20px; text-align:center; font-weight:800; font-size:0.9rem;">JEJUM: ${d.content.fs||'00:00'} ⮕ ${d.content.fe||'00:00'}</div>
                 </div>
 
                 <div class="card" style="display:block;">
-                    <div class="section-header"><h2>Medicamentos</h2> <i data-lucide="plus-circle" onclick="openModal('health_med')" style="color:var(--gold); cursor:pointer; width:22px;"></i></div>
-                    ${meds.length ? meds.map(m => `<div style="padding:15px 0; border-bottom:1px solid #f5f5f5; display:flex; justify-content:space-between; align-items:center;">
-                        <div><b style="font-size:1rem;">${m.name}</b><br><small style="color:var(--gold); font-weight:800;">${m.content.time} — ${m.content.dose}</small></div>
-                        <i data-lucide="trash-2" style="width:14px; color:var(--danger); opacity:0.3; cursor:pointer" onclick="deleteItem('${m.id}')"></i>
-                    </div>`).join('') : '<p style="opacity:0.4; font-size:0.9rem;">Lista vazia.</p>'}
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                        <h2>Medicamentos</h2> <i data-lucide="plus" onclick="openModal('health_med')" style="color:var(--gold); cursor:pointer;"></i>
+                    </div>
+                    ${m.map(med => `<div class="tool-list-item"><div><b>${med.name}</b><small>${med.content.time} — ${med.content.dose}</small></div><i data-lucide="trash-2" style="width:14px; color:var(--danger); opacity:0.3; cursor:pointer" onclick="deleteItem('${med.id}')"></i></div>`).join('')}
                 </div>
 
                 <div class="card" style="display:block;">
-                    <div class="section-header"><h2>Ciclo Menstrual</h2> <i data-lucide="settings" onclick="openModal('menstrual_config')" style="color:var(--gold); cursor:pointer; width:22px;"></i></div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                        <h2>Ciclo</h2> <i data-lucide="settings" onclick="openModal('menstrual_config')" style="color:var(--gold); cursor:pointer;"></i>
+                    </div>
                     ${renderMenstrualGrid()}
                 </div>
             </div>
             
-            <button class="btn-primary" style="margin-top:25px; padding: 22px; font-size:1.1rem;" onclick="openModal('health_weight_register')">REGISTRAR PESO HOJE</button>
-            <button class="btn-primary" style="margin-top:12px; background:#f0f0f0; color:#aaa; box-shadow:none;" onclick="openModal('health_weight_config')">RECONFIGURAR METAS</button>
+            <button class="btn-primary" style="margin-top:25px; font-size:1.1rem; padding:25px" onclick="openModal('health_weight_register')">PESAR HOJE</button>
+            <button class="btn-primary" style="margin-top:12px; background:#f0f0f0; color:#aaa; box-shadow:none;" onclick="openModal('health_weight_config')">CONFIGURAR METAS</button>
         `;
     }
 
     function renderMenstrualGrid() {
-        const now = new Date();
         const last = new Date(state.menstrual.last + 'T12:00:00');
         const cycle = parseInt(state.menstrual.cycle);
         const dur = parseInt(state.menstrual.flow);
-        let html = `<div style="display:grid; grid-template-columns: repeat(7, 1fr); text-align:center; font-size:0.65rem; font-weight:900; color:var(--gold); margin-bottom:15px;">
+        let html = `<div style="display:grid; grid-template-columns: repeat(7, 1fr); text-align:center; font-size:0.6rem; font-weight:900; color:var(--gold); margin-bottom:15px;">
             <div>D</div><div>S</div><div>T</div><div>Q</div><div>Q</div><div>S</div><div>S</div></div><div class="cal-grid">`;
-        const startDay = new Date(now.getFullYear(), now.getMonth(), 1).getDay();
-        const days = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+        const startDay = new Date(2024, new Date().getMonth(), 1).getDay();
+        const days = new Date(2024, new Date().getMonth() + 1, 0).getDate();
         for(let i=0; i<startDay; i++) html += `<div></div>`;
         for(let d=1; d<=days; d++) {
-            const current = new Date(now.getFullYear(), now.getMonth(), d);
+            const current = new Date(new Date().getFullYear(), new Date().getMonth(), d);
             const diff = Math.floor((current - last) / 86400000);
             const dayInCycle = ((diff % cycle) + cycle) % cycle;
             let cls = "cal-day";
             if(dayInCycle < dur) cls += " period";
             if(dayInCycle >= cycle - 16 && dayInCycle <= cycle - 11) cls += " fertile";
-            if(d === now.getDate()) cls += " today";
+            if(d === new Date().getDate()) cls += " today";
             html += `<div class="${cls}">${d}</div>`;
         }
         return html + `</div>`;
     }
 
     function renderFinance(el) {
-        const items = state.items.filter(i => i.type.startsWith('finance_'));
-        const inc = items.filter(i => i.type === 'finance_in');
-        const exp = items.filter(i => i.type === 'finance_out');
-        const pig = items.filter(i => i.type === 'finance_pig');
-        const sumIn = inc.reduce((a,b)=>a+parseFloat(b.content.value||0), 0);
-        const sumOut = exp.reduce((a,b)=>a+parseFloat(b.content.value||0), 0);
+        const in_ = state.items.filter(i => i.type === 'finance_in');
+        const out_ = state.items.filter(i => i.type === 'finance_out');
+        const sumIn = in_.reduce((a,b)=>a+parseFloat(b.content.value||0), 0);
+        const sumOut = out_.reduce((a,b)=>a+parseFloat(b.content.value||0), 0);
 
         el.innerHTML = `
             <div class="hero-meta" style="background:#fff; color:var(--chocolate); border-color:#eee">
-                <span class="label">Balanço Líquido Mensal</span>
-                <div class="huge-number" style="color:var(--chocolate); font-size:4rem;">R$ ${(sumIn-sumOut).toFixed(2)}</div>
+                <span class="label">Balanço R$</span>
+                <div class="meta-val" style="color:var(--chocolate)">R$ ${(sumIn-sumOut).toFixed(2)}</div>
                 <div class="stat-line">
-                    <div class="stat-box"><small style="color:var(--success)">Entradas</small><b style="color:var(--success)">R$ ${sumIn.toFixed(2)}</b></div>
-                    <div class="stat-box"><small style="color:var(--danger)">Saídas</small><b style="color:var(--danger)">R$ ${sumOut.toFixed(2)}</b></div>
+                    <div class="stat-box"><small style="color:var(--success)">Ganhos</small><b style="color:var(--success)">R$ ${sumIn.toFixed(2)}</b></div>
+                    <div class="stat-box"><small style="color:var(--danger)">Gastos</small><b style="color:var(--danger)">R$ ${sumOut.toFixed(2)}</b></div>
                 </div>
             </div>
             <div class="grid-container">
-                <div class="card" style="display:block;">
-                    <div class="section-header"><h2>Porquinhos</h2> <i data-lucide="piggy-bank" onclick="openModal('finance_pig')" style="color:var(--gold); cursor:pointer; width:20px;"></i></div>
-                    ${pig.map(p => `
-                        <div style="background:var(--off-white); padding:15px; border-radius:20px; margin-bottom:12px; border:1px solid #eee;">
-                            <div style="display:flex; justify-content:space-between; font-size:0.85rem; font-weight:800; margin-bottom:8px;">
-                                <span>${p.name}</span> <span>R$ ${p.content.saved} / ${p.content.target}</span>
-                            </div>
-                            <div style="height:10px; background:#eee; border-radius:5px; overflow:hidden;">
-                                <div style="height:100%; width:${(p.content.saved/p.content.target)*100}%; background:var(--gold);"></div>
-                            </div>
-                        </div>`).join('') || '<p style="opacity:0.4; font-size:0.85rem;">Nenhum objetivo.</p>'}
-                </div>
-                <div class="card" style="display:block;">
-                    <div class="section-header"><h2>Fluxo</h2></div>
-                    <div style="max-height:250px; overflow-y:auto;">
-                    ${inc.concat(exp).sort((a,b)=>b.id.localeCompare(a.id)).map(tx => `
-                        <div style="display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid #f9f9f9; font-size:0.85rem;">
-                            <span>${tx.name}</span>
-                            <b style="color:var(--${tx.type==='finance_in'?'success':'danger'})">R$ ${parseFloat(tx.content.value).toFixed(2)}</b>
-                        </div>`).join('') || '<p style="opacity:0.4; font-size:0.85rem;">Sem transações.</p>'}
-                    </div>
-                </div>
+                <div class="card" onclick="navigate('folder_in')"><b>Receitas</b></div>
+                <div class="card" onclick="navigate('folder_out')"><b>Despesas</b></div>
+                <div class="card" onclick="navigate('folder_piggy')"><b>Porquinhos</b></div>
             </div>
         `;
     }
 
     async function renderBible(el) {
-        el.innerHTML = `<h2 style="font-size:2rem; margin-bottom:25px; color:var(--chocolate);">Bíblia NVI</h2>
+        el.innerHTML = `<h2 style="font-size:2.5rem; margin-bottom:25px; color:var(--chocolate);">Bíblia</h2>
         <div style="display:flex; gap:12px; margin-bottom:25px;">
-            <select id="bib-b" class="form-control" style="flex:2;" onchange="state.bible.book=this.value; fetchBibleText();"></select>
-            <input type="number" id="bib-c" class="form-control" style="flex:1;" value="${state.bible.cap}" onchange="state.bible.cap=this.value; fetchBibleText();">
+            <select id="bib-b" class="form-control" style="flex:2;" onchange="state.bible.book=this.value; fetchB();"></select>
+            <input type="number" id="bib-c" class="form-control" style="flex:1;" value="${state.bible.cap}" onchange="state.bible.cap=this.value; fetchB();">
         </div>
-        <div id="bib-text" class="card" style="display:block; min-height:450px; line-height:2.2; font-size:1.15rem; color:#444;">Buscando Palavra...</div>`;
+        <div id="bib-text" class="card" style="display:block; min-height:450px; line-height:2.2; font-size:1.1rem; color:#444;">Buscando...</div>`;
         const books = ["Gênesis", "Êxodo", "Levítico", "Números", "Deuteronômio", "Josué", "Juízes", "Rute", "1 Samuel", "2 Samuel", "1 Reis", "2 Reis", "1 Crônicas", "2 Crônicas", "Esdras", "Neemias", "Ester", "Jó", "Salmos", "Provérbios", "Eclesiastes", "Cânticos", "Isaías", "Jeremias", "Lamentações", "Ezequiel", "Daniel", "Oseias", "Joel", "Amós", "Obadias", "Jonas", "Miqueias", "Naum", "Habacuque", "Sofonias", "Ageu", "Zacarias", "Malaquias", "Mateus", "Marcos", "Lucas", "João", "Atos", "Romanos", "1 Coríntios", "2 Coríntios", "Gálatas", "Efésios", "Filipenses", "Colossenses", "1 Tessalonicenses", "2 Tessalonicenses", "1 Timóteo", "2 Timóteo", "Tito", "Filemom", "Hebreus", "Tiago", "1 Pedro", "2 Pedro", "1 João", "2 João", "3 João", "Judas", "Apocalipse"];
         const sel = document.getElementById('bib-b');
         books.forEach(b => {
@@ -409,41 +373,41 @@
             if(b === state.bible.book) opt.selected = true;
             sel.appendChild(opt);
         });
-        fetchBibleText();
+        fetchB();
     }
 
-    async function fetchBibleText() {
-        const target = document.getElementById('bib-text');
+    async function fetchB() {
+        const el = document.getElementById('bib-text');
         try {
             const res = await fetch('https://raw.githubusercontent.com/thiagobodruk/bible/master/json/pt_nvi.json');
             const data = await res.json();
             const book = data.find(b => b.name === state.bible.book);
             const verses = book.chapters[state.bible.cap - 1];
-            target.innerHTML = verses.map((v, i) => `<p style="margin-bottom:20px;"><sup style="color:var(--gold); font-weight:900; margin-right:12px; font-size:0.7rem;">${i+1}</sup>${v}</p>`).join('');
-        } catch(e) { target.innerHTML = "Erro ao carregar Bíblia."; }
+            el.innerHTML = verses.map((v, i) => `<p style="margin-bottom:20px;"><sup style="color:var(--gold); font-weight:900; margin-right:8px;">${i+1}</sup>${v}</p>`).join('');
+        } catch(e) { el.innerHTML = "Erro ao buscar escrituras."; }
     }
 
-    function renderGeneralView(el, pid) {
+    function renderDynamicView(el, pid) {
         const folder = state.items.find(i => i.id === pid);
         const children = state.items.filter(i => i.parentId === pid);
         
         if (folder?.type === 'visionboard') {
-            el.innerHTML = `<div class="section-header"><h2>${folder.name}</h2><button class="btn-primary" style="width:auto; padding:12px 25px" onclick="openModal('vision_add', '${pid}')">Adicionar Foto</button></div>
+            el.innerHTML = `<div class="section-header"><h2>${folder.name}</h2><button class="btn-primary" style="width:auto; padding:15px 30px" onclick="openModal('vision_add', '${pid}')">ADICIONAR FOTO</button></div>
             <div class="mural-grid">${(folder.content.images || []).map((img, idx) => `
                 <div class="mural-item">
-                    <img src="${img.data}" class="mural-img" onclick="showLightbox('${img.data}')">
+                    <img src="${img.data}" class="mural-img" onclick="showLb('${img.data}')">
                     <div class="mural-cap">${img.caption}</div>
-                    <button style="position:absolute; top:10px; right:10px; border:none; background:white; border-radius:50%; width:28px; height:28px; box-shadow:0 2px 5px rgba(0,0,0,0.2)" onclick="deleteVisionImg('${pid}', ${idx})">×</button>
+                    <button style="position:absolute; top:8px; right:8px; border:none; background:white; border-radius:50%; width:28px; height:28px; box-shadow:0 2px 5px rgba(0,0,0,0.2)" onclick="deleteVisionImg('${pid}', ${idx})">×</button>
                 </div>`).join('')}</div>`;
             return;
         }
 
-        el.innerHTML = `<div class="section-header"><h2>${folder?.name || "Pasta"}</h2></div><div class="grid-container">
+        el.innerHTML = `<div class="section-header"><h2>${folder?.name || "Conteúdo"}</h2></div><div class="grid-container">
             ${children.map(i => `
                 <div class="card" style="display:flex; justify-content:space-between; align-items:center;">
                     <div onclick="navigate('${i.id}')" style="cursor:pointer; flex:1; display:flex; align-items:center;">
-                        <i data-lucide="${i.type === 'folder' ? 'folder' : (i.type === 'note' ? 'file-text' : 'check-square')}" style="width:18px; margin-right:12px; color:var(--gold);"></i>
-                        <b style="font-size:1.1rem;">${i.name}</b>
+                        <i data-lucide="${i.type === 'folder' ? 'folder' : (i.type === 'note' ? 'file-text' : (i.type === 'checklist' ? 'check-square' : 'file'))}" style="width:20px; margin-right:15px; color:var(--gold);"></i>
+                        <b style="font-size:1.15rem;">${i.name}</b>
                     </div>
                     <i data-lucide="trash-2" style="width:16px; opacity:0.2; color:var(--danger); cursor:pointer" onclick="deleteItem('${i.id}')"></i>
                 </div>`).join('')}
@@ -452,143 +416,107 @@
 
     // --- Modal Logic ---
     function openModal(type, extra = null) {
-        const overlay = document.getElementById('modal-overlay');
+        const modal = document.getElementById('modal-overlay');
         const body = document.getElementById('mb');
         const title = document.getElementById('m-title');
-        overlay.style.display = 'flex';
-        
+        modal.style.display = 'flex';
         let html = '';
-        if(type === 'health_food') {
-            const d = state.items.find(i=>i.type === 'health_food') || {content:{}};
-            title.innerText = "Menu Nutricional";
-            html = `<div class="form-group"><label>Café da Manhã</label><textarea id="f-b" class="form-control">${d.content.b||''}</textarea></div>
-                    <div class="form-group"><label>Almoço</label><textarea id="f-l" class="form-control">${d.content.l||''}</textarea></div>
-                    <div class="form-group"><label>Jantar</label><textarea id="f-d" class="form-control">${d.content.d||''}</textarea></div>
-                    <div class="form-group"><label>Horário Jejum</label><div style="display:flex;gap:10px;"><input type="time" id="f-fs" class="form-control" value="${d.content.fs||'20:00'}"><input type="time" id="f-fe" class="form-control" value="${d.content.fe||'08:00'}"></div></div>`;
-        }
-        else if (type === 'health_weight_config') {
-            const w = state.items.find(i=>i.type === 'health_weight') || {content:{}};
-            title.innerText = "Metas de Peso";
-            html = `<div class="form-group"><label>Peso Inicial (kg)</label><input type="number" id="f-start" class="form-control" value="${w.content.startWeight||''}"></div>
-                    <div class="form-group"><label>Meta Final (kg)</label><input type="number" id="f-target" class="form-control" value="${w.content.target||''}"></div>
-                    <div class="form-group"><label>Altura (m)</label><input type="number" id="f-height" class="form-control" value="${w.content.height||''}" step="0.01"></div>
-                    <div class="form-group"><label>Prazo (Meses)</label><input type="number" id="f-months" class="form-control" value="${w.content.periodMonths||''}"></div>
-                    <div class="form-group"><label>Data Início</label><input type="date" id="f-date" class="form-control" value="${w.content.startDate||''}"></div>`;
-        }
-        else if (type === 'health_weight_register') {
-            title.innerText = "Pesar Hoje";
-            html = `<div class="form-group"><label>Peso (kg)</label><input type="number" id="f-weight" class="form-control" step="0.1" autofocus></div>
-                    <div class="form-group"><label>Data</label><input type="date" id="f-date" class="form-control" value="${new Date().toISOString().split('T')[0]}"></div>`;
-        }
-        else if (type === 'note') {
-            title.innerText = "Nova Nota";
+
+        if(type === 'note') {
+            title.innerText = "Nova Anotação";
             html = `<div class="form-group"><label>Título</label><input id="f-name" class="form-control"></div>
                     <div class="form-group"><label>Texto</label><textarea id="f-text" class="form-control"></textarea></div>`;
-        }
-        else if (type === 'finance_in' || type === 'finance_out') {
-            title.innerText = type==='finance_in'?'Entrada':'Saída';
+        } else if(type === 'health_food') {
+            const d = state.items.find(i=>i.type === 'health_food') || {content:{}};
+            title.innerText = "Dieta e Jejum";
+            html = `<div class="form-group"><label>Café</label><textarea id="f-b" class="form-control">${d.content.b||''}</textarea></div>
+                    <div class="form-group"><label>Almoço</label><textarea id="f-l" class="form-control">${d.content.l||''}</textarea></div>
+                    <div class="form-group"><label>Jantar</label><textarea id="f-d" class="form-control">${d.content.d||''}</textarea></div>
+                    <div class="form-group"><label>Janela Jejum</label><div style="display:flex;gap:10px;"><input type="time" id="f-fs" class="form-control" value="${d.content.fs||'20:00'}"><input type="time" id="f-fe" class="form-control" value="${d.content.fe||'08:00'}"></div></div>`;
+        } else if(type === 'finance_in' || type === 'finance_out') {
+            title.innerText = type === 'finance_in' ? "Receita (R$)" : "Despesa (R$)";
             html = `<div class="form-group"><label>Descrição</label><input id="f-name" class="form-control"></div>
-                    <div class="form-group"><label>Valor (R$)</label><input type="number" id="f-val" class="form-control"></div>`;
-        }
-        else if (type === 'vision_add') {
-            title.innerText = "Nova Imagem";
-            html = `<div class="form-group"><label>Arquivo</label><input type="file" id="f-img" class="form-control"></div>
+                    <div class="form-group"><label>Valor</label><input type="number" id="f-val" class="form-control"></div>`;
+        } else if(type === 'vision_add') {
+            title.innerText = "Mural de Sonhos";
+            html = `<div class="form-group"><label>Foto</label><input type="file" id="f-img" class="form-control"></div>
                     <div class="form-group"><label>Legenda</label><textarea id="f-cap" class="form-control"></textarea></div>`;
-        }
-        else if (type === 'bank') {
-            title.innerText = "Banco";
-            html = `<div class="form-group"><label>Instituição</label><input id="f-name" class="form-control"></div>
-                    <div class="form-group"><label>Agência / Conta</label><input id="f-acc" class="form-control"></div>
-                    <div class="form-group"><label>PIX / Titular</label><input id="f-pix" class="form-control"></div>`;
-        }
-        else if (type === 'menstrual_config') {
-            title.innerText = "Ciclo";
-            html = `<div class="form-group"><label>Média Ciclo (Dias)</label><input type="number" id="f-c" class="form-control" value="${state.menstrual.cycle}"></div>
-                    <div class="form-group"><label>Duração Fluxo (Dias)</label><input type="number" id="f-f" class="form-control" value="${state.menstrual.flow}"></div>
-                    <div class="form-group"><label>Última Menstruação</label><input type="date" id="f-l" class="form-control" value="${state.menstrual.last}"></div>`;
-        }
-        else {
-            title.innerText = "Novo Item";
+        } else if(type === 'health_weight_config') {
+            const w = state.items.find(i=>i.type === 'health_weight') || {content:{}};
+            title.innerText = "Metas de Peso";
+            html = `<div class="form-group"><label>Meta Final (kg)</label><input type="number" id="f-target" class="form-control" value="${w.content.target||''}"></div>
+                    <div class="form-group"><label>Peso Inicial</label><input type="number" id="f-start" class="form-control" value="${w.content.startWeight||''}"></div>
+                    <div class="form-group"><label>Altura (m)</label><input type="number" id="f-height" class="form-control" value="${w.content.height||''}" step="0.01"></div>
+                    <div class="form-group"><label>Meses Prazo</label><input type="number" id="f-months" class="form-control" value="${w.content.periodMonths||''}"></div>
+                    <div class="form-group"><label>Data Início</label><input type="date" id="f-date" class="form-control" value="${w.content.startDate||''}"></div>`;
+        } else if(type === 'health_weight_register') {
+            title.innerText = "Peso Hoje";
+            html = `<div class="form-group"><label>Peso (kg)</label><input type="number" id="f-weight" class="form-control" step="0.1" autofocus></div>
+                    <div class="form-group"><label>Data</label><input type="date" id="f-date" class="form-control" value="${new Date().toISOString().split('T')[0]}"></div>`;
+        } else {
+            title.innerText = "Criar Item";
             html = `<div class="form-group"><label>Nome</label><input id="f-name" class="form-control"></div>`;
         }
 
         body.innerHTML = html;
-        body.querySelectorAll('textarea').forEach(autoGrow);
-        document.getElementById('modal-save').onclick = () => handleSave(type, extra);
+        body.querySelectorAll('textarea').forEach(autoResize);
+        document.getElementById('m-save').onclick = () => handleSave(type, extra);
     }
 
     async function handleSave(type, extra) {
-        const val = id => document.getElementById(id)?.value;
+        const g = id => document.getElementById(id)?.value;
         const pid = state.path[state.path.length-1];
 
         if (type === 'note') {
-            state.items.push({ id: 'n'+Date.now(), parentId: pid, type, name: val('f-name'), content: { text: val('f-text') } });
-        }
-        else if (type === 'health_food') {
+            state.items.push({ id: 'n'+Date.now(), parentId: pid, type, name: g('f-name'), content: { text: g('f-text') } });
+        } else if (type === 'health_food') {
             let hf = state.items.find(i=>i.type === 'health_food');
-            const d = { b: val('f-b'), l: val('f-l'), d: val('f-d'), fs: val('f-fs'), fe: val('f-fe') };
+            const d = { b: g('f-b'), l: g('f-l'), d: g('f-d'), fs: g('f-fs'), fe: g('f-fe') };
             if(!hf) state.items.push({ id: 'diet', type: 'health_food', parentId: 'saude', name: 'Dieta', content: d });
             else hf.content = d;
-        }
-        else if (type.startsWith('finance_')) {
-            state.items.push({ id: 'tx'+Date.now(), parentId: pid, type, name: val('f-name'), content: { value: val('f-val') } });
-        }
-        else if (type === 'health_weight_config') {
+        } else if (type === 'finance_in' || type === 'finance_out') {
+            state.items.push({ id: 'tx'+Date.now(), parentId: pid === 'financeiro' ? (type==='finance_in'?'folder_in':'folder_out') : pid, type, name: g('f-name'), content: { value: g('f-val') } });
+        } else if (type === 'health_weight_config') {
             let hw = state.items.find(i=>i.type === 'health_weight');
-            const d = { startWeight: parseFloat(val('f-start')), target: parseFloat(val('f-target')), height: parseFloat(val('f-height')), periodMonths: val('f-months'), startDate: val('f-date') };
+            const d = { startWeight: parseFloat(g('f-start')), target: parseFloat(g('f-target')), height: parseFloat(g('f-height')), periodMonths: g('f-months'), startDate: g('f-date') };
             if(!hw) state.items.push({ id: 'hw', type: 'health_weight', parentId: 'saude', name: 'Peso', content: { ...d, history: [] } });
             else hw.content = { ...hw.content, ...d };
-        }
-        else if (type === 'health_weight_register') {
+        } else if (type === 'health_weight_register') {
             const hw = state.items.find(i=>i.type === 'health_weight');
             if(!hw.content.history) hw.content.history = [];
-            hw.content.history.push({ id: 'w'+Date.now(), date: val('f-date'), weight: parseFloat(val('f-weight')) });
-        }
-        else if (type === 'vision_add') {
+            hw.content.history.push({ id: 'w'+Date.now(), date: g('f-date'), weight: parseFloat(g('f-weight')) });
+        } else if (type === 'vision_add') {
             const f = document.getElementById('f-img').files[0];
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const vb = state.items.find(i => i.id === extra);
-                if(!vb.content.images) vb.content.images = [];
-                vb.content.images.push({ data: e.target.result, caption: val('f-cap') });
-                sync(); closeModal();
-            };
-            if(f) reader.readAsDataURL(f); return;
+            if(f) {
+                const r = new FileReader();
+                r.onload = e => {
+                    const vb = state.items.find(i => i.id === extra);
+                    if(!vb.content.images) vb.content.images = [];
+                    vb.content.images.push({ data: e.target.result, caption: g('f-cap') });
+                    sync(); closeModal();
+                };
+                r.readAsDataURL(f); return;
+            }
+        } else {
+            state.items.push({ id: 'i'+Date.now(), parentId: pid, type, name: g('f-name'), content: {} });
         }
-        else if (type === 'menstrual_config') {
-            state.menstrual = { cycle: val('f-c'), flow: val('f-f'), last: val('f-l') };
-        }
-        else if (type === 'bank') {
-            state.items.push({ id: 'b'+Date.now(), parentId: pid, type, name: val('f-name'), content: { acc: val('f-acc'), pix: val('f-pix') } });
-        }
-        else {
-            state.items.push({ id: 'i'+Date.now(), parentId: pid, type, name: val('f-name'), content: {} });
-        }
-
         sync(); closeModal();
     }
 
     // --- Helpers ---
     function closeModal() { document.getElementById('modal-overlay').style.display = 'none'; }
-    function showLightbox(s) { document.getElementById('li-img').src=s; document.getElementById('lightbox').style.display='flex'; }
-    function toggleFabMenu(e) { e.stopPropagation(); document.getElementById('fab-overlay').style.display = 'block'; }
-    function deleteItem(id, e) { if(e) e.stopPropagation(); if(confirm("Apagar permanentemente?")) { state.items = state.items.filter(i=>i.id !== id); sync(); } }
+    function toggleFab(e) { e.stopPropagation(); document.getElementById('fab-overlay').style.display = 'block'; document.getElementById('fab-dropdown').style.display = 'block'; }
+    function hideFab() { document.getElementById('fab-overlay').style.display = 'none'; }
+    function showLb(s) { document.getElementById('li-img').src=s; document.getElementById('lightbox').style.display='flex'; }
+    function deleteItem(id, e) { if(e) e.stopPropagation(); if(confirm("Apagar?")) { state.items = state.items.filter(i=>i.id !== id); sync(); } }
     function deleteVisionImg(vid, idx) { if(confirm("Apagar?")) { state.items.find(i=>i.id===vid).content.images.splice(idx,1); sync(); } }
-    function exportData() {
-        const a = document.createElement('a'); 
-        a.href = URL.createObjectURL(new Blob([JSON.stringify(state)], {type: 'application/json'})); 
-        a.download = `organizador_premium_br_${new Date().toISOString().split('T')[0]}.json`; a.click(); 
-    }
+    function exportData() { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(state)], {type: 'application/json'})); a.download = 'organizador_backup.json'; a.click(); }
     function triggerImport() { document.getElementById('import-input').click(); }
     document.getElementById('import-input').onchange = e => {
-        const r = new FileReader();
-        r.onload = ev => { state = JSON.parse(ev.target.result); sync(); alert("Backup Restaurado com Sucesso!"); };
+        const r = new FileReader(); r.onload = ev => { state = JSON.parse(ev.target.result); sync(); alert("Sucesso!"); };
         r.readAsText(e.target.files[0]);
     };
 
-    document.addEventListener('click', () => { document.getElementById('fab-overlay').style.display = 'none'; });
-
-    // --- Init ---
     renderApp();
 </script>
 </body>
