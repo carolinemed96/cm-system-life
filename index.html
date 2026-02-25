@@ -22,1127 +22,582 @@
             --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             --shadow: 0 10px 30px -5px rgba(62, 39, 35, 0.1);
             --shadow-hover: 0 15px 35px -5px rgba(197, 160, 89, 0.2);
-            --period-line: #5D4037; 
-            --heart-safe: #C5A059; 
-            --heart-unsafe: #5D4037;
+            --period-line: #3E2723; 
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', 'Segoe UI', sans-serif; }
-        h1, h2, h3, .monogram { font-family: 'Playfair Display', 'Georgia', serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; -webkit-tap-highlight-color: transparent; }
+        h1, h2, h3, .monogram { font-family: 'Playfair Display', serif; }
 
         body { background-color: var(--off-white); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
 
-        /* --- Scrollbar --- */
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(62, 39, 35, 0.2); border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--gold); }
-
-        /* --- Header --- */
-        header { padding: 20px 20px 15px; text-align: center; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(197, 160, 89, 0.2); position: sticky; top: 0; z-index: 50; }
-        .monogram { font-size: 2.2rem; letter-spacing: 2px; color: var(--chocolate); line-height: 1; }
-        .brand-name { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 3px; color: var(--gold); font-weight: 700; margin-top: 4px; }
-        .date-time-display { font-size: 0.75rem; color: #8D6E63; margin-top: 8px; font-weight: 500; }
-
-        /* --- Navigation --- */
-        .navigation-bar { padding: 10px 5%; background: #fff; display: flex; align-items: center; gap: 10px; font-size: 0.9rem; border-bottom: 1px solid #f0f0f0; overflow-x: auto; white-space: nowrap; }
-        .breadcrumb-item { cursor: pointer; color: var(--chocolate-light); font-weight: 600; display: flex; align-items: center; gap: 4px; padding: 4px 8px; border-radius: 6px; transition: var(--transition); }
-        .breadcrumb-item:hover { background: #f5f5f5; color: var(--gold); }
-
-        /* --- Main --- */
-        main { flex: 1; padding: 25px 5%; max-width: 1200px; margin: 0 auto; width: 100%; position: relative; animation: fadeIn 0.4s ease-out; overflow: visible !important; }
-        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px; position: relative; z-index: 20; }
-        .section-header h2 { color: var(--chocolate); }
-
-        /* --- Cards & Stacking Logic --- */
-        .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; overflow: visible !important; contain: none !important; }
-        .card { background: var(--bg-card); padding: 25px; border-radius: 24px; border: 1px solid rgba(0,0,0,0.03); box-shadow: var(--shadow); cursor: pointer; transition: var(--transition); display: flex; align-items: center; gap: 15px; position: relative; overflow: visible !important; z-index: 1; }
-        .card:hover { transform: translateY(-4px); box-shadow: var(--shadow-hover); border-color: rgba(197, 160, 89, 0.3); z-index: 10; }
-
-        .card:has(.create-menu-dropdown.show), .finance-item:has(.create-menu-dropdown.show), .piggy-card:has(.create-menu-dropdown.show), div:has(> .create-menu-dropdown.show) { z-index: 2147483647 !important; transform: none !important; filter: none !important; opacity: 1 !important; perspective: none !important; clip-path: none !important; mask: none !important; position: relative !important; box-shadow: 0 20px 50px rgba(0,0,0,0.2) !important; overflow: visible !important; }
+        /* --- Header & Nav --- */
+        header { padding: 25px 20px; text-align: center; background: #fff; border-bottom: 1px solid rgba(197, 160, 89, 0.2); position: sticky; top: 0; z-index: 100; }
+        .monogram { font-size: 2.5rem; color: var(--chocolate); line-height: 1; margin-bottom: 5px; }
+        .brand-name { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 4px; color: var(--gold); font-weight: 700; }
         
-        .card.selected { border: 2px solid var(--success); background-color: rgba(85, 139, 47, 0.05); }
-        .card.selection-mode { cursor: pointer; }
-        .selection-check { position: absolute; top: 15px; right: 15px; color: var(--success); display: none; }
-        .card.selected .selection-check { display: block; }
+        .navigation-bar { padding: 12px 5%; background: #fff; display: flex; align-items: center; gap: 10px; font-size: 0.85rem; border-bottom: 1px solid #f0f0f0; overflow-x: auto; }
+        .breadcrumb-item { cursor: pointer; color: var(--chocolate-light); font-weight: 600; display: flex; align-items: center; gap: 4px; white-space: nowrap; }
 
-        /* --- Buttons --- */
-        .btn-add { background: var(--chocolate); color: white; border: none; padding: 10px 24px; border-radius: 30px; cursor: pointer; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 8px; font-weight: 600; box-shadow: 0 4px 12px rgba(62, 39, 35, 0.2); transition: 0.2s; }
-        .btn-add:hover { background: var(--chocolate-light); transform: translateY(-1px); }
-        .btn-cancel { background: #f5f5f5; color: #666; border: 1px solid #eee; padding: 10px 24px; border-radius: 30px; cursor: pointer; font-size: 0.8rem; font-weight: 600; transition: 0.2s; }
-        .btn-cancel:hover { background: #e0e0e0; }
-        .btn-check { width: 32px; height: 32px; border-radius: 50%; border: 2px solid #ddd; display: flex; align-items: center; justify-content: center; cursor: pointer; color: transparent; transition: 0.2s; }
-        .btn-check.active { background: var(--success); border-color: var(--success); color: white; }
+        /* --- UI Components --- */
+        main { flex: 1; padding: 20px 5%; max-width: 1000px; margin: 0 auto; width: 100%; animation: fadeIn 0.4s ease; }
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
         
-        /* --- Floating Dashboard Button --- */
-        .floating-star-btn { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; background: var(--gold); border-radius: 50%; box-shadow: 0 10px 30px rgba(197, 160, 89, 0.5); display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 1000; animation: pulse-gold 3s infinite; transition: transform 0.3s; }
-        .floating-star-btn:hover { transform: scale(1.1) rotate(15deg); }
-        @keyframes pulse-gold { 0% { box-shadow: 0 0 0 0 rgba(197, 160, 89, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(197, 160, 89, 0); } 100% { box-shadow: 0 0 0 0 rgba(197, 160, 89, 0); } }
+        .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        .card { background: var(--bg-card); padding: 20px; border-radius: 20px; box-shadow: var(--shadow); transition: var(--transition); border: 1px solid rgba(0,0,0,0.02); position: relative; }
+        .card:hover { transform: translateY(-3px); box-shadow: var(--shadow-hover); }
 
-        /* --- Lock Screen --- */
-        #lock-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--off-white); z-index: 100000; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.5s; }
-        .lock-container { text-align: center; animation: fadeIn 0.5s ease-out; }
-        .lock-input { margin-top: 20px; padding: 10px 15px; font-size: 1.2rem; letter-spacing: 5px; text-align: center; border: 1px solid var(--gold); border-radius: 30px; outline: none; width: 200px; background: white; color: var(--chocolate); }
-        .lock-btn { margin-top: 15px; background: var(--chocolate); color: white; border: none; padding: 10px 30px; border-radius: 30px; cursor: pointer; font-weight: 600; transition: 0.2s; }
-        .lock-btn:hover { background: var(--chocolate-light); }
+        /* --- Weight Monitor Custom Styles --- */
+        .highlight-card { background: var(--chocolate); color: white; padding: 25px; border-radius: 24px; text-align: center; margin-bottom: 20px; border: 2px solid var(--gold); }
+        .meta-label { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; color: var(--gold-light); font-weight: 700; margin-bottom: 10px; }
+        .meta-value { font-size: 3.5rem; font-weight: 900; line-height: 1; color: #fff; }
+        .meta-unit { font-size: 1.2rem; color: var(--gold); }
+
+        .stat-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 20px; }
+        .stat-item { background: rgba(255,255,255,0.05); padding: 12px; border-radius: 15px; }
+        .stat-label { font-size: 0.65rem; text-transform: uppercase; color: var(--gold-light); font-weight: 700; }
+        .stat-num { font-size: 1.1rem; font-weight: 800; color: #fff; display: block; margin-top: 4px; }
+
+        .water-card { background: #fff; border: 1px solid rgba(197, 160, 89, 0.2); padding: 15px; border-radius: 18px; display: flex; justify-content: space-between; align-items: center; margin-top: 15px; }
+
+        /* --- Vision Board Mural --- */
+        .vision-mural { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; margin-top: 10px; }
+        .vision-item { position: relative; border-radius: 15px; overflow: hidden; aspect-ratio: 3/4; box-shadow: var(--shadow); cursor: pointer; background: #eee; }
+        .vision-img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
+        .vision-item:hover .vision-img { transform: scale(1.08); }
+        .vision-overlay { position: absolute; bottom: 0; left: 0; right: 0; padding: 15px 10px; background: linear-gradient(transparent, rgba(62, 39, 35, 0.9)); color: white; font-size: 0.75rem; font-weight: 600; text-align: center; }
+        .vision-btn-group { position: absolute; top: 10px; right: 10px; display: flex; gap: 5px; opacity: 0; transition: 0.3s; }
+        .vision-item:hover .vision-btn-group { opacity: 1; }
+        .mini-btn { width: 28px; height: 28px; border-radius: 50%; background: #fff; display: flex; align-items: center; justify-content: center; color: var(--chocolate); border: none; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+
+        /* --- Form Elements --- */
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--chocolate); margin-bottom: 8px; letter-spacing: 1px; }
+        .form-control { width: 100%; padding: 14px; border: 1px solid #eee; border-radius: 12px; font-size: 1rem; background: #fcfcfc; outline: none; transition: 0.3s; }
+        .form-control:focus { border-color: var(--gold); background: #fff; box-shadow: 0 0 0 3px rgba(197,160,89,0.1); }
+        textarea.form-control { min-height: 60px; resize: none; overflow: hidden; }
 
         /* --- Modals --- */
-        #modal-overlay, #delete-modal-overlay, #file-preview-modal, #share-modal { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(62, 39, 35, 0.4); backdrop-filter: blur(4px); display: none; justify-content: center; align-items: center; z-index: 99999; opacity: 0; transition: opacity 0.3s; }
-        #modal-overlay.open, #delete-modal-overlay.open, #file-preview-modal.open, #share-modal.open { opacity: 1; }
-        .modal { background: white; padding: 35px; border-radius: 24px; width: 90%; max-width: 480px; max-height: 90vh; overflow-y: auto; transform: scale(0.95); transition: transform 0.3s; }
-        .modal.large { max-width: 800px; }
-        #modal-overlay.open .modal, #delete-modal-overlay.open .modal, #file-preview-modal.open .modal, #share-modal.open .modal { transform: scale(1); }
+        #modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); z-index: 200; display: none; justify-content: center; align-items: center; padding: 20px; }
+        .modal { background: #fff; width: 100%; max-width: 500px; border-radius: 24px; padding: 30px; max-height: 90vh; overflow-y: auto; position: relative; animation: slideUp 0.3s ease; }
+        .modal-title { text-align: center; margin-bottom: 25px; font-size: 1.5rem; color: var(--chocolate); }
         
-        .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; font-size: 0.8rem; margin-bottom: 8px; color: var(--chocolate); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
-        .form-control { width: 100%; padding: 14px; border: 1px solid #eee; border-radius: 12px; font-size: 0.95rem; background: #fafafa; outline: none; }
-        .form-control:focus { border-color: var(--gold); background: #fff; box-shadow: 0 0 0 3px rgba(197, 160, 89, 0.1); }
-        textarea.form-control { min-height: 60px; resize: none; overflow-y: hidden; transition: border-color 0.3s, box-shadow 0.3s; }
+        /* Lightbox */
+        #lightbox { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 500; display: none; justify-content: center; align-items: center; cursor: zoom-out; }
+        #lightbox img { max-width: 95%; max-height: 90vh; border-radius: 10px; box-shadow: 0 0 30px rgba(0,0,0,0.5); }
 
-        /* --- Menus --- */
-        .create-menu-container { position: relative; overflow: visible !important; }
-        .create-menu-container:has(.create-menu-dropdown.show) { z-index: 2147483647 !important; }
-        .create-menu-dropdown { position: absolute; top: 110%; right: 0; background: white; border: 1px solid #f0f0f0; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.3) !important; width: 240px; display: none; z-index: 2147483647 !important; overflow: hidden; animation: fadeIn 0.1s ease; }
-        .create-menu-dropdown.show { display: block; }
-        .create-menu-item { padding: 12px 20px; cursor: pointer; display: flex; align-items: center; gap: 12px; font-size: 0.9rem; color: #555; transition: 0.2s; }
-        .create-menu-item:hover { background: #fdfaf5; color: var(--chocolate); padding-left: 25px; }
+        /* --- Calendar --- */
+        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin-top: 15px; }
+        .cal-day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: 0.2s; position: relative; color: #555; }
+        .cal-day.today { border: 2px solid var(--chocolate); }
+        .cal-day.period { background: rgba(198, 40, 40, 0.1); color: var(--danger); }
+        .cal-day.fertile { background: rgba(85, 139, 47, 0.1); color: var(--success); }
+        .cal-legend { display: flex; justify-content: center; gap: 15px; margin-top: 20px; font-size: 0.7rem; color: #777; font-weight: 700; text-transform: uppercase; }
+        .legend-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 4px; }
 
-        /* --- Toasts --- */
-        #toast-container { position: fixed; top: 20px; right: 20px; z-index: 99999; display: flex; flex-direction: column; gap: 10px; }
-        .toast { background: white; padding: 15px 25px; border-radius: 50px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); display: flex; align-items: center; gap: 10px; font-size: 0.9rem; font-weight: 600; border-left: 4px solid #333; animation: slideInRight 0.3s; }
-        .toast.success { border-color: var(--success); color: var(--success); }
-        .toast.error { border-color: var(--danger); color: var(--danger); }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-        /* --- Module Specifics --- */
-        .summary-card { background: linear-gradient(135deg, var(--chocolate), #2D1B18); color: white; padding: 25px; border-radius: 16px; margin-bottom: 25px; display: flex; justify-content: space-around; text-align: center; }
-        .summary-item b { display: block; font-size: 1.4rem; color: var(--gold); margin-top: 5px; }
-        .finance-list { background: #fff; border-radius: 16px; overflow: visible !important; border: 1px solid #f9f9f9; }
-        .finance-item { display: grid; grid-template-columns: 50px 1fr auto 40px; padding: 20px; border-bottom: 1px solid #f0f0f0; align-items: center; position: relative; overflow: visible !important; }
-        .finance-item.paid { background-color: #fafafa; }
-        .finance-item.paid .item-text, .finance-item.paid .amount { opacity: 0.4; text-decoration: line-through; }
-        .piggy-card { background: white; border-radius: 20px; padding: 25px; box-shadow: var(--shadow); position: relative; overflow: visible !important; }
-        .progress-grid { display: grid; grid-template-columns: repeat(20, 1fr); gap: 3px; margin: 15px 0; }
-        .progress-block { height: 8px; background: #f0f0f0; border-radius: 2px; }
-        .progress-block.filled { background: var(--gold); }
-        
-        .weight-progress-bar { width: 100%; height: 8px; background: #eee; border-radius: 4px; overflow: hidden; margin-top: 8px; }
-        .weight-progress-fill { height: 100%; background: var(--gold); width: 0%; transition: width 0.5s ease; }
-        .weight-detail-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; margin: 15px 0; }
-        .weight-detail-table td { padding: 8px 0; border-bottom: 1px solid #f5f5f5; color: #555; }
-        .weight-detail-table td:last-child { text-align: right; font-weight: 600; color: var(--chocolate); }
-        .history-list { max-height: 200px; overflow-y: auto; margin-top: 15px; border-top: 1px solid #eee; }
-        .history-item { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #f9f9f9; font-size: 0.9rem; }
-        
-        /* Updated Minimalist Calendar Styles */
-        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-top: 10px; }
-        .cal-header { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; font-size: 0.65rem; font-weight: 700; color: var(--chocolate); margin-bottom: 5px; opacity: 0.8; }
-        .cal-day { aspect-ratio: 1/1; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 50%; font-size: 0.85rem; color: #555; cursor: pointer; position: relative; border: 1px solid transparent; transition: 0.2s; margin: 2px; box-sizing: border-box; }
-        .cal-day:hover { background: #fDFBF7; border-color: rgba(197, 160, 89, 0.3); }
-        .cal-day.today { font-weight: 800; border: 2px solid var(--chocolate); }
-        
-        .cal-day.period { background-color: rgba(198, 40, 40, 0.1); border: 1px solid rgba(198, 40, 40, 0.3); color: var(--danger); font-weight: bold; }
-        .cal-day.fertile { background-color: rgba(85, 139, 47, 0.1); border: 1px solid rgba(85, 139, 47, 0.3); color: var(--success); font-weight: bold; }
-        .cal-day.contra-active { border: 2px dashed var(--gold); }
-        
-        .cal-legend { display: flex; gap: 15px; justify-content: center; margin-top: 15px; font-size: 0.75rem; color: #666; flex-wrap: wrap; }
-        .leg-item { display: flex; align-items: center; gap: 5px; }
-        .leg-color { width: 12px; height: 12px; border-radius: 50%; }
+        /* --- Floating Actions --- */
+        .fab { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; background: var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; box-shadow: 0 10px 25px rgba(197,160,89,0.5); cursor: pointer; z-index: 150; }
 
-        .flow-opt { transition: 0.2s; }
-        .flow-opt:hover { background: #fafafa; }
-        .flow-opt.active { background: rgba(198, 40, 40, 0.1); border-color: var(--danger); color: var(--danger); font-weight: bold; }
-
-        .cal-top-zone { position: absolute; top: 4px; width: 100%; display: flex; justify-content: center; align-items: center; gap: 2px; height: 6px; }
-        .cal-heart { width: 8px; height: 8px; }
-        .cal-heart.safe { color: var(--gold); fill: var(--gold); }
-        .cal-heart.unsafe { color: var(--heart-unsafe); fill: var(--heart-unsafe); }
-        
-        .verse-card { background: transparent; border: 1px solid rgba(197, 160, 89, 0.2); padding: 12px 15px; margin-bottom: 20px; border-radius: 12px; font-size: 0.85rem; color: #666; display: flex; flex-direction: column; gap: 4px; }
-        .verse-text { font-family: 'Georgia', serif; font-style: italic; color: var(--chocolate); line-height: 1.4; }
-        .verse-ref { font-weight: 700; font-size: 0.7rem; color: var(--gold); text-transform: uppercase; text-align: right; }
-        
-        #file-preview-content iframe { width: 100%; height: 500px; border: none; background: #eee; }
-        #file-preview-content img { max-width: 100%; height: auto; display: block; margin: 0 auto; }
-        
-        .time-navigator { display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 20px; }
-        .nav-btn { background: white; border: 1px solid #eee; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--chocolate); }
-        .nav-btn:hover { background: var(--gold); color: white; border-color: var(--gold); }
-        .current-date-label { font-family: 'Playfair Display', serif; font-size: 1.2rem; color: var(--chocolate); min-width: 180px; text-align: center; }
-
-        .icon-grid-selector { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-top: 10px; }
-        .icon-option { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border: 1px solid #eee; border-radius: 8px; cursor: pointer; transition: 0.2s; color: var(--gold); }
-        .icon-option:hover, .icon-option.selected { background: var(--off-white); border-color: var(--gold); transform: scale(1.1); }
-
-        .file-card-image-container { width: 100%; aspect-ratio: 4/5; overflow: hidden; border-radius: 12px 12px 0 0; background: #eee; position: relative; }
-        .file-card-image { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
-        .file-card-image:hover { transform: scale(1.05); }
-
-        /* Visionboard Specifics */
-        .vision-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; margin-top: 15px; }
-        .vision-item { display: flex; flex-direction: column; gap: 8px; transition: transform 0.3s; cursor: pointer; position: relative; }
-        .vision-item:hover { transform: scale(1.02); }
-        .vision-img { width: 100%; aspect-ratio: 3/4; object-fit: cover; border-radius: 16px; box-shadow: var(--shadow); }
-        .vision-caption { font-size: 0.75rem; text-align: center; color: var(--chocolate); font-weight: 600; min-height: 1rem; }
-        
-        .vision-actions { display: flex; gap: 5px; position: absolute; top: 5px; right: 5px; background: rgba(255,255,255,0.9); padding: 5px; border-radius: 8px; opacity: 0; transition: 0.3s; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .vision-item:hover .vision-actions { opacity: 1; }
-        .vision-actions i { cursor: pointer; width: 16px; color: var(--chocolate); transition: 0.2s; }
-        .vision-actions i:hover { color: var(--gold); }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes slideInRight { from { opacity: 0; transform: translateX(50px); } to { opacity: 1; transform: translateX(0); } }
-
-        #batch-actions-bar { position: fixed; bottom: 30px; left: 50%; transform: translate(-50%, 150px); background: var(--chocolate); color: white; padding: 15px 30px; border-radius: 40px; display: flex; align-items: center; gap: 20px; z-index: 5000; box-shadow: 0 10px 30px rgba(0,0,0,0.3); transition: transform 0.3s; }
+        .create-menu-dropdown { position: absolute; bottom: 80px; right: 0; background: #fff; border-radius: 18px; box-shadow: var(--shadow); width: 220px; display: none; overflow: hidden; z-index: 160; border: 1px solid #eee; }
+        .create-menu-item { padding: 15px 20px; display: flex; align-items: center; gap: 12px; font-size: 0.85rem; color: var(--chocolate); font-weight: 600; cursor: pointer; }
+        .create-menu-item:hover { background: var(--off-white); color: var(--gold); }
     </style>
 </head>
-<body>
+<body autocomplete="off">
 
-<div id="lock-screen">
-    <div class="monogram" style="font-size: 3rem; margin-bottom: 20px;">CM</div>
-    <div style="font-family: 'Playfair Display', serif; color: var(--chocolate); margin-bottom: 10px;">Caroline Medeiros</div>
-    <input type="password" id="lock-pass" class="lock-input" placeholder="Senha" maxlength="4" autocomplete="off" />
-    <button class="lock-btn" onclick="checkAccess()">Entrar</button>
-    <div id="lock-msg" style="color: var(--danger); margin-top: 10px; height: 20px; font-size: 0.8rem;"></div>
+<div id="lock-screen" style="position:fixed; inset:0; background:var(--off-white); z-index:1000; display:flex; flex-direction:column; justify-content:center; align-items:center;">
+    <div class="monogram">CM</div>
+    <div class="brand-name" style="margin-bottom:30px;">Caroline Medeiros</div>
+    <input type="password" id="lock-input" class="lock-input" placeholder="PALAVRA-PASSE" maxlength="4" style="text-align:center; font-size:1.5rem; letter-spacing:8px; border-radius:50px; border:2px solid var(--gold); padding:15px; width:200px; outline:none;" autocomplete="off">
+    <button onclick="checkAccess()" class="btn-add" style="margin-top:20px; padding:15px 40px; font-size:1rem;">ENTRAR</button>
 </div>
-
-<div id="loading-screen" style="position:fixed; top:0; left:0; width:100%; height:100%; background:var(--off-white); z-index:9999; display:none; flex-direction:column; justify-content:center; align-items:center;">
-    <div class="monogram" style="font-size: 2rem;">CM</div>
-    <div class="brand-name" style="margin-top:10px; opacity:0.6">A Iniciar Sistema...</div>
-</div>
-
-<div id="toast-container"></div>
 
 <header>
     <div class="monogram">CM</div>
     <div class="brand-name">Caroline Medeiros</div>
-    <div class="date-time-display" id="clock-display">...</div>
+    <div id="clock" style="font-size:0.7rem; color:#8D6E63; margin-top:10px; font-weight:600;"></div>
 </header>
 
-<div class="navigation-bar" id="breadcrumb-container"></div>
+<div class="navigation-bar" id="breadcrumbs"></div>
 
-<main id="main-content"></main>
+<main id="app-content"></main>
+
+<!-- Floating Menu -->
+<div class="fab" onclick="toggleMenu()">
+    <i data-lucide="plus" id="fab-icon"></i>
+    <div class="create-menu-dropdown" id="create-menu">
+        <div class="create-menu-item" onclick="openModal('custom_area')"><i data-lucide="layout-grid"></i> Nova Área</div>
+        <div class="create-menu-item" onclick="openModal('visionboard')"><i data-lucide="image"></i> Visionboard</div>
+        <div class="create-menu-item" onclick="exportData()"><i data-lucide="download"></i> Backup Dados</div>
+        <div class="create-menu-item" onclick="importData()"><i data-lucide="upload"></i> Restaurar</div>
+    </div>
+</div>
 
 <div id="modal-overlay">
     <div class="modal">
-        <h3 id="modal-title" style="text-align:center; margin-bottom: 25px; color: var(--chocolate); font-family: 'Playfair Display', serif;">Adicionar</h3>
-        <div id="modal-form"></div>
-        <div id="modal-actions" style="margin-top: 30px; display: flex; gap: 12px; justify-content: flex-end;"></div>
-    </div>
-</div>
-
-<div id="file-preview-modal">
-    <div class="modal large">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px">
-            <h3 style="color:var(--chocolate); font-family: 'Playfair Display', serif;" id="preview-filename">Ficheiro</h3>
-            <div style="display:flex; gap:10px">
-                <a id="preview-download-btn" class="btn-add" style="padding:6px 12px; font-size:0.8rem; text-decoration:none"><i data-lucide="download" style="width:16px"></i> Download</a>
-                <button onclick="window.closePreviewModal()" style="background:none; border:none; cursor:pointer"><i data-lucide="x"></i></button>
-            </div>
-        </div>
-        <div id="file-preview-content" style="max-height:60vh; overflow-y:auto; text-align:center; display:flex; justify-content:center;"></div>
-        <div id="preview-caption" style="margin-top:15px; font-style:italic; color:#666; text-align:center;"></div>
-    </div>
-</div>
-
-<div id="share-modal">
-    <div class="modal">
-        <h3 style="text-align:center; color:var(--chocolate); font-family:'Playfair Display',serif; margin-bottom:20px">Partilhar Item</h3>
-        <div style="background:#f9f9f9; padding:15px; border-radius:12px; border:1px solid #eee; margin-bottom:20px; font-size:0.9rem; word-break:break-all; color:#666" id="share-link-display"></div>
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px">
-            <button class="btn-add" style="justify-content:center" onclick="window.copyShareLink()"><i data-lucide="copy"></i> Copiar Link</button>
-            <button class="btn-add" style="justify-content:center; background:var(--gold)" onclick="window.shareDirectly()"><i data-lucide="share-2"></i> Enviar</button>
-        </div>
-        <button class="btn-cancel" style="width:100%; margin-top:15px" onclick="document.getElementById('share-modal').classList.remove('open'); setTimeout(()=>document.getElementById('share-modal').style.display='none',300)">Fechar</button>
-    </div>
-</div>
-
-<div id="delete-modal-overlay">
-    <div class="modal" style="text-align: center;">
-        <div style="display:flex; justify-content:center; margin-bottom:15px">
-            <div style="width:60px; height:60px; background:rgba(198, 40, 40, 0.1); border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--danger)">
-                <i data-lucide="alert-triangle" style="width:30px; height:30px"></i>
-            </div>
-        </div>
-        <h3 style="color: var(--danger); margin-bottom: 10px;">Exclusão</h3>
-        <p id="delete-modal-text" style="margin-bottom: 25px; color: #666; line-height: 1.5;">Tem a certeza que deseja apagar este item?</p>
-        <div style="display: flex; gap: 10px; justify-content: center;">
-            <button class="btn-cancel" onclick="window.closeDeleteModal()">Cancelar</button>
-            <button class="btn-add" style="background:var(--danger)" id="confirm-delete-btn" onclick="window.confirmDelete()">Confirmar</button>
+        <h3 id="modal-title" class="modal-title"></h3>
+        <div id="modal-body"></div>
+        <div style="display:flex; gap:10px; justify-content:flex-end; margin-top:25px;">
+            <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
+            <button class="btn-add" id="modal-save-btn">Guardar</button>
         </div>
     </div>
 </div>
 
-<div id="batch-actions-bar">
-    <span id="selected-count" style="font-weight:600">0 selecionados</span>
-    <button onclick="window.promptChangeIconBatch()" style="background:rgba(255,255,255,0.2); border:none; color:white; padding:8px 16px; border-radius:20px; cursor:pointer; font-size:0.85rem">Ícone</button>
-    <button onclick="window.confirmBatchDelete()" style="background:rgba(255,255,255,0.2); border:none; color:white; padding:8px 16px; border-radius:20px; cursor:pointer; font-size:0.85rem">Excluir</button>
-    <button onclick="window.toggleSelectionMode()" style="background:white; border:none; color:var(--chocolate); padding:8px 16px; border-radius:20px; cursor:pointer; font-size:0.85rem; font-weight:bold">Cancelar</button>
+<div id="lightbox" onclick="this.style.display='none'">
+    <img id="lightbox-img" src="">
 </div>
 
-<div style="position:fixed; bottom:10px; right:10px; opacity:0.3; font-size:0.7rem; pointer-events:none" id="sys-status">OFFLINE FIRST (GitHub)</div>
-
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-    import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-    import { getFirestore, collection, doc, setDoc, addDoc, updateDoc, deleteDoc, onSnapshot, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-    // --- Access Control (Simulated Hash as requested) ---
-    const _0x5a1b = (s) => s.split('').reduce((a,b)=>{a=((a<<5)-a)+b.charCodeAt(0);return a&a},0);
-    const _0x1c8a = 1541063; // Password is "1234"
-
-    window.checkAccess = () => {
-        const inp = document.getElementById('lock-pass');
-        const msg = document.getElementById('lock-msg');
-        if (_0x5a1b(inp.value) === _0x1c8a) {
-            document.getElementById('lock-screen').style.opacity = '0';
-            setTimeout(() => {
-                document.getElementById('lock-screen').style.display = 'none';
-                localStorage.setItem('cm_access', 'granted');
-                if (typeof state !== 'undefined' && state.items.length === 0) initApp();
-            }, 500);
-        } else {
-            msg.innerText = "Palavra-passe incorreta";
-            inp.value = '';
-            setTimeout(() => msg.innerText = '', 2000);
-        }
-    };
-    
-    if (localStorage.getItem('cm_access') === 'granted') {
-        document.getElementById('lock-screen').style.display = 'none';
-    }
-
-    document.getElementById('lock-pass').addEventListener('keypress', function (e) {
-        if (e.key === 'Enter') window.checkAccess();
-    });
-
-    // --- State & Config ---
-    let app, auth, db, appId;
-    let isOffline = false;
-
-    document.addEventListener('input', function(e) {
-        if(e.target.tagName.toLowerCase() === 'textarea') {
-            e.target.style.height = 'auto';
-            e.target.style.height = (e.target.scrollHeight) + 'px';
-        }
-    });
-
-    const ICON_LIB = ['folder', 'file-text', 'star', 'heart', 'briefcase', 'coffee', 'sun', 'moon', 'music', 'camera', 'shopping-bag', 'gift', 'map', 'compass', 'anchor', 'feather', 'key', 'lock', 'bell', 'bookmark', 'image'];
-    const BIBLE_BOOKS = [
-        "Gênesis", "Êxodo", "Levítico", "Números", "Deuteronômio", "Josué", "Juízes", "Rute", "1 Samuel", "2 Samuel", "1 Reis", "2 Reis", "1 Crônicas", "2 Crônicas", "Esdras", "Neemias", "Ester", "Jó", "Salmos", "Provérbios", "Eclesiastes", "Cânticos", "Isaías", "Jeremias", "Lamentações", "Ezequiel", "Daniel", "Oseias", "Joel", "Amós", "Obadias", "Jonas", "Miqueias", "Naum", "Habacuque", "Sofonias", "Ageu", "Zacarias", "Malaquias", "Mateus", "Marcos", "Lucas", "João", "Atos", "Romanos", "1 Coríntios", "2 Coríntios", "Gálatas", "Efésios", "Filipenses", "Colossenses", "1 Tessalonicenses", "2 Tessalonicenses", "1 Timóteo", "2 Timóteo", "Tito", "Filemom", "Hebreus", "Tiago", "1 Pedro", "2 Pedro", "1 João", "2 João", "3 João", "Judas", "Apocalipse"
-    ];
-
-    const VERSES_POOL = [
-        { t: "O Senhor é o meu pastor, nada me faltará.", r: "Salmos 23:1", e: "Confie na provisão e cuidado de Deus em todas as áreas da sua vida." },
-        { t: "Tudo posso naquele que me fortalece.", r: "Filipenses 4:13", e: "Sua força não vem de você mesmo, mas da conexão constante com o divino." }
-    ];
-
+<script>
+    // --- State & Core ---
     let state = {
-        user: null,
-        path: JSON.parse(localStorage.getItem('cm_path')) || ['root'],
-        items: [],
-        selectedMonth: new Date().getMonth(),
-        selectedYear: new Date().getFullYear(),
-        bible: { book: 'Gênesis', chapter: 1, text: '', loading: false, fullData: null },
-        weightExpanded: false,
-        menstrualView: null,
-        itemToDelete: null,
-        selectionMode: false,
-        selectedIds: [],
-        editingId: null,
-        editingHistoryIndex: null,
-        shareItemId: null,
-        selectedIcon: null
-    };
-    
-    window.toLocalDateStr = (dateObj) => {
-        const y = dateObj.getFullYear();
-        const m = String(dateObj.getMonth() + 1).padStart(2, '0');
-        const d = String(dateObj.getDate()).padStart(2, '0');
-        return `${y}-${m}-${d}`;
+        path: ['root'],
+        items: JSON.parse(localStorage.getItem('cm_premium_data')) || [],
+        selectedIcon: null,
+        editingId: null
     };
 
-    window.fromLocalDateStr = (str) => {
-        if(!str) return new Date();
-        const [y, m, d] = str.split('-').map(Number);
-        return new Date(y, m - 1, d);
-    };
+    const COLORS = { chocolate: '#3E2723', gold: '#C5A059' };
 
-    window.toggleMenstrualFields = () => {
-        const type = document.getElementById('f-prof-hormonal').value;
-        const isHormonal = type !== 'Nenhum';
-        const lastPeriod = document.getElementById('field-last-period');
-        const cycleDur = document.getElementById('field-cycle-dur');
-        const contraStart = document.getElementById('field-contra-start');
-        
-        if (lastPeriod) lastPeriod.style.display = isHormonal ? 'none' : 'block';
-        if (cycleDur) cycleDur.style.display = isHormonal ? 'none' : 'block';
-        if (contraStart) contraStart.style.display = isHormonal ? 'block' : 'none';
+    function checkAccess() {
+        if(document.getElementById('lock-input').value === "1234") { // Pass padrão para exemplo
+            document.getElementById('lock-screen').style.opacity = '0';
+            setTimeout(() => document.getElementById('lock-screen').style.display = 'none', 400);
+        }
     }
 
-    try {
-        if(typeof __firebase_config !== 'undefined' && __firebase_config) {
-            const firebaseConfig = JSON.parse(__firebase_config);
-            app = initializeApp(firebaseConfig);
-            auth = getAuth(app);
-            db = getFirestore(app);
-            appId = typeof __app_id !== 'undefined' ? __app_id : 'cm-premium-v1';
-        } else { throw new Error("Offline Mode"); }
-    } catch(e) {
-        console.warn("Starting Offline Mode");
-        isOffline = true;
+    function save() {
+        localStorage.setItem('cm_premium_data', JSON.stringify(state.items));
+        render();
     }
 
-    window.showToast = (msg, type = 'success') => {
-        const container = document.getElementById('toast-container');
-        const el = document.createElement('div');
-        el.className = `toast ${type}`;
-        el.innerHTML = `<i data-lucide="${type === 'success' ? 'check-circle' : 'alert-circle'}" style="width:20px"></i><span>${msg}</span>`;
-        container.appendChild(el);
-        if(window.lucide) window.lucide.createIcons();
-        setTimeout(() => { el.style.opacity = '0'; el.style.transform = 'translateY(-20px)'; setTimeout(() => el.remove(), 300); }, 3000);
-    };
-
-    const _addDoc = async (coll, data) => {
-        if(isOffline) {
-            const newItem = { id: 'loc_' + Date.now() + Math.random().toString(36).substr(2,9), ...data };
-            state.items.push(newItem);
-            saveLocal(); render(); return;
-        }
-        await addDoc(coll, data);
-    };
-
-    const _updateDoc = async (ref, data) => {
-        if(isOffline) {
-            const idx = state.items.findIndex(i => i.id === ref.id);
-            if(idx > -1) {
-                const merge = (target, source) => {
-                    for (const key in source) {
-                        if (source[key] instanceof Object && key in target) {
-                            Object.assign(source[key], merge(target[key], source[key]));
-                        }
-                    }
-                    Object.assign(target || {}, source);
-                    return target;
-                };
-                Object.keys(data).forEach(key => {
-                    if (key.includes('.')) {
-                        const [root, child] = key.split('.');
-                        if (!state.items[idx][root]) state.items[idx][root] = {};
-                        state.items[idx][root][child] = data[key];
-                    } else {
-                        state.items[idx][key] = data[key];
-                    }
-                });
-                saveLocal(); render();
-            }
-            return;
-        }
-        await updateDoc(ref, data);
-    };
-
-    const _deleteDoc = async (ref) => {
-        if(isOffline) {
-            state.items = state.items.filter(i => i.id !== ref.id);
-            saveLocal(); render(); return;
-        }
-        await deleteDoc(ref);
-    };
-
-    const saveLocal = () => localStorage.setItem('cm_premium_data', JSON.stringify(state.items));
-
-    const initApp = async () => {
-        setTimeout(() => {
-            const loader = document.getElementById('loading-screen');
-            if(loader && loader.style.display !== 'none') {
-                console.warn("Loading timeout - forcing offline");
-                loader.style.display = 'none';
-                isOffline = true;
-                ensureBaseFolders();
-                render();
-            }
-        }, 5000);
-
-        setInterval(() => {
-            const now = new Date();
-            const el = document.getElementById('clock-display');
-            if(el) el.innerText = now.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' });
-        }, 1000);
-
-        if(isOffline) {
-            state.user = { uid: 'offline_user', isAnonymous: true };
-            const stored = localStorage.getItem('cm_premium_data');
-            if(stored) state.items = JSON.parse(stored);
-            ensureBaseFolders();
-            document.getElementById('loading-screen').style.display = 'none';
-            render();
-        } else {
-            onAuthStateChanged(auth, (user) => {
-                state.user = user;
-                if (user) {
-                    document.getElementById('user-badge').innerText = user.uid.substring(0,8);
-                    setupDataListener();
-                }
-            });
-            if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                await signInWithCustomToken(auth, __initial_auth_token);
-            } else {
-                await signInAnonymously(auth);
-            }
-        }
-    };
-
-    const setupDataListener = () => {
-        const itemsCol = collection(db, 'artifacts', appId, 'users', state.user.uid, 'items');
-        onSnapshot(itemsCol, (snap) => {
-            state.items = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-            document.getElementById('loading-screen').style.display = 'none';
-            ensureBaseFolders();
-            render();
-        }, (err) => {
-            console.error(err);
-            window.showToast("Erro de conexão. Mudando para Offline.", "error");
-            isOffline = true;
-            document.getElementById('loading-screen').style.display = 'none';
-            initApp();
-        });
-    };
-
-    const ensureBaseFolders = async () => {
-        const folders = [
-            { id: 'f_pendencias', name: 'Pendências', parentId: 'financeiro', type: 'folder' },
-            { id: 'f_despesas', name: 'Despesas', parentId: 'financeiro', type: 'folder' },
-            { id: 'f_entradas', name: 'Entradas', parentId: 'financeiro', type: 'folder' },
-            { id: 'f_investimentos', name: 'Investimentos', parentId: 'financeiro', type: 'folder' },
-            { id: 'saude', name: 'Saúde', type: 'root_area' },
-            { id: 'financeiro', name: 'Financeiro', type: 'root_area' }
-        ];
-        if (isOffline) {
-            folders.forEach(f => {
-                if(!state.items.find(i => i.id === f.id)) state.items.push(f);
-            });
-        } else {
-            try {
-                for (const f of folders) {
-                    if (!state.items.find(i => i.id === f.id)) {
-                        await setDoc(doc(db, 'artifacts', appId, 'users', state.user.uid, 'items', f.id), {
-                            ...f, createdAt: Date.now()
-                        });
-                    }
-                }
-            } catch(e) { console.error("Error creating base folders", e); }
-        }
-    };
-    
+    // --- Navigation ---
     const ROOT_AREAS = [
         { id: 'pessoal', name: 'Pessoal', icon: 'user' },
         { id: 'profissional', name: 'Profissional', icon: 'briefcase' },
         { id: 'financeiro', name: 'Financeiro', icon: 'trending-up' },
-        { id: 'lifestyle', name: 'Lifestyle', icon: 'sparkles' },
         { id: 'saude', name: 'Saúde', icon: 'heart' },
-        { id: 'planejamento', name: 'Planejamento', icon: 'calendar' },
         { id: 'biblia', name: 'Bíblia', icon: 'book-open' }
     ];
 
-    window.navigate = async (id) => { 
-        if(state.selectionMode) return;
-        state.path.push(id); 
-        localStorage.setItem('cm_path', JSON.stringify(state.path));
-        render(); 
-    };
-    
-    window.goBack = (idx) => { 
-        if(state.selectionMode) window.toggleSelectionMode();
-        if(idx === undefined) state.path.pop();
-        else state.path = state.path.slice(0, idx + 1); 
-        localStorage.setItem('cm_path', JSON.stringify(state.path));
-        render(); 
-    };
+    function navigate(id) {
+        state.path.push(id);
+        render();
+    }
 
-    window.render = () => {
-        const main = document.getElementById('main-content');
-        const bread = document.getElementById('breadcrumb-container');
+    function goBack(idx) {
+        state.path = state.path.slice(0, idx + 1);
+        render();
+    }
+
+    // --- Renderers ---
+    function render() {
         const currentId = state.path[state.path.length - 1];
+        const container = document.getElementById('app-content');
+        const bread = document.getElementById('breadcrumbs');
         
+        // Breadcrumbs
         bread.innerHTML = state.path.map((id, i) => {
-            const name = id === 'root' ? 'Início' : (ROOT_AREAS.find(a=>a.id===id)?.name || state.items.find(it=>it.id===id)?.name || id);
-            return `<span class="breadcrumb-item" onclick="goBack(${i})">${i===0 ? '<i data-lucide="home" style="width:14px"></i>' : ''} ${name}</span>`;
-        }).join('<i data-lucide="chevron-right" style="width:14px; opacity:0.3"></i>');
+            const label = id === 'root' ? 'Início' : (ROOT_AREAS.find(a=>a.id===id)?.name || state.items.find(it=>it.id===id)?.name || id);
+            return `<span class="breadcrumb-item" onclick="goBack(${i})">${i>0?'<i data-lucide="chevron-right" style="width:12px;opacity:0.3"></i>':''} ${label}</span>`;
+        }).join('');
 
-        main.innerHTML = '';
+        if (currentId === 'root') renderDashboard(container);
+        else if (currentId === 'saude') renderHealth(container);
+        else renderFolder(container, currentId);
+
+        if(window.lucide) lucide.createIcons();
+    }
+
+    function renderDashboard(el) {
+        el.innerHTML = `<h2 style="margin-bottom:20px;">Minhas Áreas</h2><div class="grid-container" id="dash-grid"></div>`;
+        const grid = el.querySelector('#dash-grid');
         
-        const folder = state.items.find(i => i.id === currentId) || ROOT_AREAS.find(a => a.id === currentId);
-        
-        if (currentId === 'root') renderDashboard(main);
-        else if (currentId === 'financeiro') renderFinanceRoot(main); 
-        else if (currentId === 'biblia') renderBible(main);
-        else if (currentId === 'saude') renderHealth(main);
-        else if (folder?.name === 'Investimentos') renderPiggies(main, currentId);
-        else if (folder?.name === 'Despesas') renderFinance(main, currentId, 'expense', 'Despesas');
-        else if (folder?.name === 'Pendências') renderFinance(main, currentId, 'pendency', 'Pendências');
-        else if (folder?.name === 'Entradas') renderFinance(main, currentId, 'income', 'Entradas');
-        else {
-            const item = state.items.find(i => i.id === currentId);
-            if(item && item.type !== 'folder' && item.type !== 'custom_area') renderToolItem(main, item);
-            else renderGeneralFolder(main, currentId);
-        }
-        
-        document.querySelectorAll('input, textarea, select').forEach(el => {
-            el.setAttribute('autocomplete', 'off');
+        ROOT_AREAS.forEach(area => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.innerHTML = `<i data-lucide="${area.icon}" style="color:var(--gold); margin-right:15px;"></i><b style="font-size:1.1rem;">${area.name}</b>`;
+            card.onclick = () => navigate(area.id);
+            grid.appendChild(card);
         });
 
-        if(window.lucide) window.lucide.createIcons();
-    };
+        state.items.filter(i => i.type === 'custom_area' && i.parentId === 'root').forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.innerHTML = `<i data-lucide="${item.icon || 'star'}" style="color:var(--gold); margin-right:15px;"></i><b style="font-size:1.1rem; flex:1;">${item.name}</b><i data-lucide="trash-2" onclick="deleteItem('${item.id}', event)" style="width:16px; opacity:0.3;"></i>`;
+            card.onclick = () => navigate(item.id);
+            grid.appendChild(card);
+        });
+    }
 
-    const calculateHealthStats = (weightItem) => {
-        if(!weightItem) return null;
-        const { current, target, startDate, periodMonths, history, startWeight } = weightItem.content;
-        const monthsPassed = Math.max(0, (new Date().getFullYear() - new Date(startDate).getFullYear()) * 12 + (new Date().getMonth() - new Date(startDate).getMonth()));
-        const monthsRemaining = Math.max(1, periodMonths - monthsPassed);
-        
-        const currentWeight = parseFloat(current);
-        const weightToLose = currentWeight - parseFloat(target);
-        const mma = (monthsRemaining > 0 && weightToLose > 0) ? (weightToLose / monthsRemaining).toFixed(2) : 0;
-        
-        let height = parseFloat(weightItem.content.height) || 0;
-        if (height > 3) height = height / 100; 
-
-        let imc = '--';
-        let imcColor = '#999';
-        let imcText = '';
-        
-        if (height > 0) {
-            const imcVal = (currentWeight / (height * height));
-            imc = imcVal.toFixed(1);
-            if (imcVal < 18.5) { imcColor = 'var(--gold)'; imcText = 'Abaixo do Peso'; }
-            else if (imcVal < 24.9) { imcColor = 'var(--success)'; imcText = 'Peso Normal'; }
-            else if (imcVal < 29.9) { imcColor = 'var(--chocolate-light)'; imcText = 'Sobrepeso'; }
-            else { imcColor = 'var(--danger)'; imcText = 'Obesidade'; }
-        }
-
-        const waterMl = currentWeight * 35;
-        const waterLiters = (waterMl / 1000).toFixed(1);
-
-        const sortedHistory = [...(history || [])].sort((a,b) => new Date(b.date) - new Date(a.date));
-        const totalLossRequired = parseFloat(startWeight) - parseFloat(target);
-        const progress = totalLossRequired > 0 ? ((parseFloat(startWeight) - currentWeight) / totalLossRequired * 100) : 0;
-        
-        return { current: currentWeight, target, startWeight, mma, imc, imcColor, imcText, waterLiters, progress: Math.min(100, Math.max(0, progress)), monthsRemaining, weightToLose, history: sortedHistory };
-    };
-
-    const renderHealth = (el) => {
-        const weightItem = state.items.find(i => i.type === 'health_weight');
-        const stats = calculateHealthStats(weightItem);
-        const meds = state.items.filter(i => i.type === 'health_med');
-        const diet = state.items.find(i => i.type === 'health_food');
-
-        const genericItems = state.items.filter(i => i.parentId === 'saude' && !['menstrual_profile', 'menstrual_cycle', 'health_weight', 'health_med', 'health_food'].includes(i.type));
-
-        const dietContent = diet && (diet.content.breakfast || diet.content.lunch || diet.content.dinner) ? `
-            <div style="font-size:0.85rem; color:var(--text-main); max-height:250px; overflow-y:auto; display:flex; flex-direction:column; gap:15px;">
-                <div style="background:var(--bg-card); padding:10px; border-radius:8px; border:1px solid #eee">
-                    <strong style="color:var(--gold); display:flex; justify-content:space-between"><span><i data-lucide="coffee" style="width:14px; vertical-align:text-bottom; margin-right:4px;"></i> Café da Manhã</span> <span>${diet.content.breakfastTime}</span></strong>
-                    <div style="margin-top:5px; white-space:pre-wrap; line-height:1.4">${diet.content.breakfast || '-'}</div>
-                </div>
-                <div style="background:var(--bg-card); padding:10px; border-radius:8px; border:1px solid #eee">
-                    <strong style="color:var(--gold); display:flex; justify-content:space-between"><span><i data-lucide="utensils" style="width:14px; vertical-align:text-bottom; margin-right:4px;"></i> Almoço</span> <span>${diet.content.lunchTime}</span></strong>
-                    <div style="margin-top:5px; white-space:pre-wrap; line-height:1.4">${diet.content.lunch || '-'}</div>
-                </div>
-                <div style="background:var(--bg-card); padding:10px; border-radius:8px; border:1px solid #eee">
-                    <strong style="color:var(--gold); display:flex; justify-content:space-between"><span><i data-lucide="utensils" style="width:14px; vertical-align:text-bottom; margin-right:4px;"></i> Jantar</span> <span>${diet.content.dinnerTime}</span></strong>
-                    <div style="margin-top:5px; white-space:pre-wrap; line-height:1.4">${diet.content.dinner || '-'}</div>
-                </div>
-                <div style="background:var(--off-white); padding:10px; border-radius:8px; border:1px solid rgba(197, 160, 89, 0.2); display:flex; justify-content:space-between; align-items:center">
-                    <strong style="color:var(--chocolate)"><i data-lucide="timer" style="width:14px; vertical-align:text-bottom; margin-right:4px;"></i> Horário de Jejum</strong>
-                    <span style="font-weight:bold; color:var(--chocolate)">${diet.content.fastingStart} às ${diet.content.fastingEnd}</span>
-                </div>
-            </div>
-        ` : '<div style="opacity:0.5; font-size:0.8rem">Nenhuma dieta configurada.</div>';
+    function renderHealth(el) {
+        const weightItem = state.items.find(i => i.type === 'health_weight') || { content: { history: [] } };
+        const diet = state.items.find(i => i.type === 'health_food') || { content: {} };
+        const stats = calculateStats(weightItem);
 
         el.innerHTML = `
-            <div class="section-header"><h2>Saúde e Bem-estar</h2>${renderCreateButton()}</div>
+            <div class="section-header"><h2>Monitor de Saúde</h2></div>
             
-            <div class="grid-container">
-            <div class="card" style="display:block; padding:15px">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px">
-                    <div style="display:flex; align-items:center; gap:8px">
-                        <div style="width:32px; height:32px; background:rgba(198, 40, 40, 0.1); border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--danger)"><i data-lucide="calendar-heart" style="width:16px"></i></div>
-                        <div style="font-weight:700; color:var(--chocolate); font-size:0.9rem">Ciclo Menstrual</div>
+            ${stats ? `
+            <div class="highlight-card">
+                <div class="meta-label">Meta Mensal de Perda</div>
+                <div class="meta-value">${stats.mma} <span class="meta-unit">kg</span></div>
+                <div class="stat-grid">
+                    <div class="stat-item"><span class="stat-label">Peso Inicial</span><span class="stat-num">${weightItem.content.startWeight}kg</span></div>
+                    <div class="stat-item"><span class="stat-label">Peso Atual</span><span class="stat-num">${stats.current}kg</span></div>
+                    <div class="stat-item"><span class="stat-label">IMC</span><span class="stat-num">${stats.imc}</span><small style="font-size:0.6rem;color:var(--gold-light)">${stats.imcClass}</small></div>
+                </div>
+            </div>
+
+            <div class="water-card">
+                <div style="display:flex; align-items:center; gap:12px;">
+                    <div style="color:var(--gold)"><i data-lucide="droplet"></i></div>
+                    <div><b style="font-size:0.9rem; color:var(--chocolate)">Meta Diária de Água</b><br><small style="color:#888;">Baseada no seu peso</small></div>
+                </div>
+                <b style="font-size:1.4rem; color:var(--gold)">${stats.water}L</b>
+            </div>
+            ` : `<div class="card" style="text-align:center; padding:40px; color:#aaa;" onclick="openModal('health_weight_config')">Clique para configurar o monitor de peso</div>`}
+
+            <div class="grid-container" style="margin-top:20px;">
+                <div class="card" style="display:block;">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
+                        <b>Registo de Peso</b>
+                        <button class="btn-add" style="padding:5px 12px; font-size:0.7rem;" onclick="openModal('health_weight_register')">Pesar</button>
                     </div>
-                    <div style="display:flex; gap: 5px;">
-                        <button class="btn-add" style="padding:4px 10px; font-size:0.75rem" onclick="window.openModal('menstrual_log', window.toLocalDateStr(new Date()))">Registrar Hoje</button>
-                        <button class="btn-cancel" style="padding:4px 8px" onclick="window.openModal('menstrual_settings')"><i data-lucide="settings" style="width:12px"></i></button>
+                    <div style="max-height:150px; overflow-y:auto; font-size:0.85rem;">
+                        ${(weightItem.content.history || []).sort((a,b)=>new Date(b.date)-new Date(a.date)).map((h,idx) => `
+                            <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #eee;">
+                                <span>${new Date(h.date).toLocaleDateString()}</span>
+                                <div>
+                                    <b style="margin-right:10px;">${h.weight}kg</b>
+                                    <i data-lucide="edit-2" style="width:12px; cursor:pointer;" onclick="editWeightEntry('${h.id}')"></i>
+                                    <i data-lucide="trash-2" style="width:12px; cursor:pointer; margin-left:8px; color:var(--danger);" onclick="deleteWeightEntry('${h.id}')"></i>
+                                </div>
+                            </div>
+                        `).join('')}
                     </div>
+                    ${stats ? `<button class="btn-cancel" style="width:100%; margin-top:10px; font-size:0.7rem;" onclick="openModal('health_weight_config', '${weightItem.id}')">Configurar Monitor</button>` : ''}
+                </div>
+
+                <div class="card" style="display:block;">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:15px;"><b>Plano Alimentar</b> <i data-lucide="edit" style="width:16px; cursor:pointer" onclick="openModal('health_food')"></i></div>
+                    <div style="display:flex; flex-direction:column; gap:12px; font-size:0.8rem;">
+                        <div style="background:var(--off-white); padding:8px; border-radius:8px;">
+                            <b style="color:var(--gold)">Café (${diet.content.bt || '08:00'})</b><div style="margin-top:2px;">${diet.content.b || '-'}</div>
+                        </div>
+                        <div style="background:var(--off-white); padding:8px; border-radius:8px;">
+                            <b style="color:var(--gold)">Almoço (${diet.content.lt || '12:30'})</b><div style="margin-top:2px;">${diet.content.l || '-'}</div>
+                        </div>
+                        <div style="background:var(--off-white); padding:8px; border-radius:8px;">
+                            <b style="color:var(--gold)">Jantar (${diet.content.dt || '19:30'})</b><div style="margin-top:2px;">${diet.content.d || '-'}</div>
+                        </div>
+                        <div style="background:var(--chocolate); color:#fff; padding:8px; border-radius:8px;">
+                            <b>Jejum: ${diet.content.fs || '20:00'} às ${diet.content.fe || '08:00'}</b>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top:20px; display:block;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                    <b>Ciclo Menstrual</b>
+                    <button class="btn-cancel" style="padding:5px 12px; font-size:0.7rem;" onclick="openModal('menstrual_settings')">Configurar</button>
                 </div>
                 ${renderCalendar()}
-            </div>
-            </div>
-
-            <div class="card" style="display:block; margin:20px 0">
-                <div style="display:flex; justify-content:space-between; align-items:center">
-                    <div style="display:flex; align-items:center; gap:10px">
-                        <div style="width:40px; height:40px; background:var(--off-white); border: 1px solid rgba(197, 160, 89, 0.2); border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--chocolate)"><i data-lucide="scale"></i></div>
-                        <div>
-                            <div style="font-weight:700; color:var(--chocolate)">Monitoramento de Peso</div>
-                            <div style="font-size:0.8rem; color:var(--chocolate-light)">Foco na evolução mensal</div>
-                        </div>
-                    </div>
-                    ${stats ? `
-                    <div style="display:flex; gap:5px;">
-                        <button class="btn-add" style="padding:5px 15px; font-size:0.7rem" onclick="window.openModal('health_weight_register')">Pesar</button>
-                        <button class="btn-cancel" style="padding:5px 8px; font-size:0.7rem" onclick="window.openModal('health_weight_config', '${weightItem.id}')"><i data-lucide="settings" style="width:14px"></i></button>
-                    </div>
-                    ` : `<button class="btn-add" onclick="window.openModal('health_weight_config')">Configurar</button>`}
+                <div class="cal-legend">
+                    <span><span class="legend-dot" style="background:var(--danger); opacity:0.4"></span> Menstruação</span>
+                    <span><span class="legend-dot" style="background:var(--success); opacity:0.4"></span> Fértil</span>
                 </div>
-                ${stats ? `
-                    <div style="margin-top:20px; display:flex; flex-direction:column; gap:15px;">
-                        <!-- DESTAQUE PRINCIPAL: META MENSAL -->
-                        <div style="background:var(--off-white); border:2px solid var(--gold); border-radius:16px; padding:20px; text-align:center;">
-                            <div style="font-size:0.8rem; text-transform:uppercase; color:var(--gold); font-weight:700; margin-bottom:8px; letter-spacing:1px">Meta Mensal Restante</div>
-                            <div style="font-size:2.8rem; font-weight:900; color:var(--chocolate); line-height:1;">${stats.mma} <span style="font-size:1.2rem; font-weight:600; color:var(--gold)">kg</span></div>
-                            <div style="font-size:0.85rem; color:var(--chocolate-light); margin-top:10px; font-weight:500">Objetivo para os próximos ${stats.monthsRemaining} meses</div>
-                        </div>
-
-                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px;">
-                            <div style="background:var(--bg-card); border:1px solid #eee; border-radius:12px; padding:15px; text-align:center;">
-                                <div style="font-size:0.7rem; text-transform:uppercase; color:var(--chocolate-light); font-weight:700; margin-bottom:5px">Peso Atual</div>
-                                <div style="font-size:1.4rem; font-weight:800; color:var(--chocolate)">${stats.current} <span style="font-size:0.8rem; color:var(--chocolate-light)">kg</span></div>
-                            </div>
-                            <div style="background:var(--bg-card); border:1px solid #eee; border-radius:12px; padding:15px; text-align:center;">
-                                <div style="font-size:0.7rem; text-transform:uppercase; color:var(--chocolate-light); font-weight:700; margin-bottom:5px">IMC</div>
-                                <div style="font-size:1.4rem; font-weight:800; color:${stats.imcColor}">${stats.imc}</div>
-                                <div style="font-size:0.65rem; font-weight:bold; color:${stats.imcColor}; margin-top:3px">${stats.imcText}</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div style="background:var(--bg-card); border:1px solid rgba(197, 160, 89, 0.3); border-radius:12px; padding:12px 15px; margin-top:15px; display:flex; justify-content:space-between; align-items:center;">
-                        <div style="display:flex; align-items:center; gap:10px;">
-                            <div style="width:36px; height:36px; background:var(--off-white); border-radius:50%; display:flex; justify-content:center; align-items:center; color:var(--gold); border: 1px solid rgba(197, 160, 89, 0.2);"><i data-lucide="droplet" style="width:18px"></i></div>
-                            <div>
-                                <div style="font-weight:700; color:var(--chocolate); font-size:0.9rem">Meta de Hidratação</div>
-                                <div style="font-size:0.75rem; color:var(--chocolate-light)">Calculada pelo seu peso</div>
-                            </div>
-                        </div>
-                        <div style="font-size:1.4rem; font-weight:800; color:var(--gold)">${stats.waterLiters} L</div>
-                    </div>
-
-                    <div style="margin-top:20px;">
-                        <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--chocolate-light); font-weight:bold; margin-bottom:6px">
-                            <span>Progresso Total da Meta</span>
-                            <span style="color:var(--gold)">${stats.progress.toFixed(0)}%</span>
-                        </div>
-                        <div class="weight-progress-bar"><div class="weight-progress-fill" style="width:${stats.progress}%"></div></div>
-                    </div>
-                ` : ''}
-            </div>
-
-            <div class="grid-container">
-                <div class="card" style="display:block">
-                    <div style="display:flex; justify-content:space-between; margin-bottom:15px"><b>Medicamentos</b><button class="btn-add" style="padding:4px 8px" onclick="window.openModal('health_med')">+</button></div>
-                    ${meds.length ? meds.map(m => `<div style="padding:10px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center"><div><b>${m.name}</b><br><small>${m.content.time} - ${m.content.instructions}</small></div><i data-lucide="trash-2" style="width:14px; cursor:pointer; color:var(--chocolate-light)" onclick="window.openDeleteModal('${m.id}','${m.name}')"></i></div>`).join('') : '<div style="opacity:0.5; font-size:0.8rem">Nenhum medicamento.</div>'}
-                </div>
-                <div class="card" style="display:block">
-                    <div style="display:flex; justify-content:space-between; margin-bottom:15px"><b>Dieta e Jejum</b><button class="btn-add" style="padding:4px 8px" onclick="window.openModal('health_food')"><i data-lucide="edit-2" style="width:14px"></i></button></div>
-                    ${dietContent}
-                </div>
-            </div>
-
-            <div class="grid-container" style="margin-top:20px">
-                ${genericItems.map(i => {
-                    const isSelected = state.selectedIds.includes(i.id);
-                    const icon = i.icon || ({folder:'folder', note:'file-text', checklist:'list-checks', checklist_sum:'calculator', bank:'credit-card', social:'at-sign', file:'paperclip', visionboard:'image'}[i.type] || 'file');
-                    if (i.type === 'file') {
-                        const isImg = i.content.fileType.startsWith('image') || /\.(jpg|jpeg|png|gif|bmp|webp|heic)$/i.test(i.name);
-                        return `<div class="card ${state.selectionMode?'selection-mode':''} ${isSelected?'selected':''}" style="display:block; padding:0; overflow:visible; position:relative;" onclick="${state.selectionMode ? `window.toggleSelectItem('${i.id}')` : `window.openFilePreview('${i.id}')`}">
-                            ${isImg ? `<div class="file-card-image-container"><img src="${i.content.data}" class="file-card-image" onerror="this.style.display='none'"></div>` : `<div style="padding:30px; text-align:center"><i data-lucide="${icon}" style="color:var(--chocolate-light); width:40px; height:40px"></i></div>`}
-                            <div style="padding:15px">
-                                ${i.content.caption ? `<div style="font-weight:600; color:var(--chocolate); font-size:0.9rem; margin-bottom:4px">${i.content.caption}</div>` : ''}
-                                <div style="font-size:0.75rem; color:var(--chocolate-light); white-space:nowrap; text-overflow:ellipsis; overflow:hidden">${i.type === 'file' ? '' : i.name}</div>
-                            </div>
-                            <i data-lucide="check-circle" class="selection-check"></i>
-                            <div style="position:absolute; bottom:10px; right:10px">${renderActionMenu(i.id, i.type, i.name)}</div>
-                        </div>`;
-                    }
-                    return `<div class="card ${state.selectionMode?'selection-mode':''} ${isSelected?'selected':''}" onclick="${state.selectionMode ? `window.toggleSelectItem('${i.id}')` : `window.navigate('${i.id}')`}"><i data-lucide="${icon}" style="color:${i.type==='folder'?'var(--gold)':'var(--chocolate-light)'}"></i><span style="flex:1; font-weight:600; color:var(--chocolate)">${i.name}</span><i data-lucide="check-circle" class="selection-check"></i>${renderActionMenu(i.id, i.type, i.name)}</div>`;
-                }).join('')}
             </div>
         `;
-    };
+    }
 
-    window.openModal = (type, editingId = null) => {
-        const overlay = document.getElementById('modal-overlay');
-        const form = document.getElementById('modal-form');
-        const actions = document.getElementById('modal-actions');
-        state.editingId = editingId;
-        state.selectedIcon = null;
-        
-        let html = '';
-        let title = editingId ? 'Editar' : 'Novo';
-        if (type === 'rename') title = 'Renomear';
-        
-        const inp = (id, lbl, pl, val='', type='text', step='') => `<div class="form-group"><label>${lbl}</label><input type="${type}" id="${id}" class="form-control" placeholder="${pl}" value="${val}" autocomplete="off" ${step ? `step="${step}"` : ''}></div>`;
-        const item = editingId ? state.items.find(i=>i.id===editingId) : null;
-        const v = (key) => item && item.content ? item.content[key] || '' : '';
-        const n = () => item ? item.name : '';
+    function renderFolder(el, pid) {
+        const items = state.items.filter(i => i.parentId === pid);
+        const folder = state.items.find(i => i.id === pid);
 
-        if(item && item.icon) state.selectedIcon = item.icon;
-
-        switch(type) {
-            case 'create_area': title = 'Nova Área'; html = inp('f-name', 'Nome da Área', 'Ex: Projetos') + renderIconSelector(); break;
-            case 'rename': html = inp('f-name', 'Novo Nome', '', n()); break;
-            case 'folder': html = inp('f-name', 'Nome da Pasta', '', n()) + renderIconSelector(); break;
-            case 'note': html = inp('f-name', 'Título', '', n()) + `<div class="form-group"><label>Conteúdo</label><textarea id="f-text" class="form-control" autocomplete="off">${v('text')}</textarea></div>`; break;
-            case 'visionboard': 
-                title = 'Novo Visionboard'; 
-                html = `<div class="form-group"><label>Título do Visionboard</label><input id="f-name" class="form-control" autocomplete="off" value="${n()}"></div>`;
-                break;
-            case 'add_vision_image':
-                title = 'Adicionar Imagem';
-                html = `
-                    <div class="form-group"><label>Imagem</label><input type="file" id="f-vision-img" class="form-control" accept="image/*"></div>
-                    <div class="form-group"><label>Legenda (Opcional)</label><input type="text" id="f-vision-cap" class="form-control" autocomplete="off"></div>
-                `;
-                break;
-            case 'file': html = inp('f-name', 'Nome', '', n()) + `<div class="form-group"><label>Arquivo</label><input type="file" id="f-file" class="form-control"></div>` + `<div class="form-group"><label>Legenda</label><input type="text" id="f-caption" class="form-control" value="${v('caption')}" autocomplete="off"></div>`; break;
-            case 'checklist': case 'checklist_sum': html = inp('f-name', 'Título', '', n()) + renderIconSelector(); break;
-            case 'bank': html = inp('f-name', 'Banco', '', n()) + inp('f-holder', 'Titular', '', v('holder')) + inp('f-ag', 'Agência', '', v('agency')) + inp('f-cc', 'Conta', '', v('account')) + inp('f-pix', 'PIX', '', v('pix')) + inp('f-pass', 'Senha', '', v('pass'), 'password'); break;
-            case 'social': html = inp('f-name','Plataforma','',n()) + inp('f-login','Login','',v('login')) + inp('f-pass','Senha','',v('pass'), 'password'); break;
-            case 'expense': case 'pendency': case 'income': 
-                title = type === 'expense' ? 'Nova Despesa' : (type === 'income' ? 'Nova Entrada' : 'Nova Pendência'); 
-                html = inp('f-name', 'Descrição', 'Ex: Salário', n()) + `<div class="form-group"><label>Valor</label><input type="number" id="f-val" class="form-control" value="${v('value')}" autocomplete="off"></div>` + `<div class="form-group"><label>Parcelas/Repetições</label><input type="number" id="f-par" class="form-control" value="1" autocomplete="off"></div>` + `<div class="form-group"><label>Vencimento/Data</label><input type="date" id="f-due" class="form-control" value="${v('due') || new Date().toISOString().split('T')[0]}" autocomplete="off"></div>`; 
-                break;
-            case 'piggy': html = inp('f-name', 'Objetivo', '', n()) + inp('f-target', 'Valor Alvo', '', v('target')) + inp('f-months', 'Meses', '', v('months')); break;
-            case 'health_weight_config': 
-                title='Configurar Peso'; 
-                html = `
-                    ${inp('f-w-start','Peso Inicial (kg)','Ex: 128',v('startWeight'),'number','0.01')}
-                    ${inp('f-w-height','Altura (m)','Ex: 1.70',v('height'),'number','0.01')}
-                    ${inp('f-w-target','Meta Final (kg)','Ex: 60',v('target'),'number','0.01')}
-                    <div class="form-group"><label>Data de Início</label><input type="date" id="f-w-date" class="form-control" value="${v('startDate')||new Date().toISOString().split('T')[0]}" autocomplete="off"></div>
-                    ${inp('f-w-period','Prazo (Meses)','Ex: 10',v('periodMonths'),'number')}
-                    <button class="btn-add" style="width:100%; background:var(--danger); justify-content:center; margin-top:15px;" onclick="window.resetWeightData()"><i data-lucide="trash-2" style="width:16px"></i> Resetar Dados</button>
-                `; 
-                break;
-            case 'health_weight_register': 
-                title = 'Registrar Peso';
-                const hwItem = state.items.find(i => i.type === 'health_weight');
-                const historyLog = [...(hwItem?.content?.history || [])].sort((a,b) => new Date(b.date) - new Date(a.date));
-                html = `
-                    <div style="background:#f9f9f9; padding:15px; border-radius:12px; margin-bottom:20px;">
-                        <h4 style="margin-bottom:10px; font-size:0.9rem; color:var(--chocolate)">Novo Registro</h4>
-                        <div style="display:flex; gap:10px">
-                            <input type="date" id="f-reg-date" class="form-control" value="${new Date().toISOString().split('T')[0]}" autocomplete="off">
-                            <input type="number" step="0.01" id="f-reg-weight" class="form-control" placeholder="Peso (kg)" autocomplete="off">
-                            <button class="btn-add" onclick="window.saveItem('add_weight_entry')">Salvar</button>
-                        </div>
-                    </div>
-                    <h4 style="margin-bottom:10px; font-size:0.9rem; color:var(--chocolate)">Histórico</h4>
-                    <div style="max-height:250px; overflow-y:auto">
-                        ${historyLog.length ? historyLog.map((h, index) => `
-                            <div style="display:flex; justify-content:space-between; align-items:center; padding:10px; border-bottom:1px solid #eee">
-                                <div style="font-weight:600">${new Date(h.date + 'T12:00:00').toLocaleDateString('pt-BR')}</div>
-                                <div style="display:flex; align-items:center; gap:15px">
-                                    <span style="font-weight:bold; color:var(--chocolate)">${h.weight} kg</span>
-                                    <i data-lucide="edit-2" style="width:16px; color:var(--chocolate); cursor:pointer" onclick="window.editWeightHistoryItem(${index})"></i>
-                                    <i data-lucide="trash-2" style="width:16px; color:var(--danger); cursor:pointer" onclick="window.deleteWeightHistoryItem(${index})"></i>
-                                </div>
+        if (folder?.type === 'visionboard') {
+            el.innerHTML = `
+                <div class="section-header">
+                    <h2>${folder.name}</h2>
+                    <button class="btn-add" onclick="openModal('vision_add', '${pid}')"><i data-lucide="camera"></i> Adicionar Foto</button>
+                </div>
+                <div class="vision-mural">
+                    ${(folder.content.images || []).map((img, idx) => `
+                        <div class="vision-item">
+                            <img src="${img.data}" class="vision-img" onclick="showLightbox('${img.data}')">
+                            <div class="vision-overlay">${img.caption}</div>
+                            <div class="vision-btn-group">
+                                <button class="mini-btn" onclick="editVisionCaption('${pid}', ${idx})"><i data-lucide="type" style="width:14px"></i></button>
+                                <button class="mini-btn" style="color:var(--danger)" onclick="deleteVisionImg('${pid}', ${idx})"><i data-lucide="trash-2" style="width:14px"></i></button>
                             </div>
-                        `).join('') : '<div style="font-size:0.8rem; color:var(--chocolate-light); text-align:center">Nenhum registro.</div>'}
-                    </div>
-                `;
-                break;
-            case 'weight_history_edit':
-                title = 'Editar Registro';
-                const wItem = state.items.find(i => i.type === 'health_weight');
-                let sortedHist = [...wItem.content.history].sort((a,b) => new Date(b.date) - new Date(a.date));
-                const histItem = sortedHist[state.editingHistoryIndex];
-                html = `<div class="form-group"><label>Data</label><input type="date" id="f-reg-date" class="form-control" value="${histItem.date}" autocomplete="off"></div>` + 
-                       `<div class="form-group"><label>Peso (kg)</label><input type="number" step="0.01" id="f-reg-weight" class="form-control" value="${histItem.weight}" autocomplete="off"></div>`;
-                break;
-            case 'health_med': html = inp('f-name','Remédio','',n()) + inp('f-time','Horário','',v('time')) + inp('f-inst','Instruções','',v('instructions')); break;
-            case 'health_food': 
-                title='Dieta e Jejum'; 
-                const df = item && item.content ? item.content : (state.items.find(i=>i.type==='health_food')?.content || {});
-                html=`
-                    <div style="display:flex; flex-direction: column; gap:15px; margin-bottom:10px;">
-                        <div>
-                            <label style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px; font-size:0.8rem; font-weight:bold; color:var(--chocolate)">
-                                <span><i data-lucide="coffee" style="width:14px; vertical-align:text-bottom; margin-right:4px;"></i> Café da manhã</span> <input type="time" id="f-d-bt" class="form-control" style="width:100px; padding:6px; margin:0;" value="${df.breakfastTime||'08:00'}">
-                            </label>
-                            <textarea id="f-d-b" class="form-control" placeholder="Descreva o cardápio e quantidades do café da manhã..." style="min-height:80px;">${df.breakfast||''}</textarea>
                         </div>
-                        <div>
-                            <label style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px; font-size:0.8rem; font-weight:bold; color:var(--chocolate)">
-                                <span><i data-lucide="utensils" style="width:14px; vertical-align:text-bottom; margin-right:4px;"></i> Almoço</span> <input type="time" id="f-d-lt" class="form-control" style="width:100px; padding:6px; margin:0;" value="${df.lunchTime||'12:30'}">
-                            </label>
-                            <textarea id="f-d-l" class="form-control" placeholder="Descreva o cardápio e quantidades do almoço..." style="min-height:80px;">${df.lunch||''}</textarea>
-                        </div>
-                        <div>
-                            <label style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px; font-size:0.8rem; font-weight:bold; color:var(--chocolate)">
-                                <span><i data-lucide="utensils" style="width:14px; vertical-align:text-bottom; margin-right:4px;"></i> Jantar</span> <input type="time" id="f-d-dt" class="form-control" style="width:100px; padding:6px; margin:0;" value="${df.dinnerTime||'19:00'}">
-                            </label>
-                            <textarea id="f-d-d" class="form-control" placeholder="Descreva o cardápio e quantidades do jantar..." style="min-height:80px;">${df.dinner||''}</textarea>
-                        </div>
-                    </div>
-                    <div class="form-group" style="border-top:1px solid #eee; padding-top:15px; margin-top:15px">
-                        <label style="color:var(--chocolate); margin-bottom:10px; display:block;"><span><i data-lucide="timer" style="width:14px; vertical-align:text-bottom; margin-right:4px;"></i> Horário de Jejum Intermitente</span></label>
-                        <div style="display:flex; gap:10px; align-items:center;">
-                            <div style="flex:1"><small style="color:var(--chocolate-light); text-transform:uppercase; font-weight:bold">Início</small><input type="time" id="f-d-fs" class="form-control" value="${df.fastingStart||'20:00'}"></div>
-                            <div style="flex:1"><small style="color:var(--chocolate-light); text-transform:uppercase; font-weight:bold">Fim</small><input type="time" id="f-d-fe" class="form-control" value="${df.fastingEnd||'08:00'}"></div>
-                        </div>
-                    </div>
-                `; 
-                break;
-            case 'menstrual_log': 
-                title = 'Registro Diário'; 
-                const dateKey = editingId; 
-                const existingLog = state.items.find(i => i.type === 'menstrual_cycle' && i.content.date === dateKey);
-                const flow = existingLog ? existingLog.content.flow : '';
-                html = `
-                    <input type="hidden" id="f-mens-date" value="${dateKey}">
-                    <div style="text-align:center; font-weight:bold; color:var(--chocolate); margin-bottom:15px">${new Date(dateKey + 'T12:00:00').toLocaleDateString('pt-BR', {weekday:'long', day:'numeric', month:'long'})}</div>
-                    
-                    <div class="form-group">
-                        <label>Intensidade do Fluxo</label>
-                        <div style="display:flex; gap:10px; justify-content:space-between;">
-                            ${['Nenhum', 'Leve', 'Medio', 'Intenso'].map(f => `
-                                <div onclick="document.querySelectorAll('.flow-opt').forEach(el=>el.classList.remove('active')); this.classList.add('active'); document.getElementById('f-mens-flow').value='${f==='Nenhum'?'':f}'" class="flow-opt ${flow===f || (flow===''&&f==='Nenhum') ? 'active' : ''}" style="flex:1; text-align:center; padding:10px 5px; border:1px solid #eee; border-radius:8px; cursor:pointer; font-size:0.8rem;">
-                                    ${f}
-                                </div>
-                            `).join('')}
-                        </div>
-                        <input type="hidden" id="f-mens-flow" value="${flow}">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Atividade Íntima</label>
-                        <div style="display:flex; gap:15px;">
-                            <label style="display:flex; align-items:center; gap:5px; text-transform:none; font-weight:normal"><input type="checkbox" id="f-mens-sex" ${existingLog && existingLog.content.sex?'checked':''}> Houve relação</label>
-                            <label style="display:flex; align-items:center; gap:5px; text-transform:none; font-weight:normal"><input type="checkbox" id="f-mens-prot" ${existingLog && existingLog.content.protection?'checked':''}> Com proteção</label>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Sintomas / Notas</label>
-                        <textarea id="f-mens-notes" class="form-control" placeholder="Como você está se sentindo hoje?" autocomplete="off">${existingLog?existingLog.content.notes||'':''}</textarea>
-                    </div>
-                `;
-                break;
-            case 'menstrual_settings': 
-                 title = 'Perfil Mulher';
-                 const p = state.items.find(i=>i.type==='menstrual_profile')||{content:{}};
-                 html = `
-                    <div class="form-group">
-                        <label>Você utiliza algum método contraceptivo hormonal?</label>
-                        <select id="f-prof-hormonal" class="form-control" onchange="window.toggleMenstrualFields()" autocomplete="off">
-                            <option value="Nenhum" ${p.content.contraceptiveType === 'Nenhum' ? 'selected' : ''}>NÃO</option>
-                            <option value="Pílula" ${p.content.contraceptiveType === 'Pílula' ? 'selected' : ''}>SIM – Pílula anticoncepcional</option>
-                            <option value="Injeção" ${p.content.contraceptiveType === 'Injeção' ? 'selected' : ''}>SIM – Injeção anticoncepcional</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Nome</label>
-                        <input type="text" id="f-prof-name" class="form-control" value="${p.content.name || ''}" autocomplete="off">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Idade</label>
-                        <input type="number" id="f-prof-age" class="form-control" value="${p.content.age || ''}" autocomplete="off">
-                    </div>
-
-                    <div id="field-last-period" class="form-group" style="${p.content.contraceptiveType !== 'Nenhum' ? 'display:none' : 'block'}">
-                        <label>Data da Última Menstruação</label>
-                        <input type="date" id="f-prof-last" class="form-control" value="${p.content.lastPeriodDate||''}" autocomplete="off">
-                    </div>
-
-                    <div id="field-cycle-dur" class="form-group" style="${p.content.contraceptiveType !== 'Nenhum' ? 'display:none' : 'block'}">
-                        <label>Duração Média do Ciclo (dias)</label>
-                        <input type="number" id="f-prof-dur" class="form-control" value="${p.content.cycleDuration||28}" autocomplete="off">
-                    </div>
-
-                    <div id="field-contra-start" class="form-group" style="${p.content.contraceptiveType === 'Nenhum' ? 'display:none' : 'block'}">
-                        <label>Início da Cartela / Dose</label>
-                        <input type="date" id="f-prof-contradate" class="form-control" value="${p.content.contraceptiveStartDate||''}" autocomplete="off">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Duração do Fluxo (dias)</label>
-                        <input type="number" id="f-prof-flowdur" class="form-control" value="${p.content.flowDuration||5}" autocomplete="off">
-                    </div>
-
-                    <button class="btn-cancel" style="width:100%; margin: 10px 0; justify-content:center" onclick="window.openModal('menstrual_history_list')"><i data-lucide="list" style="width:16px"></i> Editar Histórico Completo</button>
-                    <hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee;">
-                    <button class="btn-add" style="width:100%; background:var(--danger); justify-content:center" onclick="window.resetCycle()"><i data-lucide="trash-2" style="width:16px"></i> Resetar Ciclo / Iniciar Novo</button>
-                 `;
-                 break;
-
-            case 'menstrual_history_list':
-                 title = 'Histórico Completo';
-                 const allLogs = state.items.filter(i => i.type === 'menstrual_cycle').sort((a,b) => new Date(b.content.date) - new Date(a.content.date));
-                 html = `<div style="max-height:400px; overflow-y:auto">`;
-                 if(allLogs.length === 0) {
-                     html += `<div style="text-align:center; padding:20px; opacity:0.5">Nenhum registro encontrado.</div>`;
-                 } else {
-                     html += allLogs.map(log => {
-                         const d = new Date(log.content.date + 'T12:00:00').toLocaleDateString('pt-BR');
-                         return `<div style="display:flex; justify-content:space-between; align-items:center; padding:10px; border-bottom:1px solid #eee;">
-                                    <div><b>${d}</b> <small>(${log.content.flow || 'Sem fluxo'})</small></div>
-                                    <div style="display:flex; gap:10px">
-                                        <i data-lucide="edit-2" style="width:16px; cursor:pointer; color:var(--chocolate)" onclick="window.openModal('menstrual_log', '${log.content.date}')"></i>
-                                        <i data-lucide="trash-2" style="width:16px; color:var(--danger); cursor:pointer" onclick="window.deleteMenstrualLog('${log.id}')"></i>
-                                    </div>
-                                 </div>`;
-                     }).join('');
-                 }
-                 html += `</div>`;
-                 break;
-
-            case 'icon_selector': title = 'Escolher Ícone'; html = renderIconSelector(); break;
+                    `).join('')}
+                </div>
+            `;
+            return;
         }
 
-        document.getElementById('modal-title').innerText = title;
-        form.innerHTML = html;
-        if (type !== 'menstrual_history_list' && type !== 'health_weight_register') {
-             actions.innerHTML = `<button class="btn-cancel" onclick="window.closeModal()">Cancelar</button><button class="btn-add" onclick="window.saveItem('${type}')">Salvar</button>`;
-        } else {
-             actions.innerHTML = `<button class="btn-cancel" style="width:100%" onclick="window.closeModal()">Fechar</button>`;
-        }
+        el.innerHTML = `<div class="section-header"><h2>Conteúdo</h2></div><div class="grid-container" id="folder-grid"></div>`;
+        const grid = el.querySelector('#folder-grid');
         
-        setTimeout(() => {
-            document.querySelectorAll('textarea').forEach(ta => {
-                ta.style.height = 'auto';
-                ta.style.height = ta.scrollHeight + 'px';
-            });
-        }, 20);
+        items.forEach(i => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.innerHTML = `<i data-lucide="image" style="color:var(--gold); margin-right:15px;"></i><b style="flex:1;">${i.name}</b>`;
+            card.onclick = () => navigate(i.id);
+            grid.appendChild(card);
+        });
+    }
 
-        overlay.style.display = 'flex'; setTimeout(() => { overlay.classList.add('open'); if(state.selectedIcon) document.getElementById(`icon-opt-${state.selectedIcon}`).classList.add('selected'); if(window.lucide) window.lucide.createIcons(); }, 10);
-    };
+    // --- Calendar Logic ---
+    function renderCalendar() {
+        const now = new Date();
+        const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+        const firstDay = new Date(now.getFullYear(), now.getMonth(), 1).getDay();
+        
+        let html = `<div class="cal-grid">`;
+        for(let i=0; i<firstDay; i++) html += `<div></div>`;
+        for(let d=1; d<=daysInMonth; d++) {
+            const isToday = d === now.getDate();
+            const dateStr = `${now.getFullYear()}-${now.getMonth()+1}-${d}`;
+            // Simulação simples de ciclo para visual
+            const isPeriod = d >= 1 && d <= 5;
+            const isFertile = d >= 12 && d <= 16;
 
-    window.saveItem = async (type) => {
-        const parentId = state.path[state.path.length - 1];
-        const coll = isOffline ? null : collection(db, 'artifacts', appId, 'users', state.user.uid, 'items');
-        const getVal = (id) => { const el = document.getElementById(id); return el ? el.value : ''; };
-        const getCheck = (id) => { const el = document.getElementById(id); return el ? el.checked : false; };
-        let data = { parentId, type, createdAt: Date.now() };
-        if (state.selectedIcon) data.icon = state.selectedIcon;
+            html += `<div class="cal-day ${isToday?'today':''} ${isPeriod?'period':''} ${isFertile?'fertile':''}" onclick="showToast('Registo para dia ${d}')">${d}</div>`;
+        }
+        html += `</div>`;
+        return html;
+    }
 
-        try {
-            if (type === 'create_area') {
-                data = { type: 'custom_area', name: getVal('f-name'), parentId: 'root', createdAt: Date.now(), icon: state.selectedIcon };
-                await _addDoc(coll, data);
-            } else if (type === 'rename') {
-                const ref = isOffline ? {id: state.editingId} : doc(db, 'artifacts', appId, 'users', state.user.uid, 'items', state.editingId);
-                await _updateDoc(ref, { name: getVal('f-name') });
-            } else if (type === 'icon_selector') {
-                for(const id of state.selectedIds) {
-                     const ref = isOffline ? {id} : doc(db, 'artifacts', appId, 'users', state.user.uid, 'items', id);
-                     await _updateDoc(ref, { icon: state.selectedIcon });
-                }
-                window.toggleSelectionMode();
-            } else if (type === 'visionboard') {
-                data.name = getVal('f-name');
-                if(!state.editingId) data.content = { images: [] };
-                if (state.editingId) await _updateDoc(isOffline ? {id: state.editingId} : doc(db, 'artifacts', appId, 'users', state.user.uid, 'items', state.editingId), data);
-                else await _addDoc(coll, data);
-            } else if (type === 'add_vision_image') {
-                const file = document.getElementById('f-vision-img').files[0];
-                const cap = getVal('f-vision-cap');
-                if (file && state.editingId) {
-                    const reader = new FileReader();
-                    reader.onload = async (e) => {
-                        const item = state.items.find(i => i.id === state.editingId);
-                        const newImages = [...(item.content.images || []), { data: e.target.result, caption: cap }];
-                        await _updateDoc(isOffline ? {id: state.editingId} : doc(db, 'artifacts', appId, 'users', state.user.uid, 'items', state.editingId), { 'content.images': newImages });
-                        window.closeModal(); window.showToast("Imagem adicionada!");
-                    };
-                    reader.readAsDataURL(file);
-                    return;
-                }
-            } else if (type === 'file') {
-                 const f = document.getElementById('f-file').files[0];
-                 const caption = getVal('f-caption');
-                 const name = getVal('f-name');
-                 if(f) {
-                    const reader = new FileReader();
-                    reader.onload = async (e) => {
-                        const fileData = { name: name || f.name, type: 'file', content: {data:e.target.result, fileType:f.type, caption: caption}, createdAt: Date.now(), parentId };
-                        if (state.editingId) await _updateDoc(isOffline ? {id: state.editingId} : doc(db, 'artifacts', appId, 'users', state.user.uid, 'items', state.editingId), fileData);
-                        else await _addDoc(coll, fileData);
-                        state.editingId = null; window.closeModal(); window.showToast("Arquivo salvo!");
-                    };
-                    reader.readAsDataURL(f); return;
-                 } else if (state.editingId) {
-                      const ref = isOffline ? {id: state.editingId} : doc(db, 'artifacts', appId, 'users', state.user.uid, 'items', state.editingId);
-                      await _updateDoc(ref, { name: name, 'content.caption': caption });
-                 }
-            } else if (type === 'folder') { data.name = getVal('f-name'); await _addDoc(coll, data); }
-            else if (type === 'note') { data.name = getVal('f-name'); data.content = {text: getVal('f-text')}; if(state.editingId) await _updateDoc(isOffline?{id:state.editingId}:doc(db,'artifacts',appId,'users',state.user.uid,'items',state.editingId), data); else await _addDoc(coll, data); }
-            else if (type.includes('checklist')) { data.name = getVal('f-name'); if(!state.editingId) data.content = { items: [] }; if(state.editingId) { const docRef = isOffline ? {id: state.editingId} : doc(db, 'artifacts', appId, 'users', state.user.uid, 'items', state.editingId); delete data.content; await _updateDoc(docRef, data); } else await _addDoc(coll, data); }
-            else if (type === 'bank') { data.name = getVal('f-name'); data.content = { holder: getVal('f-holder'), agency: getVal('f-ag'), account: getVal('f-cc'), pix: getVal('f-pix'), pass: getVal('f-pass') }; if(state.editingId) { const docRef = isOffline ? {id: state.editingId} : doc(db, 'artifacts', appId, 'users', state.user.uid, 'items', state.editingId); await _updateDoc(docRef, data); } else await _addDoc(coll, data); }
-            else if (type === 'social') { data.name = getVal('f-name'); data.content = { login: getVal('f-login'), pass: getVal('f-pass') }; if(state.editingId) { const docRef = isOffline ? {id: state.editingId} : doc(db, 'artifacts', appId, 'users', state.user.uid, 'items', state.editingId); await _updateDoc(docRef, data); } else await _addDoc(coll, data); }
-            else if (type === 'expense' || type === 'pendency' || type === 'income') {
-                const name = getVal('f-name');
-                const totalVal = parseFloat(getVal('f-val'));
-                const parcels = parseInt(getVal('f-par')) || 1;
-                const dueStr = getVal('f-due');
-                const parcelVal = totalVal / parcels;
-                for(let i=0; i<parcels; i++) {
-                    const date = new Date(dueStr + 'T12:00:00');
-                    date.setMonth(date.getMonth() + i);
-                    await _addDoc(coll, { parentId, type, name: parcels > 1 ? `${name} (${i+1}/${parcels})` : name, createdAt: Date.now() + i, content: { value: parcelVal, due: date.toISOString().split('T')[0], paid: false } });
-                }
-            } else if (type === 'piggy') {
-                data.name = getVal('f-name');
-                data.content = { target: getVal('f-target'), months: getVal('f-months'), saved: state.editingId ? state.items.find(i=>i.id===state.editingId).content.saved : 0 };
-                if(state.editingId) await _updateDoc(isOffline?{id:state.editingId}:doc(db,'artifacts',appId,'users',state.user.uid,'items',state.editingId), data); else await _addDoc(coll, data);
-            } else if(type === 'health_weight_config') {
-                 const startW = parseFloat(getVal('f-w-start').replace(',', '.')) || 0;
-                 const targetW = parseFloat(getVal('f-w-target').replace(',', '.')) || 0;
-                 const heightW = parseFloat(getVal('f-w-height').replace(',', '.')) || 0;
-                 const periodM = parseInt(getVal('f-w-period')) || 1;
-                 if(state.editingId) await _updateDoc(isOffline?{id:state.editingId}:doc(db,'artifacts',appId,'users',state.user.uid,'items',state.editingId), { 'content.startWeight': startW, 'content.target': targetW, 'content.startDate': getVal('f-w-date'), 'content.periodMonths': periodM, 'content.height': heightW });
-                 else await _addDoc(coll, { parentId: 'saude', type: 'health_weight', name: 'Peso', content: { current: startW, startWeight: startW, target: targetW, startDate: getVal('f-w-date'), periodMonths: periodM, height: heightW, history: [] } });
-            } else if(type === 'add_weight_entry') { 
-                const regW = parseFloat(getVal('f-reg-weight').replace(',', '.'));
-                if(regW) {
-                    const wItem = state.items.find(i => i.type === 'health_weight');
-                    const newHistory = [...(wItem.content.history||[]), { date: getVal('f-reg-date'), weight: regW }];
-                    await _updateDoc(isOffline?{id:wItem.id}:doc(db,'artifacts',appId,'users',state.user.uid,'items',wItem.id), { 'content.current': regW, 'content.history': newHistory });
-                    window.openModal('health_weight_register'); return;
-                } else { window.showToast("Informe o peso", "error"); return; }
-            } else if(type === 'weight_history_edit') {
-                const wItem = state.items.find(i => i.type === 'health_weight');
-                let history = [...(wItem.content.history||[])].sort((a,b) => new Date(b.date) - new Date(a.date));
-                history[state.editingHistoryIndex] = { date: getVal('f-reg-date'), weight: parseFloat(getVal('f-reg-weight').replace(',', '.')) };
-                history.sort((a,b) => new Date(b.date) - new Date(a.date));
-                const newCurrent = history.length > 0 ? history[0].weight : wItem.content.startWeight;
-                await _updateDoc(isOffline?{id:wItem.id}:doc(db,'artifacts',appId,'users',state.user.uid,'items',wItem.id), { 'content.history': history, 'content.current': newCurrent });
-                window.openModal('health_weight_register'); return;
-            } else if(type === 'health_med') { data.name = getVal('f-name'); data.content = { time: getVal('f-time'), instructions: getVal('f-inst') }; if(state.editingId) await _updateDoc(isOffline?{id:state.editingId}:doc(db,'artifacts',appId,'users',state.user.uid,'items',state.editingId), data); else await _addDoc(coll, data); }
-            else if(type === 'health_food') { 
-                const content = { breakfastTime: getVal('f-d-bt'), breakfast: getVal('f-d-b'), lunchTime: getVal('f-d-lt'), lunch: getVal('f-d-l'), dinnerTime: getVal('f-d-dt'), dinner: getVal('f-d-d'), fastingStart: getVal('f-d-fs'), fastingEnd: getVal('f-d-fe') };
-                const ex = state.items.find(i=>i.type==='health_food');
-                if(ex) await _updateDoc(isOffline?{id:ex.id}:doc(db,'artifacts',appId,'users',state.user.uid,'items',ex.id), {'content': content});
-                else await _addDoc(coll, {parentId:'saude', type:'health_food', name:'Dieta', content: content});
-            } else if(type === 'menstrual_log') {
-                const dateKey = getVal('f-mens-date');
-                const content = { date: dateKey, flow: getVal('f-mens-flow'), sex: getCheck('f-mens-sex'), protection: getCheck('f-mens-prot'), notes: getVal('f-mens-notes') };
-                const existing = state.items.find(i => i.type === 'menstrual_cycle' && i.content.date === dateKey);
-                if (existing) await _updateDoc(isOffline ? {id: existing.id} : doc(db, 'artifacts', appId, 'users', state.user.uid, 'items', existing.id), {content});
-                else await _addDoc(coll, { parentId: 'saude', type: 'menstrual_cycle', name: 'Ciclo', content });
-                render();
-            } else if(type === 'menstrual_settings') {
-                const content = { name: getVal('f-prof-name'), age: getVal('f-prof-age'), cycleDuration: getVal('f-prof-dur'), flowDuration: getVal('f-prof-flowdur'), contraceptiveType: getVal('f-prof-hormonal'), lastPeriodDate: getVal('f-prof-last'), contraceptiveStartDate: getVal('f-prof-contradate') };
-                const existing = state.items.find(i => i.type === 'menstrual_profile');
-                if(existing) await _updateDoc(isOffline ? {id: existing.id} : doc(db, 'artifacts', appId, 'users', state.user.uid, 'items', existing.id), {content});
-                else await _addDoc(coll, { parentId: 'saude', type: 'menstrual_profile', name: 'Perfil Mulher', content });
-                render();
-            }
-            window.showToast("Salvo!"); window.closeModal();
-        } catch(e) { console.error(e); window.showToast("Erro: " + e.message, "error"); }
-    };
-    initApp();
+    // --- Calculations ---
+    function calculateStats(w) {
+        if(!w.content.target) return null;
+        const current = w.content.history.length ? w.content.history.sort((a,b)=>new Date(b.date)-new Date(a.date))[0].weight : w.content.startWeight;
+        const remainingWeight = current - w.content.target;
+        
+        const start = new Date(w.content.startDate);
+        const end = new Date(start); 
+        end.setMonth(start.getMonth() + parseInt(w.content.periodMonths));
+        
+        const diffDays = Math.ceil((end - new Date()) / (1000 * 60 * 60 * 24));
+        const monthsRem = Math.max(1, Math.ceil(diffDays / 30.41));
+        
+        const mma = remainingWeight > 0 ? (remainingWeight / monthsRem).toFixed(1) : 0;
+        
+        let h = parseFloat(w.content.height);
+        if(h > 3) h = h/100;
+        const imc = (current / (h * h)).toFixed(1);
+        let imcClass = "Normal";
+        if(imc > 25) imcClass = "Sobrepeso";
+        if(imc > 30) imcClass = "Obesidade";
+
+        return { mma, current, imc, imcClass, water: (current * 0.035).toFixed(1), monthsRemaining: monthsRem };
+    }
+
+    // --- Modal System ---
+    function openModal(type, extra = null) {
+        state.editingId = extra;
+        const modal = document.getElementById('modal-overlay');
+        const body = document.getElementById('modal-body');
+        const title = document.getElementById('modal-title');
+        const saveBtn = document.getElementById('modal-save-btn');
+        
+        modal.style.display = 'flex';
+        let html = '';
+
+        if (type === 'custom_area') {
+            title.innerText = "Nova Área";
+            html = `<div class="form-group"><label>Nome</label><input id="f-name" class="form-control" autocomplete="off"></div>`;
+        } 
+        else if (type === 'visionboard') {
+            title.innerText = "Novo Visionboard";
+            html = `<div class="form-group"><label>Título</label><input id="f-name" class="form-control" autocomplete="off"></div>`;
+        }
+        else if (type === 'vision_add') {
+            title.innerText = "Adicionar ao Mural";
+            html = `
+                <div class="form-group"><label>Imagem</label><input type="file" id="f-img" class="form-control" accept="image/*"></div>
+                <div class="form-group"><label>Legenda</label><input id="f-cap" class="form-control" placeholder="Descreva esta meta..." autocomplete="off"></div>
+            `;
+        }
+        else if (type === 'health_weight_config') {
+            const w = state.items.find(i=>i.type === 'health_weight') || {content:{}};
+            title.innerText = "Configurar Monitor";
+            html = `
+                <div class="form-group"><label>Peso Inicial (kg)</label><input type="number" id="f-start" class="form-control" value="${w.content.startWeight||''}" step="0.1"></div>
+                <div class="form-group"><label>Meta Final (kg)</label><input type="number" id="f-target" class="form-control" value="${w.content.target||''}" step="0.1"></div>
+                <div class="form-group"><label>Altura (m ou cm)</label><input type="number" id="f-height" class="form-control" value="${w.content.height||''}" step="0.01"></div>
+                <div class="form-group"><label>Prazo (Meses)</label><input type="number" id="f-months" class="form-control" value="${w.content.periodMonths||''}"></div>
+                <div class="form-group"><label>Data Início</label><input type="date" id="f-date" class="form-control" value="${w.content.startDate||new Date().toISOString().split('T')[0]}"></div>
+            `;
+        }
+        else if (type === 'health_weight_register') {
+            title.innerText = "Novo Registo de Peso";
+            html = `
+                <div class="form-group"><label>Peso Hoje (kg)</label><input type="number" id="f-weight" class="form-control" step="0.1" autofocus></div>
+                <div class="form-group"><label>Data</label><input type="date" id="f-date" class="form-control" value="${new Date().toISOString().split('T')[0]}"></div>
+            `;
+        }
+        else if (type === 'health_food') {
+            const d = state.items.find(i=>i.type === 'health_food') || {content:{}};
+            title.innerText = "Plano Alimentar";
+            html = `
+                <div style="display:grid; grid-template-columns:1fr 2fr; gap:10px; margin-bottom:15px;">
+                    <input type="time" id="f-bt" class="form-control" value="${d.content.bt||'08:00'}">
+                    <textarea id="f-b" class="form-control" placeholder="Café da Manhã">${d.content.b||''}</textarea>
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 2fr; gap:10px; margin-bottom:15px;">
+                    <input type="time" id="f-lt" class="form-control" value="${d.content.lt||'12:30'}">
+                    <textarea id="f-l" class="form-control" placeholder="Almoço">${d.content.l||''}</textarea>
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 2fr; gap:10px; margin-bottom:15px;">
+                    <input type="time" id="f-dt" class="form-control" value="${d.content.dt||'19:30'}">
+                    <textarea id="f-d" class="form-control" placeholder="Jantar">${d.content.d||''}</textarea>
+                </div>
+                <div style="display:flex; gap:10px; align-items:center; background:var(--off-white); padding:10px; border-radius:12px;">
+                    <b>Jejum:</b>
+                    <input type="time" id="f-fs" class="form-control" value="${d.content.fs||'20:00'}">
+                    <span>até</span>
+                    <input type="time" id="f-fe" class="form-control" value="${d.content.fe||'08:00'}">
+                </div>
+            `;
+        }
+
+        body.innerHTML = html;
+        saveBtn.onclick = () => handleSave(type, extra);
+    }
+
+    async function handleSave(type, extra) {
+        const getVal = id => document.getElementById(id).value;
+        
+        if (type === 'custom_area') {
+            state.items.push({ id: 'area_'+Date.now(), parentId: 'root', type: 'custom_area', name: getVal('f-name'), icon: 'layout' });
+        }
+        else if (type === 'visionboard') {
+            state.items.push({ id: 'vb_'+Date.now(), parentId: state.path[state.path.length-1], type: 'visionboard', name: getVal('f-name'), content: { images: [] } });
+        }
+        else if (type === 'vision_add') {
+            const file = document.getElementById('f-img').files[0];
+            const caption = getVal('f-cap');
+            if(!file) return alert("Selecione uma imagem");
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const vb = state.items.find(i => i.id === extra);
+                vb.content.images.push({ data: e.target.result, caption: caption });
+                save();
+                closeModal();
+            };
+            reader.readAsDataURL(file);
+            return;
+        }
+        else if (type === 'health_weight_config') {
+            let hw = state.items.find(i=>i.type === 'health_weight');
+            const data = { startWeight: getVal('f-start'), target: getVal('f-target'), height: getVal('f-height'), periodMonths: getVal('f-months'), startDate: getVal('f-date') };
+            if(!hw) state.items.push({ id: 'hw_1', type: 'health_weight', parentId: 'saude', name: 'Peso', content: { ...data, history: [] } });
+            else hw.content = { ...hw.content, ...data };
+        }
+        else if (type === 'health_weight_register') {
+            const hw = state.items.find(i=>i.type === 'health_weight');
+            hw.content.history.push({ id: 'w_'+Date.now(), date: getVal('f-date'), weight: getVal('f-weight') });
+        }
+        else if (type === 'health_food') {
+            let hf = state.items.find(i=>i.type === 'health_food');
+            const data = { bt: getVal('f-bt'), b: getVal('f-b'), lt: getVal('f-lt'), l: getVal('f-l'), dt: getVal('f-dt'), d: getVal('f-d'), fs: getVal('f-fs'), fe: getVal('f-fe') };
+            if(!hf) state.items.push({ id: 'hf_1', type: 'health_food', parentId: 'saude', name: 'Dieta', content: data });
+            else hf.content = data;
+        }
+
+        save();
+        closeModal();
+    }
+
+    function closeModal() {
+        document.getElementById('modal-overlay').style.display = 'none';
+    }
+
+    function showLightbox(src) {
+        const lb = document.getElementById('lightbox');
+        document.getElementById('lightbox-img').src = src;
+        lb.style.display = 'flex';
+    }
+
+    function editWeightEntry(id) {
+        const hw = state.items.find(i=>i.type==='health_weight');
+        const entry = hw.content.history.find(h=>h.id===id);
+        const newW = prompt("Novo peso:", entry.weight);
+        if(newW) {
+            entry.weight = newW;
+            save();
+        }
+    }
+
+    function deleteWeightEntry(id) {
+        if(!confirm("Apagar registo?")) return;
+        const hw = state.items.find(i=>i.type==='health_weight');
+        hw.content.history = hw.content.history.filter(h=>h.id !== id);
+        save();
+    }
+
+    function deleteVisionImg(vbId, idx) {
+        if(!confirm("Apagar imagem?")) return;
+        const vb = state.items.find(i=>i.id===vbId);
+        vb.content.images.splice(idx, 1);
+        save();
+    }
+
+    function deleteItem(id, e) {
+        e.stopPropagation();
+        if(!confirm("Eliminar esta área permanentES?")) return;
+        state.items = state.items.filter(i=>i.id !== id);
+        save();
+    }
+
+    function toggleMenu() {
+        const menu = document.getElementById('create-menu');
+        const icon = document.getElementById('fab-icon');
+        const isOpen = menu.style.display === 'block';
+        menu.style.display = isOpen ? 'none' : 'block';
+        icon.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(45deg)';
+    }
+
+    function exportData() {
+        const blob = new Blob([JSON.stringify(state.items)], {type: 'application/json'});
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `backup_organizer_${new Date().toISOString().slice(0,10)}.json`;
+        a.click();
+    }
+
+    function importData() {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.onchange = (e) => {
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                state.items = JSON.parse(ev.target.result);
+                save();
+            };
+            reader.readAsText(e.target.files[0]);
+        };
+        input.click();
+    }
+
+    function showToast(msg) {
+        alert(msg); // Placeholder para sistema de toasts premium
+    }
+
+    // --- Clock ---
+    setInterval(() => {
+        const now = new Date();
+        document.getElementById('clock').innerText = now.toLocaleDateString('pt-PT', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+    }, 1000);
+
+    // Init
+    render();
 </script>
 </body>
 </html>
