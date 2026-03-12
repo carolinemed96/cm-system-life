@@ -1,77 +1,3 @@
-<?php
-/**
- * Arquitetura de Software Híbrida (API + SPA)
- * Padrão de Alta Performance / UX Refinada
- */
-
-session_start();
-
-// Configurações Globais
-define('DB_FILE', 'data_organizer_premium_secure.txt');
-define('APP_VERSION', '1.0.0');
-
-// 1. SEGURANÇA: Geração Automática de .htaccess
-if (!file_exists('.htaccess')) {
-    $htaccessRules = <<<HTACCESS
-# Proteção Avançada do Sistema
-Options -Indexes
-<FilesMatch "\.(txt|md|json)$">
-    Order allow,deny
-    Deny from all
-</FilesMatch>
-
-# Rotas Limpas (Opcional, prepara para escalabilidade)
-RewriteEngine On
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ index.php [L,QSA]
-HTACCESS;
-    file_put_contents('.htaccess', $htaccessRules);
-}
-
-// 2. INICIALIZAÇÃO DO BANCO DE DADOS (TXT)
-if (!file_exists(DB_FILE)) {
-    $baseData = json_encode(['items' => []], JSON_UNESCAPED_UNICODE);
-    file_put_contents(DB_FILE, $baseData);
-}
-
-// 3. API RESTful INTERNA (AJAX Handler)
-if (isset($_GET['api_endpoint'])) {
-    header('Content-Type: application/json; charset=utf-8');
-    $method = $_SERVER['REQUEST_METHOD'];
-
-    if ($method === 'GET') {
-        // Leitura de alta performance
-        if (file_exists(DB_FILE)) {
-            echo file_get_contents(DB_FILE);
-        } else {
-            echo json_encode(['items' => []]);
-        }
-        exit;
-    }
-
-    if ($method === 'POST') {
-        // Proteção contra concorrência usando File Locking (flock)
-        $input = json_decode(file_get_contents('php://input'), true);
-        
-        if (isset($input['items'])) {
-            $fp = fopen(DB_FILE, 'c');
-            if (flock($fp, LOCK_EX)) {
-                ftruncate($fp, 0); // Limpa o arquivo
-                fwrite($fp, json_encode(['items' => $input['items']], JSON_UNESCAPED_UNICODE));
-                fflush($fp);
-                flock($fp, LOCK_UN);
-            }
-            fclose($fp);
-            echo json_encode(['status' => 'success', 'message' => 'Sincronizado com sucesso']);
-        } else {
-            http_response_code(400);
-            echo json_encode(['status' => 'error', 'message' => 'Payload inválido']);
-        }
-        exit;
-    }
-}
-?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -266,7 +192,7 @@ if (isset($_GET['api_endpoint'])) {
 
 <div id="loading-screen" style="position:fixed; top:0; left:0; width:100%; height:100%; background:var(--off-white); z-index:9999; display:flex; flex-direction:column; justify-content:center; align-items:center;">
     <div class="monogram" style="font-size: 2rem;">CM</div>
-    <div class="brand-name" style="margin-top:10px; opacity:0.6">Sincronizando Sistema...</div>
+    <div class="brand-name" style="margin-top:10px; opacity:0.6">Carregando Sistema...</div>
 </div>
 
 <div id="toast-container"></div>
@@ -338,12 +264,12 @@ if (isset($_GET['api_endpoint'])) {
     <button onclick="window.toggleSelectionMode()" style="background:white; border:none; color:var(--chocolate); padding:8px 16px; border-radius:20px; cursor:pointer; font-size:0.85rem; font-weight:bold">Cancelar</button>
 </div>
 
-<div style="position:fixed; bottom:10px; right:10px; opacity:0.3; font-size:0.7rem; pointer-events:none" id="sys-status">SISTEMA ONLINE</div>
+<div style="position:fixed; bottom:10px; right:10px; opacity:0.3; font-size:0.7rem; pointer-events:none" id="sys-status">ARMAZENAMENTO LOCAL</div>
 
 <script>
     // --- Access Control (Simulated Hash as requested) ---
     const _0x5a1b = (s) => s.split('').reduce((a,b)=>{a=((a<<5)-a)+b.charCodeAt(0);return a&a},0);
-    const _0x1c8a = 1509442; // FIX: O hash real para a senha "1234" corrigido
+    const _0x1c8a = 1509442; // FIX: O hash real para a senha "1234"
 
     window.checkAccess = () => {
         const inp = document.getElementById('lock-pass');
@@ -371,7 +297,7 @@ if (isset($_GET['api_endpoint'])) {
         if (e.key === 'Enter') window.checkAccess();
     });
 
-    // --- State & Config (Optimistic UI Architecture) ---
+    // --- State & Config ---
     const ICON_LIB = ['folder', 'file-text', 'star', 'heart', 'briefcase', 'coffee', 'sun', 'moon', 'music', 'camera', 'shopping-bag', 'gift', 'map', 'compass', 'anchor', 'feather', 'key', 'lock', 'bell', 'bookmark', 'image'];
     const BIBLE_BOOKS = [
         "Gênesis", "Êxodo", "Levítico", "Números", "Deuteronômio", "Josué", "Juízes", "Rute", "1 Samuel", "2 Samuel", "1 Reis", "2 Reis", "1 Crônicas", "2 Crônicas", "Esdras", "Neemias", "Ester", "Jó", "Salmos", "Provérbios", "Eclesiastes", "Cânticos", "Isaías", "Jeremias", "Lamentações", "Ezequiel", "Daniel", "Oseias", "Joel", "Amós", "Obadias", "Jonas", "Miqueias", "Naum", "Habacuque", "Sofonias", "Ageu", "Zacarias", "Malaquias", "Mateus", "Marcos", "Lucas", "João", "Atos", "Romanos", "1 Coríntios", "2 Coríntios", "Gálatas", "Efésios", "Filipenses", "Colossenses", "1 Tessalonicenses", "2 Tessalonicenses", "1 Timóteo", "2 Timóteo", "Tito", "Filemom", "Hebreus", "Tiago", "1 Pedro", "2 Pedro", "1 João", "2 João", "3 João", "Judas", "Apocalipse"
@@ -399,26 +325,26 @@ if (isset($_GET['api_endpoint'])) {
         selectedIcon: null
     };
 
-    // --- API & Persistence Layer (AJAX) ---
-    async function apiRequest(method, payload = null) {
+    // --- NOVO: Persistência LocalStorage ---
+    const STORAGE_KEY = 'cm_premium_data';
+
+    function loadData() {
         try {
-            const options = { method: method, headers: {'Content-Type': 'application/json'} };
-            if (payload) options.body = JSON.stringify(payload);
-            const res = await fetch('?api_endpoint=1', options);
-            return await res.json();
+            const data = localStorage.getItem(STORAGE_KEY);
+            return data ? JSON.parse(data) : null;
         } catch (e) {
-            console.error("API Error", e);
-            window.showToast("Erro de comunicação com o servidor", "error");
+            console.error("Erro ao carregar dados locais", e);
             return null;
         }
     }
 
-    async function pushStateToServer() {
-        // Debounce simple saving mechanism to avoid flooding server
-        if(window.saveTimeout) clearTimeout(window.saveTimeout);
-        window.saveTimeout = setTimeout(async () => {
-            await apiRequest('POST', { items: state.items });
-        }, 300);
+    function saveData() {
+        try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(state.items));
+        } catch (e) {
+            console.error("Erro ao salvar localmente", e);
+            window.showToast("Ocorreu um erro ao gravar. Se enviou imagens pesadas, o espaço do navegador pode estar cheio.", "error");
+        }
     }
 
     // --- Helper Functions ---
@@ -467,10 +393,12 @@ if (isset($_GET['api_endpoint'])) {
             if(el) el.innerText = now.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' });
         }, 1000);
 
-        // Fetch Data from Backend
-        const data = await apiRequest('GET');
-        if (data && data.items) {
-            state.items = data.items;
+        // Fetch Data from Local Storage instead of Backend
+        const savedItems = loadData();
+        if (savedItems && Array.isArray(savedItems)) {
+            state.items = savedItems;
+        } else {
+            state.items = []; // First run
         }
 
         ensureBaseFolders();
@@ -494,7 +422,7 @@ if (isset($_GET['api_endpoint'])) {
                 changed = true;
             }
         });
-        if(changed) pushStateToServer();
+        if(changed) saveData();
     };
     
     // --- Navigation & Routing ---
@@ -759,7 +687,6 @@ if (isset($_GET['api_endpoint'])) {
                     const isSelected = state.selectedIds.includes(i.id);
                     const icon = i.icon || ({folder:'folder', note:'file-text', checklist:'list-checks', checklist_sum:'calculator', bank:'credit-card', social:'at-sign', file:'paperclip', visionboard:'image'}[i.type] || 'file');
                     if (i.type === 'file') {
-                        // FIX: Added optional chaining to prevent crashes on legacy files without fileType
                         const isImg = i.content.fileType?.startsWith('image') || /\.(jpg|jpeg|png|gif|bmp|webp|heic)$/i.test(i.name);
                         return `<div class="card ${state.selectionMode?'selection-mode':''} ${isSelected?'selected':''}" style="display:block; padding:0; overflow:visible; position:relative;" onclick="${state.selectionMode ? `window.toggleSelectItem('${i.id}')` : `window.openFilePreview('${i.id}')`}">
                             ${isImg ? `<div class="file-card-image-container"><img src="${i.content.data}" class="file-card-image" onerror="this.style.display='none'"></div>` : `<div style="padding:30px; text-align:center"><i data-lucide="${icon}" style="color:#999; width:40px; height:40px"></i></div>`}
@@ -900,7 +827,7 @@ if (isset($_GET['api_endpoint'])) {
         return html;
     };
 
-    // --- Action Functions (Adapting Firebase methods to State push) ---
+    // --- Action Functions ---
     window.renameItem = (id, name) => { window.openModal('rename', id); };
     window.replaceItem = (id, type) => { window.openModal(type, id); };
     window.moveItem = (id) => {
@@ -909,7 +836,7 @@ if (isset($_GET['api_endpoint'])) {
              const idx = state.items.findIndex(i => i.id === id);
              if(idx > -1) {
                  state.items[idx].parentId = newParent;
-                 pushStateToServer();
+                 saveData();
                  window.showToast("Item movido.");
                  render();
              }
@@ -930,7 +857,7 @@ if (isset($_GET['api_endpoint'])) {
     window.confirmDelete = () => {
         if(state.itemToDelete) {
             state.items = state.items.filter(i => i.id !== state.itemToDelete);
-            pushStateToServer();
+            saveData();
             window.closeDeleteModal();
             window.showToast("Item excluído.");
             render();
@@ -953,7 +880,7 @@ if (isset($_GET['api_endpoint'])) {
     window.confirmBatchDelete = () => {
         if(confirm(`Excluir ${state.selectedIds.length} itens?`)) {
             state.items = state.items.filter(i => !state.selectedIds.includes(i.id));
-            pushStateToServer();
+            saveData();
             window.toggleSelectionMode();
             window.showToast("Itens excluídos.");
             render();
@@ -968,31 +895,31 @@ if (isset($_GET['api_endpoint'])) {
         const item = state.items.find(i => i.id === id);
         if(!item.content.items) item.content.items = [];
         item.content.items.push({ text: '', checked: false, val: 0 });
-        pushStateToServer();
+        saveData();
         render();
     };
     window.toggleCLItem = (id, idx) => {
         const item = state.items.find(i => i.id === id);
         item.content.items[idx].checked = !item.content.items[idx].checked;
-        pushStateToServer();
+        saveData();
         render();
     };
     window.deleteCLItem = (id, idx) => {
         const item = state.items.find(i => i.id === id);
         item.content.items = item.content.items.filter((_, i) => i !== idx);
-        pushStateToServer();
+        saveData();
         render();
     };
     window.updateCL = (id, idx, field, val) => {
         const item = state.items.find(i => i.id === id);
         item.content.items[idx][field] = val;
-        pushStateToServer();
+        saveData();
     };
 
     window.togglePaid = (id) => {
         const item = state.items.find(i => i.id === id);
         item.content.paid = !item.content.paid;
-        pushStateToServer();
+        saveData();
         render();
     };
     window.makeDeposit = (id) => {
@@ -1000,7 +927,7 @@ if (isset($_GET['api_endpoint'])) {
         if(!val) return;
         const item = state.items.find(i => i.id === id);
         item.content.saved = (parseFloat(item.content.saved)||0) + val;
-        pushStateToServer();
+        saveData();
         render();
     };
     
@@ -1057,7 +984,7 @@ if (isset($_GET['api_endpoint'])) {
         if(newCaption === null) return;
         
         item.content.images[idx].caption = newCaption;
-        pushStateToServer();
+        saveData();
         render();
     };
 
@@ -1149,7 +1076,6 @@ if (isset($_GET['api_endpoint'])) {
                 const icon = i.icon || ({note:'file-text', file:'paperclip'}[i.type] || 'file');
                 let cardHTML = '';
                 if(i.type === 'file') {
-                      // FIX: Added optional chaining to prevent crashes on legacy files
                       const isImg = i.content.fileType?.startsWith('image') || /\.(jpg|jpeg|png|gif|bmp|webp|heic)$/i.test(i.name);
                       cardHTML = `<div class="card ${state.selectionMode?'selection-mode':''} ${isSelected?'selected':''}" style="display:block; padding:0; overflow:visible; position:relative;" onclick="${state.selectionMode ? `window.toggleSelectItem('${i.id}')` : `window.openFilePreview('${i.id}')`}">
                         ${isImg ? `<div class="file-card-image-container"><img src="${i.content.data}" class="file-card-image" onerror="this.style.display='none'"></div>` : `<div style="padding:30px; text-align:center"><i data-lucide="${icon}" style="color:#999; width:40px; height:40px"></i></div>`}
@@ -1235,7 +1161,6 @@ if (isset($_GET['api_endpoint'])) {
             const isSelected = state.selectedIds.includes(i.id);
             const icon = i.icon || ({folder:'folder', note:'file-text', checklist:'list-checks', checklist_sum:'calculator', bank:'credit-card', social:'at-sign', file:'paperclip', visionboard:'image'}[i.type] || 'file');
             if (i.type === 'file') {
-                // FIX: Added optional chaining to prevent crashes on legacy files
                 const isImg = i.content.fileType?.startsWith('image') || /\.(jpg|jpeg|png|gif|bmp|webp|heic)$/i.test(i.name);
                 return `<div class="card ${state.selectionMode?'selection-mode':''} ${isSelected?'selected':''}" style="display:block; padding:0; overflow:visible; position:relative;" onclick="${state.selectionMode ? `window.toggleSelectItem('${i.id}')` : `window.openFilePreview('${i.id}')`}">
                     ${isImg ? `<div class="file-card-image-container"><img src="${i.content.data}" class="file-card-image" onerror="this.style.display='none'"></div>` : `<div style="padding:30px; text-align:center"><i data-lucide="${icon}" style="color:#999; width:40px; height:40px"></i></div>`}
@@ -1265,7 +1190,6 @@ if (isset($_GET['api_endpoint'])) {
         downloadBtn.href = item.content.data;
         downloadBtn.download = item.name;
 
-        // FIX: Added optional chaining here as well
         const isImg = item.content.fileType?.startsWith('image') || /\.(jpg|jpeg|png|gif|bmp|webp|heic)$/i.test(item.name);
         if (isImg) { content.innerHTML = `<img src="${item.content.data}" alt="${item.name}">`; } 
         else if (item.content.fileType === 'application/pdf') { content.innerHTML = `<iframe src="${item.content.data}"></iframe>`; } 
@@ -1334,7 +1258,7 @@ if (isset($_GET['api_endpoint'])) {
         let newCurrent = history.length > 0 ? history[0].weight : wItem.content.startWeight;
         wItem.content.history = history;
         wItem.content.current = newCurrent;
-        pushStateToServer();
+        saveData();
         window.closeModal(); window.showToast("Excluído.");
         render();
     };
@@ -1372,9 +1296,9 @@ if (isset($_GET['api_endpoint'])) {
                     const imported = JSON.parse(ev.target.result);
                     if (!Array.isArray(imported)) throw new Error("Formato inválido");
                     
-                    if (confirm("Isso substituirá TODOS os dados atuais. Confirmar?")) {
+                    if (confirm("Isso substituirá TODOS os dados atuais neste dispositivo. Confirmar?")) {
                         state.items = imported;
-                        pushStateToServer();
+                        saveData();
                         window.showToast("Dados restaurados com sucesso!");
                         render();
                     }
@@ -1424,7 +1348,7 @@ if (isset($_GET['api_endpoint'])) {
     window.resetCycle = () => {
         if (!confirm("Tem certeza? Isso apagará TODO o histórico e configurações do ciclo menstrual.")) return;
         state.items = state.items.filter(i => i.type !== 'menstrual_profile' && i.type !== 'menstrual_cycle');
-        pushStateToServer();
+        saveData();
         window.closeModal();
         window.showToast("Ciclo resetado com sucesso.");
         render(); 
@@ -1433,7 +1357,7 @@ if (isset($_GET['api_endpoint'])) {
     window.deleteMenstrualLog = (id) => {
         if(!confirm("Excluir este registro?")) return;
         state.items = state.items.filter(i => i.id !== id);
-        pushStateToServer();
+        saveData();
         window.openModal('menstrual_history_list'); 
         window.showToast("Registro excluído");
         render(); 
@@ -1442,7 +1366,7 @@ if (isset($_GET['api_endpoint'])) {
     window.resetWeightData = () => {
         if (!confirm("Tem certeza? Isso apagará TODO o histórico de peso.")) return;
         state.items = state.items.filter(i => i.type !== 'health_weight');
-        pushStateToServer();
+        saveData();
         window.closeModal();
         window.showToast("Dados resetados.");
         render();
@@ -1634,7 +1558,6 @@ if (isset($_GET['api_endpoint'])) {
                     loadedImages.push(...results);
                 }
                 
-                // FIX: Impede que as imagens antigas sejam apagadas se o usuário editar apenas o título sem enviar arquivos
                 data.content = { 
                     images: loadedImages.length > 0 ? loadedImages : (state.editingId ? state.items.find(i => i.id === state.editingId).content.images : []) 
                 };
@@ -1651,7 +1574,7 @@ if (isset($_GET['api_endpoint'])) {
                     reader.onload = async (e) => {
                         const fileData = { id: state.editingId || generateId(), name: name || f.name, type: 'file', content: {data:e.target.result, fileType:f.type, caption: caption}, createdAt: Date.now(), parentId };
                         updateOrAdd(fileData);
-                        pushStateToServer();
+                        saveData();
                         state.editingId = null; window.closeModal(); window.showToast("Arquivo salvo!");
                         render();
                     };
@@ -1736,7 +1659,7 @@ if (isset($_GET['api_endpoint'])) {
                 else state.items.push({ id: generateId(), parentId: 'saude', type: 'menstrual_profile', name: 'Perfil Mulher', content });
             }
 
-            pushStateToServer(); // Trigger async save
+            saveData(); // Trigger local save
             window.showToast("Salvo!"); window.closeModal(); render();
         } catch(e) { console.error(e); window.showToast("Erro: " + e.message, "error"); }
     };
