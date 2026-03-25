@@ -22,9 +22,13 @@
             --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             --shadow: 0 10px 30px -5px rgba(62, 39, 35, 0.1);
             --shadow-hover: 0 15px 35px -5px rgba(197, 160, 89, 0.2);
-            --period-line: #5D4037; 
-            --heart-safe: #C5A059; 
-            --heart-unsafe: #5D4037;
+            
+            /* Menstrual App Colors */
+            --period-bg: #FFEBEE;
+            --period-main: #E91E63;
+            --fertile-bg: #FFF8E1;
+            --fertile-main: #FFB300;
+            --ovulation-main: #448AFF;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', 'Segoe UI', sans-serif; }
@@ -50,152 +54,61 @@
         .breadcrumb-item:hover { background: #f5f5f5; color: var(--gold); }
 
         /* --- Main --- */
-        main { flex: 1; padding: 25px 5%; max-width: 1200px; margin: 0 auto; width: 100%; position: relative; animation: fadeIn 0.4s ease-out; overflow: visible !important; }
-        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px; position: relative; z-index: 20; }
-        .section-header h2 { color: var(--chocolate); }
+        main { flex: 1; padding: 25px 5%; max-width: 1200px; margin: 0 auto; width: 100%; position: relative; animation: fadeIn 0.4s ease-out; }
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px; }
 
-        /* --- Cards & Stacking Logic --- */
-        .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; overflow: visible !important; contain: none !important; }
-        .card { background: var(--bg-card); padding: 25px; border-radius: 24px; border: 1px solid rgba(0,0,0,0.03); box-shadow: var(--shadow); cursor: pointer; transition: var(--transition); display: flex; align-items: center; gap: 15px; position: relative; overflow: visible !important; z-index: 1; }
-        .card:hover { transform: translateY(-4px); box-shadow: var(--shadow-hover); border-color: rgba(197, 160, 89, 0.3); z-index: 10; }
-
-        .card:has(.create-menu-dropdown.show), .finance-item:has(.create-menu-dropdown.show), .piggy-card:has(.create-menu-dropdown.show), div:has(> .create-menu-dropdown.show) { z-index: 2147483647 !important; transform: none !important; filter: none !important; opacity: 1 !important; perspective: none !important; clip-path: none !important; mask: none !important; position: relative !important; box-shadow: 0 20px 50px rgba(0,0,0,0.2) !important; overflow: visible !important; }
-        
+        /* --- Cards --- */
+        .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        .card { background: var(--bg-card); padding: 25px; border-radius: 24px; box-shadow: var(--shadow); cursor: pointer; transition: var(--transition); display: flex; align-items: center; gap: 15px; position: relative; border: 1px solid transparent; }
+        .card:hover { transform: translateY(-4px); box-shadow: var(--shadow-hover); border-color: rgba(197, 160, 89, 0.3); }
         .card.selected { border: 2px solid var(--success); background-color: #F1F8E9; }
-        .card.selection-mode { cursor: pointer; }
-        .selection-check { position: absolute; top: 15px; right: 15px; color: var(--success); display: none; }
-        .card.selected .selection-check { display: block; }
 
         /* --- Buttons --- */
-        .btn-add { background: var(--chocolate); color: white; border: none; padding: 10px 24px; border-radius: 30px; cursor: pointer; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 8px; font-weight: 600; box-shadow: 0 4px 12px rgba(62, 39, 35, 0.2); transition: 0.2s; }
+        .btn-add { background: var(--chocolate); color: white; border: none; padding: 10px 24px; border-radius: 30px; cursor: pointer; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 8px; font-weight: 600; transition: 0.2s; }
         .btn-add:hover { background: var(--chocolate-light); transform: translateY(-1px); }
         .btn-cancel { background: #f5f5f5; color: #666; border: 1px solid #eee; padding: 10px 24px; border-radius: 30px; cursor: pointer; font-size: 0.8rem; font-weight: 600; transition: 0.2s; }
-        .btn-cancel:hover { background: #e0e0e0; }
-        .btn-check { width: 32px; height: 32px; border-radius: 50%; border: 2px solid #ddd; display: flex; align-items: center; justify-content: center; cursor: pointer; color: transparent; transition: 0.2s; }
-        .btn-check.active { background: var(--success); border-color: var(--success); color: white; }
+
+        /* --- Menstrual Calendar Specifics --- */
+        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
+        .cal-day { aspect-ratio: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.8rem; border-radius: 50%; position: relative; cursor: pointer; }
+        .cal-day.period { background-color: var(--period-main) !important; color: white !important; font-weight: bold; }
+        .cal-day.predicted-period { background-color: var(--period-bg); border: 2px dashed var(--period-main); color: var(--period-main); }
+        .cal-day.fertile { background-color: var(--fertile-bg); border-bottom: 2px solid var(--fertile-main); }
+        .cal-day.ovulation { border: 2px solid var(--ovulation-main); font-weight: bold; }
+        .cal-day.today { box-shadow: inset 0 0 0 2px var(--chocolate); }
         
-        /* --- Floating Dashboard Button --- */
-        .floating-star-btn { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; background: var(--gold); border-radius: 50%; box-shadow: 0 10px 30px rgba(197, 160, 89, 0.5); display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 1000; animation: pulse-gold 3s infinite; transition: transform 0.3s; }
-        .floating-star-btn:hover { transform: scale(1.1) rotate(15deg); }
-        @keyframes pulse-gold { 0% { box-shadow: 0 0 0 0 rgba(197, 160, 89, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(197, 160, 89, 0); } 100% { box-shadow: 0 0 0 0 rgba(197, 160, 89, 0); } }
+        .symptom-dot { width: 4px; height: 4px; background: var(--gold); border-radius: 50%; position: absolute; bottom: 4px; }
 
-        /* --- Lock Screen --- */
-        #lock-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #FDFBF7; z-index: 100000; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.5s; }
-        .lock-container { text-align: center; animation: fadeIn 0.5s ease-out; }
-        .lock-input { margin-top: 20px; padding: 10px 15px; font-size: 1.2rem; letter-spacing: 5px; text-align: center; border: 1px solid var(--gold); border-radius: 30px; outline: none; width: 200px; background: white; color: var(--chocolate); }
-        .lock-btn { margin-top: 15px; background: var(--chocolate); color: white; border: none; padding: 10px 30px; border-radius: 30px; cursor: pointer; font-weight: 600; transition: 0.2s; }
-        .lock-btn:hover { background: var(--chocolate-light); }
+        /* --- Weight Monitor Hero --- */
+        .weight-hero { text-align: center; padding: 20px; background: linear-gradient(145deg, #ffffff, #fdfbf7); border-radius: 30px; border: 1px solid rgba(197, 160, 89, 0.2); margin-bottom: 15px; }
+        .weight-hero-title { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; color: #888; margin-bottom: 5px; font-weight: 700; }
+        .weight-hero-value { font-size: 3rem; font-weight: 800; color: var(--chocolate); font-family: 'Playfair Display', serif; }
+        .weight-hero-unit { font-size: 1rem; color: var(--gold); }
 
-        /* --- Modals --- */
-        #modal-overlay, #delete-modal-overlay, #file-preview-modal, #share-modal { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(62, 39, 35, 0.4); backdrop-filter: blur(4px); display: none; justify-content: center; align-items: center; z-index: 99999; opacity: 0; transition: opacity 0.3s; }
-        #modal-overlay.open, #delete-modal-overlay.open, #file-preview-modal.open, #share-modal.open { opacity: 1; }
-        .modal { background: white; padding: 35px; border-radius: 24px; width: 90%; max-width: 480px; max-height: 90vh; overflow-y: auto; transform: scale(0.95); transition: transform 0.3s; }
-        .modal.large { max-width: 600px; }
-        #modal-overlay.open .modal, #delete-modal-overlay.open .modal, #file-preview-modal.open .modal, #share-modal.open .modal { transform: scale(1); }
+        /* --- Floating UI --- */
+        .floating-star-btn { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; background: var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 1000; box-shadow: 0 10px 20px rgba(197,160,89,0.3); }
         
-        .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; font-size: 0.8rem; margin-bottom: 8px; color: var(--chocolate); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
-        .form-control { width: 100%; padding: 14px; border: 1px solid #eee; border-radius: 12px; font-size: 0.95rem; background: #fafafa; outline: none; }
-        .form-control:focus { border-color: var(--gold); background: #fff; box-shadow: 0 0 0 3px rgba(197, 160, 89, 0.1); }
-        textarea.form-control { min-height: 120px; resize: vertical; }
-
-        /* --- Menus --- */
-        .create-menu-container { position: relative; overflow: visible !important; }
-        .create-menu-container:has(.create-menu-dropdown.show) { z-index: 2147483647 !important; }
-        .create-menu-dropdown { position: absolute; top: 110%; right: 0; background: white; border: 1px solid #f0f0f0; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.3) !important; width: 240px; display: none; z-index: 2147483647 !important; overflow: hidden; animation: fadeIn 0.1s ease; }
-        .create-menu-dropdown.show { display: block; }
-        .create-menu-item { padding: 12px 20px; cursor: pointer; display: flex; align-items: center; gap: 12px; font-size: 0.9rem; color: #555; transition: 0.2s; }
-        .create-menu-item:hover { background: #fdfaf5; color: var(--chocolate); padding-left: 25px; }
-
-        /* --- Toasts --- */
-        #toast-container { position: fixed; top: 20px; right: 20px; z-index: 99999; display: flex; flex-direction: column; gap: 10px; }
-        .toast { background: white; padding: 15px 25px; border-radius: 50px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); display: flex; align-items: center; gap: 10px; font-size: 0.9rem; font-weight: 600; border-left: 4px solid #333; animation: slideInRight 0.3s; }
-        .toast.success { border-color: var(--success); color: var(--success); }
-        .toast.error { border-color: var(--danger); color: var(--danger); }
-
-        /* --- Module Specifics --- */
-        .summary-card { background: linear-gradient(135deg, var(--chocolate), #2D1B18); color: white; padding: 25px; border-radius: 16px; margin-bottom: 25px; display: flex; justify-content: space-around; text-align: center; }
-        .summary-item b { display: block; font-size: 1.4rem; color: var(--gold); margin-top: 5px; }
-        .finance-list { background: #fff; border-radius: 16px; overflow: visible !important; border: 1px solid #f9f9f9; }
-        .finance-item { display: grid; grid-template-columns: 50px 1fr auto 40px; padding: 20px; border-bottom: 1px solid #f0f0f0; align-items: center; position: relative; overflow: visible !important; }
-        .finance-item.paid { background-color: #fafafa; }
-        .finance-item.paid .item-text, .finance-item.paid .amount { opacity: 0.4; text-decoration: line-through; }
-        .piggy-card { background: white; border-radius: 20px; padding: 25px; box-shadow: var(--shadow); position: relative; overflow: visible !important; }
-        .progress-grid { display: grid; grid-template-columns: repeat(20, 1fr); gap: 3px; margin: 15px 0; }
-        .progress-block { height: 8px; background: #f0f0f0; border-radius: 2px; }
-        .progress-block.filled { background: var(--gold); }
+        #modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); display: none; justify-content: center; align-items: center; z-index: 9999; }
+        .modal { background: white; padding: 30px; border-radius: 24px; width: 90%; max-width: 450px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-size: 0.8rem; font-weight: 700; margin-bottom: 5px; color: var(--chocolate); }
+        .form-control { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #eee; outline: none; }
         
-        .weight-progress-bar { width: 100%; height: 8px; background: #eee; border-radius: 4px; overflow: hidden; margin-top: 8px; }
-        .weight-progress-fill { height: 100%; background: var(--gold); width: 0%; transition: width 0.5s ease; }
-        .weight-detail-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; margin: 15px 0; }
-        .weight-detail-table td { padding: 8px 0; border-bottom: 1px solid #f5f5f5; color: #555; }
-        .weight-detail-table td:last-child { text-align: right; font-weight: 600; color: var(--chocolate); }
-        .history-list { max-height: 200px; overflow-y: auto; margin-top: 15px; border-top: 1px solid #eee; }
-        .history-item { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #f9f9f9; font-size: 0.9rem; }
-        
-        /* Updated Minimalist Calendar Styles */
-        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-top: 10px; }
-        .cal-header { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; font-size: 0.65rem; font-weight: 700; color: var(--chocolate); margin-bottom: 5px; opacity: 0.8; }
-        .cal-day { aspect-ratio: 1/1; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 50%; font-size: 0.85rem; color: #555; cursor: pointer; position: relative; border: 1px solid transparent; transition: 0.2s; margin: 2px; box-sizing: border-box; }
-        .cal-day:hover { background: #fDFBF7; border-color: rgba(197, 160, 89, 0.3); }
-        .cal-day.today { font-weight: 800; color: var(--chocolate); background: rgba(197, 160, 89, 0.1); }
-        .cal-day.contra-active { border: 1px solid var(--gold); }
-        .cal-top-zone { position: absolute; top: 4px; width: 100%; display: flex; justify-content: center; align-items: center; gap: 2px; height: 6px; }
-        .cal-bottom-zone { position: absolute; bottom: 4px; width: 100%; display: flex; justify-content: center; align-items: center; gap: 2px; height: 6px; }
-        .cal-line-period { width: 14px; height: 2px; background-color: var(--period-line); border-radius: 1px; }
-        .cal-dot-fertile { width: 4px; height: 4px; background: var(--gold); border-radius: 50%; }
-        .cal-heart { width: 8px; height: 8px; }
-        .cal-heart.safe { color: var(--gold); fill: var(--gold); }
-        .cal-heart.unsafe { color: var(--heart-unsafe); fill: var(--heart-unsafe); }
-        
-        .verse-card { background: transparent; border: 1px solid rgba(197, 160, 89, 0.2); padding: 12px 15px; margin-bottom: 20px; border-radius: 12px; font-size: 0.85rem; color: #666; display: flex; flex-direction: column; gap: 4px; }
-        .verse-text { font-family: 'Georgia', serif; font-style: italic; color: var(--chocolate); line-height: 1.4; }
-        .verse-ref { font-weight: 700; font-size: 0.7rem; color: var(--gold); text-transform: uppercase; text-align: right; }
-        
-        #file-preview-content iframe { width: 100%; height: 500px; border: none; background: #eee; }
-        #file-preview-content img { max-width: 100%; height: auto; display: block; margin: 0 auto; }
-        
-        .time-navigator { display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 20px; }
-        .nav-btn { background: white; border: 1px solid #eee; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--chocolate); }
-        .nav-btn:hover { background: var(--gold); color: white; border-color: var(--gold); }
-        .current-date-label { font-family: 'Playfair Display', serif; font-size: 1.2rem; color: var(--chocolate); min-width: 180px; text-align: center; }
-
-        .icon-grid-selector { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-top: 10px; }
-        .icon-option { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border: 1px solid #eee; border-radius: 8px; cursor: pointer; transition: 0.2s; color: var(--gold); }
-        .icon-option:hover, .icon-option.selected { background: var(--off-white); border-color: var(--gold); transform: scale(1.1); }
-
-        .file-card-image-container { width: 100%; aspect-ratio: 4/5; overflow: hidden; border-radius: 12px 12px 0 0; background: #eee; position: relative; }
-        .file-card-image { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
-        .file-card-image:hover { transform: scale(1.05); }
-
-        .vision-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; margin-top: 15px; }
-        .vision-item { display: flex; flex-direction: column; gap: 8px; transition: transform 0.3s; cursor: pointer; }
-        .vision-item:hover { transform: scale(1.02); }
-        .vision-img { width: 100%; aspect-ratio: 3/4; object-fit: cover; border-radius: 16px; box-shadow: var(--shadow); }
-        .vision-caption { font-size: 0.75rem; text-align: center; color: var(--chocolate); font-weight: 600; min-height: 1rem; }
-
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes slideInRight { from { opacity: 0; transform: translateX(50px); } to { opacity: 1; transform: translateX(0); } }
 
-        #batch-actions-bar { position: fixed; bottom: 30px; left: 50%; transform: translate(-50%, 150px); background: var(--chocolate); color: white; padding: 15px 30px; border-radius: 40px; display: flex; align-items: center; gap: 20px; z-index: 5000; box-shadow: 0 10px 30px rgba(0,0,0,0.3); transition: transform 0.3s; }
+        .create-menu-dropdown { position: absolute; bottom: 70px; right: 0; background: white; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); display: none; width: 200px; overflow: hidden; }
+        .create-menu-dropdown.show { display: block; }
+        .create-menu-item { padding: 12px 20px; cursor: pointer; display: flex; align-items: center; gap: 10px; font-size: 0.9rem; }
+        .create-menu-item:hover { background: #fdfaf5; }
     </style>
 </head>
 <body>
 
-<div id="lock-screen">
+<div id="lock-screen" style="position:fixed; top:0; left:0; width:100%; height:100%; background:var(--off-white); z-index:10000; display:flex; flex-direction:column; justify-content:center; align-items:center;">
     <div class="monogram" style="font-size: 3rem; margin-bottom: 20px;">CM</div>
-    <div style="font-family: 'Playfair Display', serif; color: var(--chocolate); margin-bottom: 10px;">Caroline Medeiros</div>
-    <input type="password" id="lock-pass" class="lock-input" placeholder="Senha" maxlength="4" autocomplete="off" />
-    <button class="lock-btn" onclick="checkAccess()">Entrar</button>
-    <div id="lock-msg" style="color: var(--danger); margin-top: 10px; height: 20px; font-size: 0.8rem;"></div>
+    <input type="password" id="lock-pass" style="padding:15px; border-radius:30px; border:1px solid var(--gold); text-align:center; letter-spacing:5px;" placeholder="SENHA" maxlength="4">
+    <button class="btn-add" style="margin-top:20px;" onclick="checkAccess()">ENTRAR</button>
 </div>
-
-<div id="loading-screen" style="position:fixed; top:0; left:0; width:100%; height:100%; background:var(--off-white); z-index:9999; display:flex; flex-direction:column; justify-content:center; align-items:center;">
-    <div class="monogram" style="font-size: 2rem;">CM</div>
-    <div class="brand-name" style="margin-top:10px; opacity:0.6">Carregando Sistema...</div>
-</div>
-
-<div id="toast-container"></div>
 
 <header>
     <div class="monogram">CM</div>
@@ -209,1461 +122,330 @@
 
 <div id="modal-overlay">
     <div class="modal">
-        <h3 id="modal-title" style="text-align:center; margin-bottom: 25px; color: var(--chocolate); font-family: 'Playfair Display', serif;">Adicionar</h3>
+        <h3 id="modal-title" style="margin-bottom:20px;">Adicionar</h3>
         <div id="modal-form"></div>
-        <div id="modal-actions" style="margin-top: 30px; display: flex; gap: 12px; justify-content: flex-end;"></div>
+        <div id="modal-actions" style="margin-top:25px; display:flex; gap:10px; justify-content:flex-end;"></div>
     </div>
 </div>
 
-<div id="file-preview-modal">
-    <div class="modal large">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px">
-            <h3 style="color:var(--chocolate); font-family: 'Playfair Display', serif;" id="preview-filename">Arquivo</h3>
-            <div style="display:flex; gap:10px">
-                <a id="preview-download-btn" class="btn-add" style="padding:6px 12px; font-size:0.8rem; text-decoration:none"><i data-lucide="download" style="width:16px"></i> Download</a>
-                <button onclick="window.closePreviewModal()" style="background:none; border:none; cursor:pointer"><i data-lucide="x"></i></button>
-            </div>
-        </div>
-        <div id="file-preview-content" style="max-height:60vh; overflow-y:auto; text-align:center;"></div>
-        <div id="preview-caption" style="margin-top:15px; font-style:italic; color:#666; text-align:center;"></div>
-    </div>
-</div>
-
-<div id="share-modal">
-    <div class="modal">
-        <h3 style="text-align:center; color:var(--chocolate); font-family:'Playfair Display',serif; margin-bottom:20px">Compartilhar Item</h3>
-        <div style="background:#f9f9f9; padding:15px; border-radius:12px; border:1px solid #eee; margin-bottom:20px; font-size:0.9rem; word-break:break-all; color:#666" id="share-link-display"></div>
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px">
-            <button class="btn-add" style="justify-content:center" onclick="window.copyShareLink()"><i data-lucide="copy"></i> Copiar Link</button>
-            <button class="btn-add" style="justify-content:center; background:#25D366" onclick="window.shareDirectly()"><i data-lucide="share-2"></i> Enviar</button>
-        </div>
-        <button class="btn-cancel" style="width:100%; margin-top:15px" onclick="document.getElementById('share-modal').classList.remove('open'); setTimeout(()=>document.getElementById('share-modal').style.display='none',300)">Fechar</button>
-    </div>
-</div>
-
-<div id="delete-modal-overlay">
-    <div class="modal" style="text-align: center;">
-        <div style="display:flex; justify-content:center; margin-bottom:15px">
-            <div style="width:60px; height:60px; background:#FFEBEE; border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--danger)">
-                <i data-lucide="alert-triangle" style="width:30px; height:30px"></i>
-            </div>
-        </div>
-        <h3 style="color: var(--danger); margin-bottom: 10px;">Exclusão</h3>
-        <p id="delete-modal-text" style="margin-bottom: 25px; color: #666; line-height: 1.5;">Tem certeza que deseja apagar este item?</p>
-        <div style="display: flex; gap: 10px; justify-content: center;">
-            <button class="btn-cancel" onclick="window.closeDeleteModal()">Cancelar</button>
-            <button class="btn-add" style="background:var(--danger)" id="confirm-delete-btn" onclick="window.confirmDelete()">Confirmar</button>
-        </div>
-    </div>
-</div>
-
-<div id="batch-actions-bar">
-    <span id="selected-count" style="font-weight:600">0 selecionados</span>
-    <button onclick="window.promptChangeIconBatch()" style="background:rgba(255,255,255,0.2); border:none; color:white; padding:8px 16px; border-radius:20px; cursor:pointer; font-size:0.85rem">Ícone</button>
-    <button onclick="window.confirmBatchDelete()" style="background:rgba(255,255,255,0.2); border:none; color:white; padding:8px 16px; border-radius:20px; cursor:pointer; font-size:0.85rem">Excluir</button>
-    <button onclick="window.toggleSelectionMode()" style="background:white; border:none; color:var(--chocolate); padding:8px 16px; border-radius:20px; cursor:pointer; font-size:0.85rem; font-weight:bold">Cancelar</button>
-</div>
-
-<div style="position:fixed; bottom:10px; right:10px; opacity:0.3; font-size:0.7rem; pointer-events:none" id="sys-status">ARMAZENAMENTO LOCAL</div>
+<div id="toast-container" style="position:fixed; top:20px; right:20px; z-index:11000;"></div>
 
 <script>
-    // --- Access Control (Simulated Hash as requested) ---
-    const _0x5a1b = (s) => s.split('').reduce((a,b)=>{a=((a<<5)-a)+b.charCodeAt(0);return a&a},0);
-    const _0x1c8a = 1509442; // FIX: O hash real para a senha "1234"
-
-    window.checkAccess = () => {
-        const inp = document.getElementById('lock-pass');
-        const msg = document.getElementById('lock-msg');
-        if (_0x5a1b(inp.value) === _0x1c8a) {
-            document.getElementById('lock-screen').style.opacity = '0';
-            setTimeout(() => {
-                document.getElementById('lock-screen').style.display = 'none';
-                sessionStorage.setItem('cm_access', 'granted');
-                initApp();
-            }, 500);
-        } else {
-            msg.innerText = "Senha incorreta";
-            inp.value = '';
-            setTimeout(() => msg.innerText = '', 2000);
-        }
-    };
-    
-    if (sessionStorage.getItem('cm_access') === 'granted') {
-        document.getElementById('lock-screen').style.display = 'none';
-        setTimeout(initApp, 100);
-    }
-
-    document.getElementById('lock-pass').addEventListener('keypress', function (e) {
-        if (e.key === 'Enter') window.checkAccess();
-    });
-
     // --- State & Config ---
-    const ICON_LIB = ['folder', 'file-text', 'star', 'heart', 'briefcase', 'coffee', 'sun', 'moon', 'music', 'camera', 'shopping-bag', 'gift', 'map', 'compass', 'anchor', 'feather', 'key', 'lock', 'bell', 'bookmark', 'image'];
-    const BIBLE_BOOKS = [
-        "Gênesis", "Êxodo", "Levítico", "Números", "Deuteronômio", "Josué", "Juízes", "Rute", "1 Samuel", "2 Samuel", "1 Reis", "2 Reis", "1 Crônicas", "2 Crônicas", "Esdras", "Neemias", "Ester", "Jó", "Salmos", "Provérbios", "Eclesiastes", "Cânticos", "Isaías", "Jeremias", "Lamentações", "Ezequiel", "Daniel", "Oseias", "Joel", "Amós", "Obadias", "Jonas", "Miqueias", "Naum", "Habacuque", "Sofonias", "Ageu", "Zacarias", "Malaquias", "Mateus", "Marcos", "Lucas", "João", "Atos", "Romanos", "1 Coríntios", "2 Coríntios", "Gálatas", "Efésios", "Filipenses", "Colossenses", "1 Tessalonicenses", "2 Tessalonicenses", "1 Timóteo", "2 Timóteo", "Tito", "Filemom", "Hebreus", "Tiago", "1 Pedro", "2 Pedro", "1 João", "2 João", "3 João", "Judas", "Apocalipse"
-    ];
-
-    const VERSES_POOL = [
-        { t: "O Senhor é o meu pastor, nada me faltará.", r: "Salmos 23:1", e: "Confie na provisão e cuidado de Deus em todas as áreas da sua vida." },
-        { t: "Tudo posso naquele que me fortalece.", r: "Filipenses 4:13", e: "Sua força não vem de você mesmo, mas da conexão constante com o divino." }
-    ];
+    const STORAGE_KEY = 'cm_premium_data_v2';
+    const _0x1c8a = 1509442; // Hash for "1234"
+    const _hash = (s) => s.split('').reduce((a,b)=>{a=((a<<5)-a)+b.charCodeAt(0);return a&a},0);
 
     let state = {
-        path: JSON.parse(sessionStorage.getItem('cm_path')) || ['root'],
-        items: [],
-        selectedMonth: new Date().getMonth(),
-        selectedYear: new Date().getFullYear(),
-        bible: { book: 'Gênesis', chapter: 1, text: '', loading: false, fullData: null },
-        weightExpanded: false,
-        menstrualView: null,
-        itemToDelete: null,
-        selectionMode: false,
-        selectedIds: [],
-        editingId: null,
-        editingHistoryIndex: null,
-        shareItemId: null,
-        selectedIcon: null
+        path: ['root'],
+        items: JSON.parse(localStorage.getItem(STORAGE_KEY)) || [],
+        menstrualView: new Date()
     };
 
-    // --- NOVO: Persistência LocalStorage ---
-    const STORAGE_KEY = 'cm_premium_data';
-
-    function loadData() {
-        try {
-            const data = localStorage.getItem(STORAGE_KEY);
-            return data ? JSON.parse(data) : null;
-        } catch (e) {
-            console.error("Erro ao carregar dados locais", e);
-            return null;
+    function checkAccess() {
+        const inp = document.getElementById('lock-pass');
+        if (_hash(inp.value) === _0x1c8a) {
+            document.getElementById('lock-screen').style.display = 'none';
+            initApp();
+        } else {
+            alert("Senha incorreta");
+            inp.value = '';
         }
     }
 
     function saveData() {
-        try {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(state.items));
-        } catch (e) {
-            console.error("Erro ao salvar localmente", e);
-            window.showToast("Ocorreu um erro ao gravar. Se enviou imagens pesadas, o espaço do navegador pode estar cheio.", "error");
-        }
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state.items));
     }
 
-    // --- Helper Functions ---
-    const generateId = () => 'id_' + Date.now() + Math.random().toString(36).substr(2, 9);
-    
-    window.toLocalDateStr = (dateObj) => {
-        const y = dateObj.getFullYear();
-        const m = String(dateObj.getMonth() + 1).padStart(2, '0');
-        const d = String(dateObj.getDate()).padStart(2, '0');
-        return `${y}-${m}-${d}`;
-    };
-
-    window.fromLocalDateStr = (str) => {
-        if(!str) return new Date();
-        const [y, m, d] = str.split('-').map(Number);
-        return new Date(y, m - 1, d);
-    };
-
-    window.toggleMenstrualFields = () => {
-        const type = document.getElementById('f-prof-hormonal').value;
-        const isHormonal = type !== 'Nenhum';
-        const lastPeriod = document.getElementById('field-last-period');
-        const cycleDur = document.getElementById('field-cycle-dur');
-        const contraStart = document.getElementById('field-contra-start');
-        
-        if (lastPeriod) lastPeriod.style.display = isHormonal ? 'none' : 'block';
-        if (cycleDur) cycleDur.style.display = isHormonal ? 'none' : 'block';
-        if (contraStart) contraStart.style.display = isHormonal ? 'block' : 'none';
-    }
-
-    window.showToast = (msg, type = 'success') => {
-        const container = document.getElementById('toast-container');
-        const el = document.createElement('div');
-        el.className = `toast ${type}`;
-        el.innerHTML = `<i data-lucide="${type === 'success' ? 'check-circle' : 'alert-circle'}" style="width:20px"></i><span>${msg}</span>`;
-        container.appendChild(el);
-        if(window.lucide) window.lucide.createIcons();
-        setTimeout(() => { el.style.opacity = '0'; el.style.transform = 'translateY(-20px)'; setTimeout(() => el.remove(), 300); }, 3000);
-    };
-
-    // --- Initialization ---
-    async function initApp() {
+    function initApp() {
         setInterval(() => {
             const now = new Date();
-            const el = document.getElementById('clock-display');
-            if(el) el.innerText = now.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' });
+            document.getElementById('clock-display').innerText = now.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' });
         }, 1000);
-
-        // Fetch Data from Local Storage instead of Backend
-        const savedItems = loadData();
-        if (savedItems && Array.isArray(savedItems)) {
-            state.items = savedItems;
-        } else {
-            state.items = []; // First run
-        }
-
-        ensureBaseFolders();
-        document.getElementById('loading-screen').style.display = 'none';
         render();
     }
 
-    const ensureBaseFolders = () => {
-        const folders = [
-            { id: 'f_pendencias', name: 'Pendências', parentId: 'financeiro', type: 'folder' },
-            { id: 'f_despesas', name: 'Despesas', parentId: 'financeiro', type: 'folder' },
-            { id: 'f_entradas', name: 'Entradas', parentId: 'financeiro', type: 'folder' },
-            { id: 'f_investimentos', name: 'Investimentos', parentId: 'financeiro', type: 'folder' },
-            { id: 'saude', name: 'Saúde', type: 'root_area' },
-            { id: 'financeiro', name: 'Financeiro', type: 'root_area' }
-        ];
-        let changed = false;
-        folders.forEach(f => {
-            if(!state.items.find(i => i.id === f.id)) {
-                state.items.push({...f, createdAt: Date.now()});
-                changed = true;
-            }
-        });
-        if(changed) saveData();
-    };
-    
-    // --- Navigation & Routing ---
-    const ROOT_AREAS = [
-        { id: 'pessoal', name: 'Pessoal', icon: 'user' },
-        { id: 'profissional', name: 'Profissional', icon: 'briefcase' },
-        { id: 'financeiro', name: 'Financeiro', icon: 'trending-up' },
-        { id: 'lifestyle', name: 'Lifestyle', icon: 'sparkles' },
-        { id: 'saude', name: 'Saúde', icon: 'heart' },
-        { id: 'planejamento', name: 'Planejamento', icon: 'calendar' },
-        { id: 'biblia', name: 'Bíblia', icon: 'book-open' }
-    ];
+    // --- Core Logic ---
+    window.navigate = (id) => { state.path.push(id); render(); };
+    window.goBack = (idx) => { state.path = state.path.slice(0, idx + 1); render(); };
 
-    window.navigate = (id) => { 
-        if(state.selectionMode) return;
-        state.path.push(id); 
-        sessionStorage.setItem('cm_path', JSON.stringify(state.path));
-        render(); 
-    };
-    
-    window.goBack = (idx) => { 
-        if(state.selectionMode) window.toggleSelectionMode();
-        if(idx === undefined) state.path.pop();
-        else state.path = state.path.slice(0, idx + 1); 
-        sessionStorage.setItem('cm_path', JSON.stringify(state.path));
-        render(); 
-    };
-
-    // --- Render Logic ---
-    window.render = () => {
+    function render() {
         const main = document.getElementById('main-content');
         const bread = document.getElementById('breadcrumb-container');
         const currentId = state.path[state.path.length - 1];
-        
+
         bread.innerHTML = state.path.map((id, i) => {
-            const name = id === 'root' ? 'Início' : (ROOT_AREAS.find(a=>a.id===id)?.name || state.items.find(it=>it.id===id)?.name || id);
-            return `<span class="breadcrumb-item" onclick="goBack(${i})">${i===0 ? '<i data-lucide="home" style="width:14px"></i>' : ''} ${name}</span>`;
+            const name = id === 'root' ? 'Início' : (state.items.find(it => it.id === id)?.name || id);
+            return `<span class="breadcrumb-item" onclick="goBack(${i})">${name}</span>`;
         }).join('<i data-lucide="chevron-right" style="width:14px; opacity:0.3"></i>');
 
         main.innerHTML = '';
-        
-        const folder = state.items.find(i => i.id === currentId) || ROOT_AREAS.find(a => a.id === currentId);
-        
+
         if (currentId === 'root') renderDashboard(main);
-        else if (currentId === 'financeiro') renderFinanceRoot(main); 
-        else if (currentId === 'biblia') renderBible(main);
         else if (currentId === 'saude') renderHealth(main);
-        else if (folder?.name === 'Investimentos') renderPiggies(main, currentId);
-        else if (folder?.name === 'Despesas') renderFinance(main, currentId, 'expense', 'Despesas');
-        else if (folder?.name === 'Pendências') renderFinance(main, currentId, 'pendency', 'Pendências');
-        else if (folder?.name === 'Entradas') renderFinance(main, currentId, 'income', 'Entradas');
-        else {
-            const item = state.items.find(i => i.id === currentId);
-            if(item && item.type !== 'folder' && item.type !== 'custom_area') renderToolItem(main, item);
-            else renderGeneralFolder(main, currentId);
-        }
-        
-        document.querySelectorAll('input, textarea, select').forEach(el => {
-            el.setAttribute('autocomplete', 'off');
-        });
+        else if (currentId === 'financeiro') renderFinance(main);
+        else renderGeneralFolder(main, currentId);
 
         if(window.lucide) window.lucide.createIcons();
-    };
+    }
 
-    const renderDashboard = (el) => {
-        const verse = VERSES_POOL[(new Date().getDate() + new Date().getMonth() * 31) % VERSES_POOL.length];
-        const fab = `
-            <div class="floating-star-btn" onclick="window.toggleCreateMenu(this)">
-                <svg width="30" height="30" viewBox="0 0 24 24" fill="white">
-                    <path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z" />
-                    <path d="M18 2L19 5L22 6L19 7L18 10L17 7L14 6L17 5L18 2Z" transform="scale(0.5) translate(20, -10)" />
-                </svg>
-            </div>
-            <div class="create-menu-dropdown" style="bottom: 100px; right: 30px; top: auto;">
-                <div class="create-menu-item" onclick="window.openModal('create_area')"><i data-lucide="layout-grid"></i> Criar Nova Área</div>
-                <div class="create-menu-item" onclick="window.openModal('visionboard')"><i data-lucide="image"></i> Visionboard</div>
-                <div class="create-menu-item" onclick="window.toggleSelectionMode()"><i data-lucide="edit-3"></i> Editar</div>
-                <div class="create-menu-item" onclick="window.backupData()"><i data-lucide="upload"></i> Backup</div>
-                <div class="create-menu-item" onclick="window.restoreData()"><i data-lucide="download"></i> Restaurar</div>
-            </div>
-        `;
+    const ROOT_AREAS = [
+        { id: 'saude', name: 'Saúde & Bem-estar', icon: 'heart', color: '#E91E63' },
+        { id: 'financeiro', name: 'Financeiro', icon: 'trending-up', color: '#4CAF50' },
+        { id: 'pessoal', name: 'Pessoal', icon: 'user', color: '#C5A059' }
+    ];
 
-        el.innerHTML = `
-            <div class="verse-card">
-                <div class="verse-text">"${verse.t}"</div>
-                <div class="verse-ref">${verse.r}</div>
-            </div>
-            <div class="section-header"><h2>Minhas Áreas</h2></div><div class="grid-container"></div>
-            ${fab}
-        `;
-        
-        const grid = el.querySelector('.grid-container');
+    function renderDashboard(el) {
+        el.innerHTML = `<div class="section-header"><h2>Minhas Áreas</h2></div><div class="grid-container" id="dash-grid"></div>`;
+        const grid = document.getElementById('dash-grid');
         ROOT_AREAS.forEach(a => {
             const card = document.createElement('div');
             card.className = 'card';
-            card.innerHTML = `<i data-lucide="${a.icon}" style="color:var(--gold); width:28px; height:28px;"></i><b style="font-size:1.1rem; color:var(--chocolate)">${a.name}</b>`;
+            card.innerHTML = `<i data-lucide="${a.icon}" style="color:${a.color}; width:28px;"></i><b>${a.name}</b>`;
             card.onclick = () => window.navigate(a.id);
             grid.appendChild(card);
         });
-
-        const customAreas = state.items.filter(i => i.type === 'custom_area' && i.parentId === 'root');
-        customAreas.forEach(a => {
-            const card = document.createElement('div');
-            card.className = `card ${state.selectionMode?'selection-mode':''} ${state.selectedIds.includes(a.id)?'selected':''}`;
-            card.style.position = 'relative';
-            card.innerHTML = `
-                <i data-lucide="${a.icon || 'layout'}" style="color:var(--gold); width:28px; height:28px;"></i>
-                <b style="font-size:1.1rem; color:var(--chocolate); flex:1">${a.name}</b>
-                ${state.selectionMode ? '<i data-lucide="check-circle" class="selection-check"></i>' : renderActionMenu(a.id, a.type, a.name)}
-            `;
-            card.onclick = (e) => {
-                if(e.target.closest('.create-menu-container')) return;
-                if(state.selectionMode) window.toggleSelectItem(a.id);
-                else window.navigate(a.id);
-            };
-            grid.appendChild(card);
-        });
-    };
-
-    const renderBible = async (el) => {
-        el.innerHTML = `
-            <div class="section-header">
-                <h2>Bíblia (NVI/Almeida)</h2>
-                <div style="display:flex; gap:10px">
-                    <select id="bible-book" class="form-control" style="width:140px; padding:8px" onchange="window.updateBibleNav()"></select>
-                    <input type="number" id="bible-chapter" class="form-control" style="width:70px; padding:8px" min="1" value="${state.bible.chapter}" onchange="window.updateBibleNav()">
-                    <button class="btn-add" onclick="window.fetchBibleText()">Ler</button>
-                </div>
-            </div>
-            <div id="bible-content" style="background:white; padding:30px; border-radius:24px; box-shadow:var(--shadow); min-height:400px; line-height:1.8; color:#444">
-                ${state.bible.loading ? '<div style="text-align:center; padding:50px; opacity:0.6">Baixando Bíblia Completa... (apenas na 1ª vez)</div>' : (state.bible.text || '<div style="text-align:center; padding:50px; opacity:0.6">Selecione um livro e capítulo para começar a leitura.</div>')}
-            </div>
-        `;
-        
-        const sel = document.getElementById('bible-book');
-        BIBLE_BOOKS.forEach(b => {
-            const opt = document.createElement('option');
-            opt.value = b;
-            opt.innerText = b;
-            if(b === state.bible.book) opt.selected = true;
-            sel.appendChild(opt);
-        });
-    };
-
-    window.updateBibleNav = () => {
-        state.bible.book = document.getElementById('bible-book').value;
-        state.bible.chapter = document.getElementById('bible-chapter').value;
-    };
-    
-    window.fetchBibleText = async () => {
-        state.bible.loading = true;
-        render();
-        try {
-            if (!state.bible.fullData) {
-                const res = await fetch('https://raw.githubusercontent.com/thiagobodruk/bible/master/json/pt_aa.json');
-                if(!res.ok) throw new Error("Erro ao baixar base de dados.");
-                state.bible.fullData = await res.json();
-                window.showToast("Bíblia carregada com sucesso!");
-            }
-
-            const bookData = state.bible.fullData.find(b => b.name === state.bible.book || b.name.includes(state.bible.book));
-            
-            if (bookData) {
-                const chapterIndex = parseInt(state.bible.chapter) - 1;
-                if (chapterIndex >= 0 && chapterIndex < bookData.chapters.length) {
-                    const verses = bookData.chapters[chapterIndex];
-                    let html = `<h3 style="text-align:center; margin-bottom:20px; color:var(--chocolate)">${bookData.name} ${state.bible.chapter}</h3>`;
-                    html += verses.map((v, i) => `<p style="margin-bottom:10px; line-height:1.6"><sup style="color:var(--gold); font-weight:bold; margin-right:4px; font-size:0.8rem">${i+1}</sup> ${v}</p>`).join('');
-                    state.bible.text = html;
-                } else {
-                    state.bible.text = `<div style="text-align:center; padding:20px; color:var(--danger)">Capítulo inexistente. Este livro tem ${bookData.chapters.length} capítulos.</div>`;
-                }
-            } else {
-                state.bible.text = `<div style="text-align:center; padding:20px; color:var(--danger)">Livro não encontrado na base de dados.</div>`;
-            }
-
-        } catch(e) {
-            console.error(e);
-            state.bible.text = `<div style="color:var(--danger); text-align:center; padding:20px">Erro ao carregar a Bíblia.<br><small>Detalhe: ${e.message}</small></div>`;
-        }
-        state.bible.loading = false;
-        render();
-    };
-
-    const calculateHealthStats = (weightItem) => {
-        if(!weightItem) return null;
-        const { current, target, startDate, periodMonths, history, startWeight } = weightItem.content;
-        const monthsPassed = Math.max(0, (new Date().getFullYear() - new Date(startDate).getFullYear()) * 12 + (new Date().getMonth() - new Date(startDate).getMonth()));
-        const monthsRemaining = Math.max(1, periodMonths - monthsPassed);
-        const weightToLose = parseFloat(current) - parseFloat(target);
-        const totalLossRequired = parseFloat(startWeight) - parseFloat(target);
-        const mma = weightToLose > 0 ? (weightToLose / monthsRemaining).toFixed(2) : 0;
-        const sortedHistory = [...history].sort((a,b) => new Date(b.date) - new Date(a.date));
-        const progress = totalLossRequired > 0 ? ((parseFloat(startWeight) - parseFloat(current)) / totalLossRequired * 100) : 0;
-        
-        return { current, target, startWeight, mma, progress: Math.min(100, Math.max(0, progress)), monthsRemaining, totalLossRequired, periodMonths, startDate, history: sortedHistory, weightToLose };
-    };
-
-    const renderHealth = (el) => {
-        const weightItem = state.items.find(i => i.type === 'health_weight');
-        const stats = calculateHealthStats(weightItem);
-        const meds = state.items.filter(i => i.type === 'health_med');
-        const diet = state.items.find(i => i.type === 'health_food');
-
-        const genericItems = state.items.filter(i => i.parentId === 'saude' && !['menstrual_profile', 'menstrual_cycle', 'health_weight', 'health_med', 'health_food'].includes(i.type));
-
-        el.innerHTML = `
-            <div class="section-header"><h2>Saúde e Bem-estar</h2>${renderCreateButton()}</div>
-            
-            <div class="grid-container">
-            <div class="card" style="display:block; padding:15px">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px">
-                    <div style="display:flex; align-items:center; gap:8px">
-                        <div style="width:32px; height:32px; background:#FFEBEE; border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--danger)"><i data-lucide="calendar-heart" style="width:16px"></i></div>
-                        <div style="font-weight:700; color:var(--chocolate); font-size:0.9rem">Ciclo</div>
-                    </div>
-                    <div style="display:flex; gap: 5px;">
-                        <button class="btn-add" style="padding:4px 10px; font-size:0.75rem" onclick="window.openModal('menstrual_log', window.toLocalDateStr(new Date()))">Marcar</button>
-                        <button class="btn-cancel" style="padding:4px 8px" onclick="window.openModal('menstrual_settings')"><i data-lucide="settings" style="width:12px"></i></button>
-                    </div>
-                </div>
-                ${renderCalendar()}
-            </div>
-            </div>
-
-            <div class="card" style="display:block; margin:20px 0">
-                <div style="display:flex; justify-content:space-between; align-items:center">
-                    <div style="display:flex; align-items:center; gap:10px">
-                        <div style="width:40px; height:40px; background:#FFF3E0; border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--chocolate)"><i data-lucide="scale"></i></div>
-                        <div>
-                            <div style="font-weight:700; color:var(--chocolate)">Controle de Peso</div>
-                            <div style="font-size:0.8rem; color:#888">${stats ? `Meta: ${stats.target}kg` : 'Configure sua meta'}</div>
-                        </div>
-                    </div>
-                    ${stats ? `<button class="btn-add" style="padding:5px 15px; font-size:0.7rem" onclick="window.openModal('health_weight_register')">Pesar</button>` : `<button class="btn-add" onclick="window.openModal('health_weight_config')">Configurar</button>`}
-                </div>
-                ${stats ? `
-                    <div style="margin-top:20px; display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; text-align:center">
-                        <div><div style="font-size:1.5rem; font-weight:800; color:var(--chocolate)">${stats.current}</div><div style="font-size:0.7rem; text-transform:uppercase; color:#999; font-weight:600">Atual (kg)</div></div>
-                        <div><div style="font-size:1.5rem; font-weight:800; color:${stats.weightToLose <= 0 ? 'var(--success)' : 'var(--danger)'}">${stats.mma}</div><div style="font-size:0.7rem; text-transform:uppercase; color:#999; font-weight:600">Meta/Mês</div></div>
-                        <div><div style="font-size:1.5rem; font-weight:800; color:var(--gold)">${stats.monthsRemaining}</div><div style="font-size:0.7rem; text-transform:uppercase; color:#999; font-weight:600">Meses Rest.</div></div>
-                    </div>
-                    <div class="weight-progress-bar"><div class="weight-progress-fill" style="width:${stats.progress}%"></div></div>
-                    <div style="text-align:right; font-size:0.7rem; color:#888; margin-top:4px">${stats.progress.toFixed(0)}% da meta total</div>
-                    <div style="margin-top:15px; text-align:center; cursor:pointer; color:var(--gold); font-size:0.8rem; font-weight:600" onclick="window.openWeightHistory()">Ver Histórico Completo</div>
-                ` : ''}
-            </div>
-
-            <div class="grid-container">
-                <div class="card" style="display:block">
-                    <div style="display:flex; justify-content:space-between; margin-bottom:15px"><b>Medicamentos</b><button class="btn-add" style="padding:4px 8px" onclick="window.openModal('health_med')">+</button></div>
-                    ${meds.length ? meds.map(m => `<div style="padding:10px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center"><div><b>${m.name}</b><br><small>${m.content.time} - ${m.content.instructions}</small></div><i data-lucide="trash-2" style="width:14px; cursor:pointer; color:#999" onclick="window.openDeleteModal('${m.id}','${m.name}')"></i></div>`).join('') : '<div style="opacity:0.5; font-size:0.8rem">Nenhum medicamento.</div>'}
-                </div>
-                <div class="card" style="display:block">
-                    <div style="display:flex; justify-content:space-between; margin-bottom:15px"><b>Dieta</b><button class="btn-add" style="padding:4px 8px" onclick="window.openModal('health_food')"><i data-lucide="edit-2" style="width:14px"></i></button></div>
-                    <div style="white-space:pre-wrap; font-size:0.85rem; color:#555; max-height:150px; overflow-y:auto">${diet ? diet.content.text : 'Nenhuma dieta cadastrada.'}</div>
-                </div>
-            </div>
-
-            <div class="grid-container" style="margin-top:20px">
-                ${genericItems.map(i => {
-                    const isSelected = state.selectedIds.includes(i.id);
-                    const icon = i.icon || ({folder:'folder', note:'file-text', checklist:'list-checks', checklist_sum:'calculator', bank:'credit-card', social:'at-sign', file:'paperclip', visionboard:'image'}[i.type] || 'file');
-                    if (i.type === 'file') {
-                        const isImg = i.content.fileType?.startsWith('image') || /\.(jpg|jpeg|png|gif|bmp|webp|heic)$/i.test(i.name);
-                        return `<div class="card ${state.selectionMode?'selection-mode':''} ${isSelected?'selected':''}" style="display:block; padding:0; overflow:visible; position:relative;" onclick="${state.selectionMode ? `window.toggleSelectItem('${i.id}')` : `window.openFilePreview('${i.id}')`}">
-                            ${isImg ? `<div class="file-card-image-container"><img src="${i.content.data}" class="file-card-image" onerror="this.style.display='none'"></div>` : `<div style="padding:30px; text-align:center"><i data-lucide="${icon}" style="color:#999; width:40px; height:40px"></i></div>`}
-                            <div style="padding:15px">
-                                ${i.content.caption ? `<div style="font-weight:600; color:var(--chocolate); font-size:0.9rem; margin-bottom:4px">${i.content.caption}</div>` : ''}
-                                <div style="font-size:0.75rem; color:#888; white-space:nowrap; text-overflow:ellipsis; overflow:hidden">${i.type === 'file' ? '' : i.name}</div>
-                            </div>
-                            <i data-lucide="check-circle" class="selection-check"></i>
-                            <div style="position:absolute; bottom:10px; right:10px">${renderActionMenu(i.id, i.type, i.name)}</div>
-                        </div>`;
-                    }
-                    return `<div class="card ${state.selectionMode?'selection-mode':''} ${isSelected?'selected':''}" onclick="${state.selectionMode ? `window.toggleSelectItem('${i.id}')` : `window.navigate('${i.id}')`}"><i data-lucide="${icon}" style="color:${i.type==='folder'?'var(--gold)':'#999'}"></i><span style="flex:1; font-weight:600; color:var(--chocolate)">${i.name}</span><i data-lucide="check-circle" class="selection-check"></i>${renderActionMenu(i.id, i.type, i.name)}</div>`;
-                }).join('')}
-            </div>
-        `;
-    };
-
-    const renderCalendar = () => {
-        const today = new Date();
-        const viewDate = state.menstrualView || today;
-        const year = viewDate.getFullYear();
-        const month = viewDate.getMonth();
-        const daysInMonth = new Date(year, month + 1, 0).getDate();
-        const firstDay = new Date(year, month, 1).getDay();
-
-        const profile = state.items.find(i => i.type === 'menstrual_profile');
-        const logs = state.items.filter(i => i.type === 'menstrual_cycle');
-        
-        const flowDuration = profile && profile.content.flowDuration ? parseInt(profile.content.flowDuration) : 5;
-        const cycleDuration = profile && profile.content.cycleDuration ? parseInt(profile.content.cycleDuration) : 28;
-        const contraType = profile && profile.content.contraceptiveType ? profile.content.contraceptiveType : 'Nenhum';
-        const isHormonal = contraType !== 'Nenhum';
-
-        const periodDays = new Set();
-        const fertileDays = new Set();
-        const contraDays = new Set();
-        
-        logs.forEach(l => {
-            if (l.content.flow) { 
-                const [y, m, d] = l.content.date.split('-').map(Number);
-                const startDate = new Date(y, m - 1, d);
-                for(let i=0; i<flowDuration; i++) {
-                    const d = new Date(startDate); 
-                    d.setDate(startDate.getDate() + i);
-                    periodDays.add(window.toLocalDateStr(d));
-                }
-            }
-        });
-
-        let baseDate = null;
-        const periodLogs = logs.filter(l => l.content.flow).sort((a,b) => new Date(b.content.date) - new Date(a.content.date));
-        if (periodLogs.length > 0) {
-            const [y, m, d] = periodLogs[0].content.date.split('-').map(Number);
-            baseDate = new Date(y, m - 1, d);
-        } else if (profile?.content?.lastPeriodDate) {
-            const [y, m, d] = profile.content.lastPeriodDate.split('-').map(Number);
-            baseDate = new Date(y, m - 1, d);
-        }
-
-        if (baseDate && !isHormonal) {
-            for(let k=0; k<36; k++) {
-                const cycleStart = new Date(baseDate);
-                cycleStart.setDate(baseDate.getDate() + (cycleDuration * k));
-                const nextPeriodStart = new Date(cycleStart);
-                nextPeriodStart.setDate(cycleStart.getDate() + cycleDuration);
-                const ovulation = new Date(nextPeriodStart);
-                ovulation.setDate(nextPeriodStart.getDate() - 14);
-                for(let f=-5; f<=0; f++) {
-                    const d = new Date(ovulation); 
-                    d.setDate(ovulation.getDate() + f);
-                    fertileDays.add(toLocalDateStr(d));
-                }
-            }
-        }
-
-        if (profile?.content?.contraceptiveStartDate && isHormonal) {
-            const [y, m, d] = profile.content.contraceptiveStartDate.split('-').map(Number);
-            const contraStart = new Date(y, m - 1, d);
-            for(let k=0; k<36; k++) {
-                const cycleStart = new Date(contraStart);
-                cycleStart.setDate(contraStart.getDate() + (28 * k));
-                for(let j=0; j<21; j++) {
-                    const activeDay = new Date(cycleStart);
-                    activeDay.setDate(cycleStart.getDate() + j);
-                    contraDays.add(toLocalDateStr(activeDay));
-                }
-            }
-        }
-
-        let html = `
-            <div style="display:flex; justify-content:center; align-items:center; gap:15px; margin-bottom:10px">
-                <button class="nav-btn" onclick="window.changeCalMonth(-1)" style="width:24px; height:24px"><i data-lucide="chevron-left" style="width:14px"></i></button>
-                <span style="font-weight:700; color:var(--chocolate); font-size:0.85rem">${viewDate.toLocaleDateString('pt-BR',{month:'long', year:'numeric'})}</span>
-                <button class="nav-btn" onclick="window.changeCalMonth(1)" style="width:24px; height:24px"><i data-lucide="chevron-right" style="width:14px"></i></button>
-            </div>
-            <div class="cal-header"><div>D</div><div>S</div><div>T</div><div>Q</div><div>Q</div><div>S</div><div>S</div></div>
-            <div class="cal-grid">
-        `;
-
-        for(let i=0; i<firstDay; i++) html += `<div></div>`;
-
-        for(let d=1; d<=daysInMonth; d++) {
-            const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-            const isToday = d === today.getDate() && month === today.getMonth() && year === today.getFullYear();
-            
-            const isPeriod = periodDays.has(dateStr);
-            const isFertile = fertileDays.has(dateStr);
-            const isContra = contraDays.has(dateStr);
-            
-            const log = logs.find(l => l.content.date === dateStr);
-
-            let classes = `cal-day ${isToday ? 'today' : ''}`;
-            if (isContra) classes += ' contra-active';
-
-            html += `
-                <div class="${classes}" onclick="window.openModal('menstrual_log', '${dateStr}')">
-                    <div class="cal-top-zone">
-                        ${isFertile && !isPeriod ? `<div class="cal-dot-fertile"></div>` : ''}
-                        ${log && log.content.sex && !log.content.protection ? `<i data-lucide="heart" class="cal-heart unsafe" stroke="none" fill="currentColor"></i>` : ''}
-                        ${log && log.content.sex && log.content.protection ? `<i data-lucide="heart" class="cal-heart safe" stroke="none" fill="currentColor"></i>` : ''}
-                    </div>
-                    ${d}
-                    <div class="cal-bottom-zone">
-                        ${isPeriod ? `<div class="cal-line-period"></div>` : ''}
-                    </div>
-                </div>
-            `;
-        }
-        html += `</div>`;
-        
-        if (isHormonal) {
-            html += `<div style="margin-top:10px; padding:10px; background:#f9f9f9; border-radius:8px; font-size:0.75rem; color:#666; text-align:center;">
-                <i data-lucide="info" style="width:12px; vertical-align:text-bottom"></i> 
-                Você utiliza método hormonal. A ovulação é inibida, portanto não existe período fértil.
-            </div>`;
-        }
-
-        return html;
-    };
-
-    // --- Action Functions ---
-    window.renameItem = (id, name) => { window.openModal('rename', id); };
-    window.replaceItem = (id, type) => { window.openModal(type, id); };
-    window.moveItem = (id) => {
-        const newParent = prompt("Digite o ID da pasta de destino:");
-        if(newParent) {
-             const idx = state.items.findIndex(i => i.id === id);
-             if(idx > -1) {
-                 state.items[idx].parentId = newParent;
-                 saveData();
-                 window.showToast("Item movido.");
-                 render();
-             }
-        }
-    };
-    
-    window.openDeleteModal = (id, name) => {
-        state.itemToDelete = id;
-        document.getElementById('delete-modal-text').innerText = `Tem certeza que deseja apagar "${name}"?`;
-        const m = document.getElementById('delete-modal-overlay');
-        m.style.display = 'flex'; setTimeout(() => m.classList.add('open'), 10);
-    };
-    window.closeDeleteModal = () => {
-        const m = document.getElementById('delete-modal-overlay');
-        m.classList.remove('open'); setTimeout(() => m.style.display = 'none', 300);
-        state.itemToDelete = null;
-    };
-    window.confirmDelete = () => {
-        if(state.itemToDelete) {
-            state.items = state.items.filter(i => i.id !== state.itemToDelete);
-            saveData();
-            window.closeDeleteModal();
-            window.showToast("Item excluído.");
-            render();
-        }
-    };
-
-    window.toggleSelectionMode = () => {
-        state.selectionMode = !state.selectionMode;
-        state.selectedIds = [];
-        const bar = document.getElementById('batch-actions-bar');
-        bar.style.transform = state.selectionMode ? "translate(-50%, 0)" : "translate(-50%, 150px)";
-        render();
-    };
-    window.toggleSelectItem = (id) => {
-        if(state.selectedIds.includes(id)) state.selectedIds = state.selectedIds.filter(i => i !== id);
-        else state.selectedIds.push(id);
-        document.getElementById('selected-count').innerText = `${state.selectedIds.length} selecionados`;
-        render();
-    };
-    window.confirmBatchDelete = () => {
-        if(confirm(`Excluir ${state.selectedIds.length} itens?`)) {
-            state.items = state.items.filter(i => !state.selectedIds.includes(i.id));
-            saveData();
-            window.toggleSelectionMode();
-            window.showToast("Itens excluídos.");
-            render();
-        }
-    };
-    window.promptChangeIconBatch = () => {
-        if (!state.selectedIds.length) return;
-        window.openModal('icon_selector');
-    };
-
-    window.addCLItem = (id) => {
-        const item = state.items.find(i => i.id === id);
-        if(!item.content.items) item.content.items = [];
-        item.content.items.push({ text: '', checked: false, val: 0 });
-        saveData();
-        render();
-    };
-    window.toggleCLItem = (id, idx) => {
-        const item = state.items.find(i => i.id === id);
-        item.content.items[idx].checked = !item.content.items[idx].checked;
-        saveData();
-        render();
-    };
-    window.deleteCLItem = (id, idx) => {
-        const item = state.items.find(i => i.id === id);
-        item.content.items = item.content.items.filter((_, i) => i !== idx);
-        saveData();
-        render();
-    };
-    window.updateCL = (id, idx, field, val) => {
-        const item = state.items.find(i => i.id === id);
-        item.content.items[idx][field] = val;
-        saveData();
-    };
-
-    window.togglePaid = (id) => {
-        const item = state.items.find(i => i.id === id);
-        item.content.paid = !item.content.paid;
-        saveData();
-        render();
-    };
-    window.makeDeposit = (id) => {
-        const val = parseFloat(document.getElementById(`dep-${id}`).value);
-        if(!val) return;
-        const item = state.items.find(i => i.id === id);
-        item.content.saved = (parseFloat(item.content.saved)||0) + val;
-        saveData();
-        render();
-    };
-    
-    window.copyBankData = (bank, holder, ag, cc, pix) => {
-        const text = `Banco: ${bank}\nTitular: ${holder}\nAg: ${ag}\nCC: ${cc}\nPIX: ${pix}`;
-        window.copyToClipboard(text);
-    };
-    window.copyToClipboard = (text) => {
-        const ta = document.createElement('textarea');
-        ta.value = text;
-        document.body.appendChild(ta);
-        ta.select();
-        document.execCommand('copy');
-        document.body.removeChild(ta);
-        window.showToast("Copiado!");
-    };
-    
-    window.shareItem = (id) => {
-        state.shareItemId = id;
-        const link = window.location.href.split('?')[0] + `?share=${id}`;
-        if (navigator.share) {
-            navigator.share({ title: 'Organizer Premium', text: 'Confira este item:', url: link }).catch(console.error);
-        } else {
-            document.getElementById('share-link-display').innerText = link;
-            const m = document.getElementById('share-modal');
-            m.style.display = 'flex'; setTimeout(()=>m.classList.add('open'), 10);
-        }
-    };
-    window.shareDirectly = () => { window.open(`whatsapp://send?text=${encodeURIComponent(document.getElementById('share-link-display').innerText)}`); };
-    window.copyShareLink = () => { window.copyToClipboard(document.getElementById('share-link-display').innerText); };
-    window.downloadItem = (id) => {
-        const item = state.items.find(i => i.id === id);
-        if(!item) return;
-        if (item.type === 'file') {
-            const link = document.createElement("a"); link.href = item.content.data; link.download = item.name;
-            document.body.appendChild(link); link.click(); document.body.removeChild(link);
-        } else {
-            const text = JSON.stringify(item.content, null, 2);
-            const blob = new Blob([text], {type: 'text/plain'});
-            const link = document.createElement("a"); link.href = URL.createObjectURL(blob); link.download = `${item.name}.txt`;
-            document.body.appendChild(link); link.click(); document.body.removeChild(link);
-        }
-    };
-    window.editItem = (id, type) => {
-        if(type === 'health_weight') return window.openModal('health_weight_config', id);
-        window.openModal(type, id);
-    };
-
-    window.editVisionCaption = (id, idx) => {
-        const item = state.items.find(i => i.id === id);
-        if(!item) return;
-        const currentCaption = item.content.images[idx].caption || '';
-        const newCaption = prompt("Legenda:", currentCaption);
-        if(newCaption === null) return;
-        
-        item.content.images[idx].caption = newCaption;
-        saveData();
-        render();
-    };
-
-    const renderFinanceRoot = (el) => {
-        const months = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
-        const incomeItems = state.items.filter(i => i.parentId === 'f_entradas' && i.content?.due);
-        const expenseItems = state.items.filter(i => i.parentId === 'f_despesas' && i.content?.due);
-        
-        const filterMonth = (items) => items.filter(i => {
-            const [y, m, d] = i.content.due.split('-').map(Number);
-            return (m - 1) === state.selectedMonth && y === state.selectedYear;
-        });
-
-        const monthIncome = filterMonth(incomeItems).reduce((acc, cur) => acc + (parseFloat(cur.content.value) || 0), 0);
-        const monthExpense = filterMonth(expenseItems).reduce((acc, cur) => acc + (parseFloat(cur.content.value) || 0), 0);
-        const monthNet = monthIncome - monthExpense;
-
-        const subfolders = [
-            state.items.find(i => i.id === 'f_despesas') || {id:'f_despesas', name:'Despesas', type:'folder'},
-            state.items.find(i => i.id === 'f_pendencias') || {id:'f_pendencias', name:'Pendências', type:'folder'},
-            state.items.find(i => i.id === 'f_entradas') || {id:'f_entradas', name:'Entradas', type:'folder'},
-            state.items.find(i => i.id === 'f_investimentos') || {id:'f_investimentos', name:'Investimentos', type:'folder'}
-        ];
-        el.innerHTML = `
-            <div class="section-header"><h2>Financeiro</h2></div>
-            
-            <div class="time-navigator">
-                <button class="nav-btn" onclick="window.changeMonth(-1)"><i data-lucide="chevron-left"></i></button>
-                <span class="current-date-label">${months[state.selectedMonth]} ${state.selectedYear}</span>
-                <button class="nav-btn" onclick="window.changeMonth(1)"><i data-lucide="chevron-right"></i></button>
-            </div>
-
-            <div class="summary-card" style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px;">
-                <div class="summary-item"><span>Receitas</span><b style="color:var(--success)">R$ ${monthIncome.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</b></div>
-                <div class="summary-item"><span>Despesas</span><b style="color:var(--danger)">R$ ${monthExpense.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</b></div>
-                <div class="summary-item"><span>Líquido</span><b style="color:${monthNet >= 0 ? 'var(--gold)' : 'var(--danger)'}">R$ ${monthNet.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</b></div>
-            </div>
-
-            <div class="grid-container">${subfolders.map(f => `<div class="card" onclick="window.navigate('${f.id}')"><i data-lucide="${f.name==='Investimentos'?'trending-up':'dollar-sign'}" style="color:var(--gold)"></i><span style="flex:1; font-weight:600; color:var(--chocolate)">${f.name}</span><i data-lucide="chevron-right" style="opacity:0.3"></i></div>`).join('')}</div>
-        `;
-    };
-
-    window.changeMonth = (delta) => {
-        state.selectedMonth += delta;
-        if(state.selectedMonth > 11) { state.selectedMonth = 0; state.selectedYear++; }
-        if(state.selectedMonth < 0) { state.selectedMonth = 11; state.selectedYear--; }
-        render();
-    };
-
-    const renderFinance = (el, pid, type, title) => {
-        const months = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
-        const list = state.items.filter(i => i.parentId === pid);
-        const monthly = list.filter(i => {
-            if (!i.content.due) return false;
-            const [y, m, d] = i.content.due.split('-').map(Number);
-            return (m - 1) === state.selectedMonth && y === state.selectedYear;
-        }).sort((a,b) => a.content.due.localeCompare(b.content.due));
-        
-        const totalMonth = monthly.reduce((a,b) => a + (parseFloat(b.content.value) || 0), 0);
-        
-        const valueColor = type === 'income' ? 'var(--success)' : 'var(--danger)';
-        const btnTitle = type === 'income' ? 'Nova Entrada' : (type === 'expense' ? 'Nova Despesa' : 'Nova Pendência');
-
-        el.innerHTML = `
-            <div class="section-header"><h2>${title}</h2> ${renderCreateButton()}</div>
-            <div class="time-navigator">
-                <button class="nav-btn" onclick="window.changeMonth(-1)"><i data-lucide="chevron-left"></i></button>
-                <span class="current-date-label">${months[state.selectedMonth]} ${state.selectedYear}</span>
-                <button class="nav-btn" onclick="window.changeMonth(1)"><i data-lucide="chevron-right"></i></button>
-            </div>
-            <div class="summary-card">
-                <div class="summary-item"><span>Total ${title} (Mês)</span><b>R$ ${totalMonth.toLocaleString('pt-BR',{minimumFractionDigits: 2})}</b></div>
-            </div>
-            <div class="finance-list">
-                ${monthly.length ? monthly.map(i => `<div class="finance-item ${i.content.paid?'paid':''}"><div class="btn-check ${i.content.paid?'active':''}" onclick="window.togglePaid('${i.id}')"><i data-lucide="check" style="width:16px"></i></div><div class="item-text" style="font-weight:600; color:var(--chocolate)">${i.name}</div><div class="amount" style="font-weight:bold; color:${valueColor}">R$ ${parseFloat(i.content.value).toLocaleString('pt-BR',{minimumFractionDigits: 2})}</div>${renderActionMenu(i.id, i.type, i.name)}</div>`).join('') : '<div style="padding:30px; text-align:center; opacity:0.5">Sem registros para este período.</div>'}
-            </div>
-            <button class="btn-add" onclick="window.openModal('${type}')" style="margin-top:20px; width:100%; justify-content:center; background:var(--chocolate)"><i data-lucide="plus"></i> ${btnTitle}</button>
-            <div style="margin-top:40px; border-top:1px solid #eee; padding-top:20px">
-                <h4 style="margin-bottom:15px; color:var(--chocolate)">Conteúdo Adicional</h4>
-                <div class="grid-container" id="finance-extras"></div>
-            </div>
-        `;
-        
-        const extras = list.filter(i => i.type !== 'expense' && i.type !== 'pendency' && i.type !== 'income');
-        const extrasContainer = el.querySelector('#finance-extras');
-        if(extrasContainer && extras.length) {
-            extras.forEach(i => {
-                const isSelected = state.selectedIds.includes(i.id);
-                const icon = i.icon || ({note:'file-text', file:'paperclip'}[i.type] || 'file');
-                let cardHTML = '';
-                if(i.type === 'file') {
-                      const isImg = i.content.fileType?.startsWith('image') || /\.(jpg|jpeg|png|gif|bmp|webp|heic)$/i.test(i.name);
-                      cardHTML = `<div class="card ${state.selectionMode?'selection-mode':''} ${isSelected?'selected':''}" style="display:block; padding:0; overflow:visible; position:relative;" onclick="${state.selectionMode ? `window.toggleSelectItem('${i.id}')` : `window.openFilePreview('${i.id}')`}">
-                        ${isImg ? `<div class="file-card-image-container"><img src="${i.content.data}" class="file-card-image" onerror="this.style.display='none'"></div>` : `<div style="padding:30px; text-align:center"><i data-lucide="${icon}" style="color:#999; width:40px; height:40px"></i></div>`}
-                        <div style="padding:15px">
-                            ${i.content.caption ? `<div style="font-weight:600; color:var(--chocolate); font-size:0.9rem; margin-bottom:4px">${i.content.caption}</div>` : ''}
-                            <div style="font-size:0.75rem; color:#888; white-space:nowrap; text-overflow:ellipsis; overflow:hidden">${i.type === 'file' ? '' : i.name}</div>
-                        </div>
-                        <i data-lucide="check-circle" class="selection-check"></i>
-                        <div style="position:absolute; bottom:10px; right:10px">${renderActionMenu(i.id, i.type, i.name)}</div>
-                    </div>`;
-                } else {
-                      cardHTML = `<div class="card" onclick="window.editItem('${i.id}','${i.type}')"><i data-lucide="${icon}"></i><span>${i.name}</span>${renderActionMenu(i.id, i.type, i.name)}</div>`;
-                }
-                extrasContainer.innerHTML += cardHTML;
-            });
-        }
-    };
-
-    const renderPiggies = (el, pid) => {
-        const items = state.items.filter(i => i.parentId === pid);
-        el.innerHTML = `
-            <div class="section-header"><h2>Investimentos</h2></div>
-            <div class="grid-container">
-                ${items.map(p => {
-                    const saved = parseFloat(p.content.saved || 0);
-                    const target = parseFloat(p.content.target || 1);
-                    const timeMonths = p.content.months || 0;
-                    const remaining = Math.max(0, target - saved);
-                    const pct = target > 0 ? Math.min(100, (saved/target)*100) : 0;
-                    return `<div class="piggy-card"><div style="display:flex; justify-content:space-between"><b>${p.name}</b>${renderActionMenu(p.id, 'piggy', p.name)}</div><div style="font-size:0.8rem; color:#999; margin-bottom:5px">Prazo: ${timeMonths} meses</div><div style="font-size:1.8rem; font-weight:bold; color:var(--gold); margin:5px 0">R$ ${saved.toLocaleString('pt-BR',{minimumFractionDigits: 2})}</div><div style="color:${remaining > 0 ? 'var(--chocolate)':'var(--success)'}; font-size:0.8rem; font-weight:600">Restante: R$ ${remaining.toLocaleString('pt-BR',{minimumFractionDigits: 2})}</div><div class="progress-grid">${Array(20).fill(0).map((_,i) => `<div class="progress-block ${i<(pct/5)?'filled':''}"></div>`).join('')}</div><div style="display:flex; gap:5px; margin-top:15px"><input class="form-control" style="padding:8px" type="number" id="dep-${p.id}" placeholder="Depósito..." autocomplete="off"><button class="btn-add" onclick="window.makeDeposit('${p.id}')">OK</button></div></div>`;
-                }).join('')}
-                <div class="card" style="justify-content:center; min-height:200px; border:2px dashed #ddd; background:transparent; cursor:pointer" onclick="window.openModal('piggy')">
-                    <div style="text-align:center; color:#999"><i data-lucide="plus" style="width:30px; height:30px"></i><br>Novo Objetivo</div>
-                </div>
-            </div>
-        `;
-    };
-
-    const renderActionMenu = (id, type, name) => {
-        if(state.selectionMode) return '';
-        return `
-            <div class="create-menu-container" onclick="event.stopPropagation()">
-                <div style="padding:8px; cursor:pointer; opacity:0.6; transition:0.2s" onclick="window.toggleActionMenu('${id}')">
-                    <i data-lucide="more-vertical"></i>
-                </div>
-                <div class="create-menu-dropdown" id="action-menu-${id}">
-                    <div class="create-menu-item" onclick="window.editItem('${id}', '${type}')"><i data-lucide="edit-2"></i> Editar</div>
-                    <div class="create-menu-item" onclick="window.renameItem('${id}', '${name}')"><i data-lucide="type"></i> Renomear</div>
-                    <div class="create-menu-item" onclick="window.moveItem('${id}')"><i data-lucide="folder-input"></i> Mover</div>
-                    <div class="create-menu-item" onclick="window.shareItem('${id}')"><i data-lucide="share-2"></i> Compartilhar</div>
-                    <div class="create-menu-item" onclick="window.downloadItem('${id}')"><i data-lucide="download"></i> Baixar</div>
-                    <div class="create-menu-item" style="color:var(--danger)" onclick="window.openDeleteModal('${id}', '${name.replace(/'/g, "\\'")}')"><i data-lucide="trash-2"></i> Excluir</div>
-                </div>
-            </div>
-        `;
-    };
-
-    const renderCreateButton = () => {
-        if(state.selectionMode) return '';
-        return `
-            <div style="display:flex; align-items:center; gap:10px">
-                <button class="btn-cancel" style="padding:8px 16px" onclick="window.toggleSelectionMode()">Selecionar</button>
-                <div class="create-menu-container">
-                    <button class="btn-add" onclick="window.toggleCreateMenu(this)"><i data-lucide="plus"></i> Novo</button>
-                    <div class="create-menu-dropdown">
-                        <div class="create-menu-item" onclick="window.openModal('folder')"><i data-lucide="folder"></i> Pasta</div>
-                        <div class="create-menu-item" onclick="window.openModal('note')"><i data-lucide="file-text"></i> Nota</div>
-                        <div class="create-menu-item" onclick="window.openModal('visionboard')"><i data-lucide="image"></i> Visionboard</div>
-                        <div class="create-menu-item" onclick="window.openModal('file')"><i data-lucide="paperclip"></i> Anexo</div>
-                        <div class="create-menu-item" onclick="window.openModal('checklist')"><i data-lucide="list-checks"></i> Checklist</div>
-                        <div class="create-menu-item" onclick="window.openModal('checklist_sum')"><i data-lucide="calculator"></i> Checklist + Soma</div>
-                        <div class="create-menu-item" onclick="window.openModal('bank')"><i data-lucide="credit-card"></i> Dados Bancários</div>
-                        <div class="create-menu-item" onclick="window.openModal('social')"><i data-lucide="at-sign"></i> Social Login</div>
-                    </div>
-                </div>
-            </div>
-        `;
-    };
-
-    const renderGeneralFolder = (el, pid) => {
-        const items = state.items.filter(i => i.parentId === pid);
-        el.innerHTML = `<div class="section-header"><h2 style="font-size:1.5rem">Conteúdo</h2>${renderCreateButton()}</div><div class="grid-container">${items.length ? items.map(i => {
-            const isSelected = state.selectedIds.includes(i.id);
-            const icon = i.icon || ({folder:'folder', note:'file-text', checklist:'list-checks', checklist_sum:'calculator', bank:'credit-card', social:'at-sign', file:'paperclip', visionboard:'image'}[i.type] || 'file');
-            if (i.type === 'file') {
-                const isImg = i.content.fileType?.startsWith('image') || /\.(jpg|jpeg|png|gif|bmp|webp|heic)$/i.test(i.name);
-                return `<div class="card ${state.selectionMode?'selection-mode':''} ${isSelected?'selected':''}" style="display:block; padding:0; overflow:visible; position:relative;" onclick="${state.selectionMode ? `window.toggleSelectItem('${i.id}')` : `window.openFilePreview('${i.id}')`}">
-                    ${isImg ? `<div class="file-card-image-container"><img src="${i.content.data}" class="file-card-image" onerror="this.style.display='none'"></div>` : `<div style="padding:30px; text-align:center"><i data-lucide="${icon}" style="color:#999; width:40px; height:40px"></i></div>`}
-                    <div style="padding:15px">
-                         ${i.content.caption ? `<div style="font-weight:600; color:var(--chocolate); font-size:0.9rem; margin-bottom:4px">${i.content.caption}</div>` : ''}
-                         <div style="font-size:0.75rem; color:#888; white-space:nowrap; text-overflow:ellipsis; overflow:hidden">${i.type === 'file' ? '' : i.name}</div>
-                    </div>
-                    <i data-lucide="check-circle" class="selection-check"></i>
-                    <div style="position:absolute; bottom:10px; right:10px">${renderActionMenu(i.id, i.type, i.name)}</div>
-                </div>`;
-            }
-            return `<div class="card ${state.selectionMode?'selection-mode':''} ${isSelected?'selected':''}" onclick="${state.selectionMode ? `window.toggleSelectItem('${i.id}')` : `window.navigate('${i.id}')`}"><i data-lucide="${icon}" style="color:${i.type==='folder'?'var(--gold)':'#999'}"></i><span style="flex:1; font-weight:600; color:var(--chocolate)">${i.name}</span><i data-lucide="check-circle" class="selection-check"></i>${renderActionMenu(i.id, i.type, i.name)}</div>`;
-        }).join('') : '<div style="grid-column:1/-1; text-align:center; padding:40px; color:#aaa">Esta pasta está vazia.</div>'}</div>`;
-    };
-
-    window.openFilePreview = (id) => {
-        const item = state.items.find(i => i.id === id);
-        if (!item || item.type !== 'file') return;
-        const overlay = document.getElementById('file-preview-modal');
-        const content = document.getElementById('file-preview-content');
-        const caption = document.getElementById('preview-caption');
-        const downloadBtn = document.getElementById('preview-download-btn');
-        const title = document.getElementById('preview-filename');
-
-        title.innerText = item.name;
-        caption.innerText = item.content.caption || '';
-        downloadBtn.href = item.content.data;
-        downloadBtn.download = item.name;
-
-        const isImg = item.content.fileType?.startsWith('image') || /\.(jpg|jpeg|png|gif|bmp|webp|heic)$/i.test(item.name);
-        if (isImg) { content.innerHTML = `<img src="${item.content.data}" alt="${item.name}">`; } 
-        else if (item.content.fileType === 'application/pdf') { content.innerHTML = `<iframe src="${item.content.data}"></iframe>`; } 
-        else { content.innerHTML = `<div style="padding:40px; color:#666"><i data-lucide="file" style="width:48px; height:48px; margin-bottom:10px"></i><br>Visualização não disponível.</div>`; }
-
-        overlay.style.display = 'flex'; setTimeout(() => { overlay.classList.add('open'); window.lucide.createIcons(); }, 10);
     }
-    window.closePreviewModal = () => { const o = document.getElementById('file-preview-modal'); o.classList.remove('open'); setTimeout(() => o.style.display = 'none', 300); }
 
-    const renderToolItem = (el, item) => {
-        let content = '';
-        if(item.type === 'note') content = `<div style="white-space:pre-wrap; line-height:1.6; color:#444">${item.content.text}</div>`;
-        else if(item.type === 'visionboard') {
-            const images = item.content.images || [];
-            content = `
-                <div class="vision-grid">
-                    ${images.map((img, idx) => `
-                        <div class="vision-item" onclick="window.editVisionCaption('${item.id}', ${idx})">
-                            <img src="${img.data}" class="vision-img">
-                            <div class="vision-caption">${img.caption || 'Adicionar legenda...'}</div>
-                        </div>
-                    `).join('')}
-                </div>
-                ${images.length === 0 ? '<div style="text-align:center; opacity:0.5; padding:40px">Nenhuma imagem.</div>' : ''}
-            `;
-        }
-        else if(item.type.includes('checklist')) {
-            const isSum = item.type === 'checklist_sum';
-            const items = item.content && item.content.items ? item.content.items : [];
-            const total = isSum ? items.reduce((a,b)=>b.checked?a+(parseFloat(b.val)||0):a,0) : 0;
-            content = `${isSum ? `<div style="text-align:right; font-size:1.5rem; color:var(--success); font-weight:bold; margin-bottom:15px">${total.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</div>` : ''}<div style="display:flex; flex-direction:column; gap:10px">${items.map((it, idx) => `<div style="display:flex; gap:10px; align-items:center; padding:8px; border-bottom:1px solid #eee"><div class="btn-check ${it.checked?'active':''}" onclick="window.toggleCLItem('${item.id}', ${idx})"><i data-lucide="check" style="width:16px"></i></div><input class="checklist-input form-control" style="border:none; background:transparent; text-decoration:${it.checked?'line-through':''}" value="${it.text}" onchange="window.updateCL('${item.id}',${idx},'text',this.value)" autocomplete="off">${isSum ? `<input class="form-control" type="number" style="width:80px; text-align:right" value="${it.val}" onchange="window.updateCL('${item.id}',${idx},'val',this.value)" autocomplete="off">` : ''}<i data-lucide="x" style="width:16px; cursor:pointer; opacity:0.5" onclick="window.deleteCLItem('${item.id}', ${idx})"></i></div>`).join('')}<button class="btn-add" style="align-self:center; margin-top:10px" onclick="window.addCLItem('${item.id}')"><i data-lucide="plus"></i> Item</button></div>`;
-        } else if (item.type === 'bank') {
-            const data = item.content;
-            content = `<div style="background:#f9f9f9; padding:20px; border-radius:12px; display:grid; gap:10px"><div style="display:flex; justify-content:flex-end"><button class="btn-add" style="font-size:0.8rem" onclick="window.copyBankData('${item.name}', '${data.holder||'-'}', '${data.agency}', '${data.account}', '${data.pix}')"><i data-lucide="copy"></i> Copiar</button></div><div><small style="text-transform:uppercase; color:#999">Banco</small><div style="font-weight:600">${item.name}</div></div><div><small style="text-transform:uppercase; color:#999">Agência</small><div style="font-weight:600">${data.agency}</div></div><div><small style="text-transform:uppercase; color:#999">Conta</small><div style="font-weight:600">${data.account}</div></div><div><small style="text-transform:uppercase; color:#999">PIX</small><div style="font-weight:600">${data.pix}</div></div><button class="btn-cancel" onclick="alert('${data.pass}')" style="margin-top:10px"><i data-lucide="eye"></i> Senha</button></div>`;
-        } else if (item.type === 'social') {
-            const data = item.content;
-            content = `<div style="background:#f9f9f9; padding:20px; border-radius:12px; display:grid; gap:10px">${Object.entries(data).map(([k,v]) => {
-                if (k === 'pass') return '';
-                return `<div><small style="text-transform:uppercase; color:#999">${k}</small><div style="font-weight:600">${v}</div></div>`;
-            }).join('')}<button class="btn-cancel" onclick="alert('${data.pass}')" style="margin-top:10px"><i data-lucide="eye"></i> Senha</button></div>`;
-        }
-        el.innerHTML = `<div class="section-header"><h2>${item.name}</h2><div style="display:flex; gap:10px"><button class="btn-cancel" onclick="window.goBack()">Voltar</button><button class="btn-add" onclick="window.editItem('${item.id}', '${item.type}')">Editar</button></div></div><div class="card" style="display:block; cursor:default">${content}</div>`;
-    };
-
-    window.toggleWeightView = () => { state.weightExpanded = !state.weightExpanded; render(); };
-    window.openWeightHistory = () => {
+    // --- HEALTH MODULE (UPDATED) ---
+    function renderHealth(el) {
         const weightItem = state.items.find(i => i.type === 'health_weight');
-        if (!weightItem || !weightItem.content.history) return;
-        const history = [...weightItem.content.history].sort((a,b) => new Date(b.date) - new Date(a.date));
-        const overlay = document.getElementById('modal-overlay');
-        const form = document.getElementById('modal-form');
-        const actions = document.getElementById('modal-actions');
-        document.getElementById('modal-title').innerText = "Histórico de Peso";
-        const listHtml = history.length ? history.map((h, index) => `<div style="display:flex; justify-content:space-between; align-items:center; padding:12px; border-bottom:1px solid #eee"><div><div style="font-weight:600">${new Date(h.date).toLocaleDateString()}</div></div><div style="display:flex; align-items:center; gap:15px"><span style="font-weight:bold; color:var(--chocolate)">${h.weight} kg</span><i data-lucide="edit-2" style="width:18px; color:var(--chocolate); cursor:pointer" onclick="window.editWeightHistoryItem(${index})"></i><i data-lucide="trash-2" style="width:18px; color:var(--danger); cursor:pointer" onclick="window.deleteWeightHistoryItem(${index})"></i></div></div>`).join('') : '<div style="padding:20px; text-align:center; opacity:0.5">Sem registros.</div>';
-        form.innerHTML = `<div style="max-height:400px; overflow-y:auto">${listHtml}</div>`;
-        actions.innerHTML = `<button class="btn-cancel" onclick="window.closeModal()">Fechar</button>`;
-        overlay.style.display = 'flex'; setTimeout(() => { overlay.classList.add('open'); if(window.lucide) window.lucide.createIcons(); }, 10);
-    };
-    
-    window.editWeightHistoryItem = (index) => { state.editingHistoryIndex = index; window.closeModal(); setTimeout(() => window.openModal('weight_history_edit'), 300); };
-    window.deleteWeightHistoryItem = (index) => {
-        if (!confirm("Excluir?")) return;
-        const wItem = state.items.find(i => i.type === 'health_weight');
-        let history = [...wItem.content.history].sort((a,b) => new Date(b.date) - new Date(a.date));
-        history.splice(index, 1);
-        let newCurrent = history.length > 0 ? history[0].weight : wItem.content.startWeight;
-        wItem.content.history = history;
-        wItem.content.current = newCurrent;
-        saveData();
-        window.closeModal(); window.showToast("Excluído.");
-        render();
-    };
-    window.toggleMenstrualView = () => { state.menstrualView = state.menstrualView ? null : new Date(); render(); };
-    window.changeCalMonth = (d) => { 
-        if(!state.menstrualView) state.menstrualView = new Date();
-        state.menstrualView.setMonth(state.menstrualView.getMonth() + d); 
-        render(); 
-    };
-    
-    // --- Backup & Restore Logic ---
-    window.backupData = () => {
-        const dataStr = JSON.stringify(state.items, null, 2);
-        const blob = new Blob([dataStr], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = `backup_cm_premium_${new Date().toISOString().slice(0,10)}.json`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        window.showToast("Backup gerado!");
-    };
+        const stats = calculateWeightStats(weightItem);
+        const cycleInfo = calculateCycleInfo();
 
-    window.restoreData = () => {
-        const input = document.createElement('input');
-        input.type = 'file';
-        input.accept = 'application/json';
-        input.onchange = (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = async (ev) => {
-                try {
-                    const imported = JSON.parse(ev.target.result);
-                    if (!Array.isArray(imported)) throw new Error("Formato inválido");
-                    
-                    if (confirm("Isso substituirá TODOS os dados atuais neste dispositivo. Confirmar?")) {
-                        state.items = imported;
-                        saveData();
-                        window.showToast("Dados restaurados com sucesso!");
-                        render();
-                    }
-                } catch(err) {
-                    alert("Erro ao ler backup: " + err.message);
-                }
-            };
-            reader.readAsText(file);
-        };
-        input.click();
-    };
+        el.innerHTML = `
+            <div class="section-header"><h2>Saúde</h2></div>
+            
+            <!-- PESO: FOCO NA META MENSAL -->
+            <div class="card" style="display:block; margin-bottom:20px; padding:30px;">
+                <div class="weight-hero">
+                    <div class="weight-hero-title">Falta para a meta do mês</div>
+                    <div class="weight-hero-value">${stats.monthlyRemaining}<span class="weight-hero-unit">kg</span></div>
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px; text-align:center;">
+                    <div style="background:#f9f9f9; padding:15px; border-radius:20px;">
+                        <small style="color:#999; text-transform:uppercase; font-size:0.6rem; font-weight:700;">Peso Atual</small>
+                        <div style="font-weight:700; font-size:1.2rem;">${stats.current} kg</div>
+                    </div>
+                    <div style="background:#f9f9f9; padding:15px; border-radius:20px;">
+                        <small style="color:#999; text-transform:uppercase; font-size:0.6rem; font-weight:700;">Meta Total</small>
+                        <div style="font-weight:700; font-size:1.2rem;">${stats.target} kg</div>
+                    </div>
+                </div>
+                <button class="btn-add" style="width:100%; margin-top:20px; justify-content:center;" onclick="openModal('weight_register')">REGISTRAR PESO</button>
+                <button class="btn-cancel" style="width:100%; margin-top:10px; border:none;" onclick="openModal('weight_config')">CONFIGURAR METAS</button>
+            </div>
 
-    // --- Modal Logic ---
-    window.toggleCreateMenu = (btn) => { 
-        const menu = btn.nextElementSibling; 
-        const wasShown = menu.classList.contains('show');
-        document.querySelectorAll('.create-menu-dropdown').forEach(m => m.classList.remove('show')); 
-        if(!wasShown) menu.classList.add('show'); 
-        if(window.event) window.event.stopPropagation();
-    };
-    
-    window.toggleActionMenu = (id) => { 
-        const menu = document.getElementById(`action-menu-${id}`); 
-        const wasShown = menu.classList.contains('show');
-        document.querySelectorAll('.create-menu-dropdown').forEach(m => m.classList.remove('show')); 
-        if(!wasShown) menu.classList.add('show'); 
-        if(window.event) window.event.stopPropagation();
-    };
-    document.addEventListener('click', () => document.querySelectorAll('.create-menu-dropdown').forEach(m => m.classList.remove('show')));
+            <!-- CICLO: ESTILO APP FAMOSO -->
+            <div class="card" style="display:block; padding:30px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                    <div>
+                        <h3 style="color:var(--period-main); font-family:sans-serif; font-weight:800; font-size:1.4rem;">${cycleInfo.statusTitle}</h3>
+                        <p style="color:#888; font-size:0.8rem;">${cycleInfo.statusSubtitle}</p>
+                    </div>
+                    <div style="width:50px; height:50px; background:var(--period-bg); border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--period-main)">
+                        <i data-lucide="droplets"></i>
+                    </div>
+                </div>
 
-    window.selectIcon = (icon) => {
-        state.selectedIcon = icon;
-        document.querySelectorAll('.icon-option').forEach(el => el.classList.remove('selected'));
-        document.getElementById(`icon-opt-${icon}`).classList.add('selected');
-    };
-    const renderIconSelector = () => {
-        return `<div class="form-group"><label>Ícone (Opcional)</label><div class="icon-grid-selector">${ICON_LIB.map(i => `<div id="icon-opt-${i}" class="icon-option" onclick="window.selectIcon('${i}')"><i data-lucide="${i}" style="width:20px"></i></div>`).join('')}</div></div>`;
-    };
+                <div style="display:flex; gap:10px; align-items:center; justify-content:center; margin-bottom:20px;">
+                    <button class="btn-cancel" style="padding:5px 10px;" onclick="changeCalMonth(-1)"><i data-lucide="chevron-left" style="width:14px"></i></button>
+                    <span style="font-weight:700; text-transform:capitalize;">${state.menstrualView.toLocaleDateString('pt-BR', {month:'long', year:'numeric'})}</span>
+                    <button class="btn-cancel" style="padding:5px 10px;" onclick="changeCalMonth(1)"><i data-lucide="chevron-right" style="width:14px"></i></button>
+                </div>
 
-    window.closeModal = () => {
-        const m = document.getElementById('modal-overlay');
-        m.classList.remove('open'); setTimeout(() => m.style.display = 'none', 300);
-        state.editingId = null;
-        state.selectedIcon = null;
-    };
+                <div class="cal-grid">
+                    ${renderCalendarDays()}
+                </div>
 
-    window.resetCycle = () => {
-        if (!confirm("Tem certeza? Isso apagará TODO o histórico e configurações do ciclo menstrual.")) return;
-        state.items = state.items.filter(i => i.type !== 'menstrual_profile' && i.type !== 'menstrual_cycle');
-        saveData();
-        window.closeModal();
-        window.showToast("Ciclo resetado com sucesso.");
-        render(); 
-    };
+                <div style="margin-top:20px; display:flex; gap:15px; font-size:0.7rem; justify-content:center; color:#888;">
+                    <span><span style="display:inline-block; width:8px; height:8px; background:var(--period-main); border-radius:50%;"></span> Menstruação</span>
+                    <span><span style="display:inline-block; width:8px; height:8px; border:1px solid var(--fertile-main); border-radius:50%;"></span> Período Fértil</span>
+                </div>
 
-    window.deleteMenstrualLog = (id) => {
-        if(!confirm("Excluir este registro?")) return;
-        state.items = state.items.filter(i => i.id !== id);
-        saveData();
-        window.openModal('menstrual_history_list'); 
-        window.showToast("Registro excluído");
-        render(); 
-    };
+                <button class="btn-add" style="width:100%; margin-top:20px; justify-content:center; background:var(--period-main)" onclick="openModal('menstrual_log')">ANOTAR SINTOMAS</button>
+            </div>
+        `;
+    }
 
-    window.resetWeightData = () => {
-        if (!confirm("Tem certeza? Isso apagará TODO o histórico de peso.")) return;
-        state.items = state.items.filter(i => i.type !== 'health_weight');
-        saveData();
-        window.closeModal();
-        window.showToast("Dados resetados.");
-        render();
-    };
-
-    window.openModal = (type, editingId = null) => {
-        const overlay = document.getElementById('modal-overlay');
-        const form = document.getElementById('modal-form');
-        const actions = document.getElementById('modal-actions');
-        state.editingId = editingId;
-        state.selectedIcon = null;
+    function calculateWeightStats(item) {
+        if (!item) return { current: '0', target: '0', monthlyRemaining: '0' };
+        const c = item.content;
+        const current = parseFloat(c.current) || 0;
+        const target = parseFloat(c.target) || 0;
+        const start = parseFloat(c.startWeight) || 0;
         
+        // Meta mensal: Perda total necessária / meses de prazo
+        const totalToLose = Math.max(0, start - target);
+        const monthlyGoal = totalToLose / (parseInt(c.periodMonths) || 1);
+        
+        // Quanto já perdeu no total
+        const totalLost = Math.max(0, start - current);
+        
+        // Simulação simples: Meta do mês atual baseada no quanto falta
+        const remainingToLose = Math.max(0, current - target);
+        const monthlyRemaining = (remainingToLose / (parseInt(c.periodMonths) || 1)).toFixed(2);
+
+        return { current, target, monthlyRemaining };
+    }
+
+    function calculateCycleInfo() {
+        const profile = state.items.find(i => i.type === 'menstrual_profile')?.content || { cycleDuration: 28, flowDuration: 5 };
+        const logs = state.items.filter(i => i.type === 'menstrual_cycle').sort((a,b) => new Date(b.content.date) - new Date(a.content.date));
+        
+        if (logs.length === 0) return { statusTitle: "Bem-vinda", statusSubtitle: "Registre sua última menstruação" };
+
+        const lastStart = new Date(logs[0].content.date);
+        const today = new Date();
+        const diffDays = Math.floor((today - lastStart) / (1000 * 60 * 60 * 24));
+
+        if (diffDays < profile.flowDuration) return { statusTitle: "Menstruação", statusSubtitle: `Dia ${diffDays + 1} do ciclo` };
+        
+        const nextPeriod = new Date(lastStart);
+        nextPeriod.setDate(lastStart.getDate() + parseInt(profile.cycleDuration));
+        const daysToNext = Math.ceil((nextPeriod - today) / (1000 * 60 * 60 * 24));
+
+        if (daysToNext <= 0) return { statusTitle: "Atrasada", statusSubtitle: `${Math.abs(daysToNext)} dias de atraso` };
+        
+        return { statusTitle: `Faltam ${daysToNext} dias`, statusSubtitle: "Para a próxima menstruação" };
+    }
+
+    function renderCalendarDays() {
+        const year = state.menstrualView.getFullYear();
+        const month = state.menstrualView.getMonth();
+        const firstDay = new Date(year, month, 1).getDay();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        
+        const profile = state.items.find(i => i.type === 'menstrual_profile')?.content || { cycleDuration: 28, flowDuration: 5 };
+        const logs = state.items.filter(i => i.type === 'menstrual_cycle');
+
         let html = '';
-        let title = editingId ? 'Editar' : 'Novo';
-        if (type === 'rename') title = 'Renomear';
+        const weekDays = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'];
+        weekDays.forEach(d => html += `<div style="text-align:center; font-size:0.6rem; font-weight:bold; color:#ccc; margin-bottom:5px;">${d}</div>`);
+
+        for (let i = 0; i < firstDay; i++) html += '<div></div>';
+
+        for (let d = 1; d <= daysInMonth; d++) {
+            const date = new Date(year, month, d);
+            const dateStr = date.toISOString().split('T')[0];
+            const isToday = dateStr === new Date().toISOString().split('T')[0];
+            
+            // Lógica de Cores
+            let classes = 'cal-day';
+            if (isToday) classes += ' today';
+            
+            // Verificar se há log manual
+            const hasLog = logs.find(l => l.content.date === dateStr);
+            if (hasLog && hasLog.content.isPeriod) classes += ' period';
+            
+            // Predição (Baseada no último log)
+            const lastLog = logs.sort((a,b) => new Date(b.content.date) - new Date(a.content.date))[0];
+            if (lastLog) {
+                const lastDate = new Date(lastLog.content.date);
+                const diff = Math.floor((date - lastDate) / (1000 * 60 * 60 * 24));
+                const cyclePos = diff % profile.cycleDuration;
+                
+                if (cyclePos >= 0 && cyclePos < profile.flowDuration && !hasLog) classes += ' predicted-period';
+                if (cyclePos >= 11 && cyclePos <= 16) classes += ' fertile';
+                if (cyclePos === 14) classes += ' ovulation';
+            }
+
+            html += `<div class="${classes}" onclick="openModal('menstrual_log', '${dateStr}')">${d}${hasLog && hasLog.content.symptoms ? '<div class="symptom-dot"></div>' : ''}</div>`;
+        }
+        return html;
+    }
+
+    function changeCalMonth(val) {
+        state.menstrualView.setMonth(state.menstrualView.getMonth() + val);
+        render();
+    }
+
+    // --- MODALS ---
+    function openModal(type, extra = null) {
+        const overlay = document.getElementById('modal-overlay');
+        const form = document.getElementById('modal-form');
+        const actions = document.getElementById('modal-actions');
         
-        const inp = (id, lbl, pl, val='', type='text') => `<div class="form-group"><label>${lbl}</label><input type="${type}" id="${id}" class="form-control" placeholder="${pl}" value="${val}" autocomplete="off"></div>`;
-        const item = editingId ? state.items.find(i=>i.id===editingId) : null;
-        const v = (key) => item && item.content ? item.content[key] || '' : '';
-        const n = () => item ? item.name : '';
+        overlay.style.display = 'flex';
+        let html = '';
+        let actionHtml = `<button class="btn-cancel" onclick="closeModal()">Cancelar</button>`;
 
-        if(item && item.icon) state.selectedIcon = item.icon;
-
-        switch(type) {
-            case 'create_area': title = 'Nova Área'; html = inp('f-name', 'Nome da Área', 'Ex: Projetos') + renderIconSelector(); break;
-            case 'rename': html = inp('f-name', 'Novo Nome', '', n()); break;
-            case 'folder': html = inp('f-name', 'Nome da Pasta', '', n()) + renderIconSelector(); break;
-            case 'note': html = inp('f-name', 'Título', '', n()) + `<div class="form-group"><label>Conteúdo</label><textarea id="f-text" class="form-control" autocomplete="off">${v('text')}</textarea></div>`; break;
-            case 'visionboard': 
-                title = 'Novo Visionboard'; 
-                html = `
-                    <div class="form-group"><label>Título do Visionboard</label><input id="f-name" class="form-control" value="${n()}" autocomplete="off"></div>
-                    <div class="form-group"><label>Imagens</label><input type="file" id="f-files" class="form-control" multiple accept="image/*"></div>
-                `;
-                break;
-            case 'file': html = inp('f-name', 'Nome', '', n()) + `<div class="form-group"><label>Arquivo</label><input type="file" id="f-file" class="form-control"></div>` + `<div class="form-group"><label>Legenda</label><input type="text" id="f-caption" class="form-control" value="${v('caption')}" autocomplete="off"></div>`; break;
-            case 'checklist': case 'checklist_sum': html = inp('f-name', 'Título', '', n()) + renderIconSelector(); break;
-            case 'bank': html = inp('f-name', 'Banco', '', n()) + inp('f-holder', 'Titular', '', v('holder')) + inp('f-ag', 'Agência', '', v('agency')) + inp('f-cc', 'Conta', '', v('account')) + inp('f-pix', 'PIX', '', v('pix')) + inp('f-pass', 'Senha', '', v('pass'), 'password'); break;
-            case 'social': html = inp('f-name','Plataforma','',n()) + inp('f-login','Login','',v('login')) + inp('f-pass','Senha','',v('pass'), 'password'); break;
-            case 'expense': case 'pendency': case 'income': 
-                title = type === 'expense' ? 'Nova Despesa' : (type === 'income' ? 'Nova Entrada' : 'Nova Pendência'); 
-                html = inp('f-name', 'Descrição', 'Ex: Salário', n()) + `<div class="form-group"><label>Valor</label><input type="number" id="f-val" class="form-control" value="${v('value')}" autocomplete="off"></div>` + `<div class="form-group"><label>Parcelas/Repetições</label><input type="number" id="f-par" class="form-control" value="1" autocomplete="off"></div>` + `<div class="form-group"><label>Vencimento/Data</label><input type="date" id="f-due" class="form-control" value="${v('due') || new Date().toISOString().split('T')[0]}" autocomplete="off"></div>`; 
-                break;
-            case 'piggy': html = inp('f-name', 'Objetivo', '', n()) + inp('f-target', 'Valor Alvo', '', v('target')) + inp('f-months', 'Meses', '', v('months')); break;
-            case 'health_weight_config': title='Config Peso'; html = inp('f-w-start','Peso Inicial (kg)',0,v('startWeight')) + inp('f-w-height','Altura (m)', 'Ex: 1.70', v('height')) + inp('f-w-target','Meta (kg)',0,v('target')) + `<div class="form-group"><label>Início</label><input type="date" id="f-w-date" class="form-control" value="${v('startDate')||new Date().toISOString().split('T')[0]}" autocomplete="off"></div>` + inp('f-w-period','Prazo (Meses)',12,v('periodMonths')) + `<button class="btn-add" style="width:100%; background:var(--danger); justify-content:center; margin-top:15px;" onclick="window.resetWeightData()"><i data-lucide="trash-2" style="width:16px"></i> Resetar Dados</button>`; break;
-            case 'health_weight_register': html = `<div class="form-group"><label>Data</label><input type="date" id="f-reg-date" class="form-control" value="${new Date().toISOString().split('T')[0]}" autocomplete="off"></div>` + inp('f-reg-weight','Peso Atual (kg)',0,''); break;
-            case 'weight_history_edit':
-                title = 'Editar Registro';
-                const wItem = state.items.find(i => i.type === 'health_weight');
-                let sortedHist = [...wItem.content.history].sort((a,b) => new Date(b.date) - new Date(a.date));
-                const histItem = sortedHist[state.editingHistoryIndex];
-                html = `<div class="form-group"><label>Data</label><input type="date" id="f-reg-date" class="form-control" value="${histItem.date}" autocomplete="off"></div>` + 
-                       `<div class="form-group"><label>Peso (kg)</label><input type="number" id="f-reg-weight" class="form-control" value="${histItem.weight}" autocomplete="off"></div>`;
-                break;
-            case 'health_med': html = inp('f-name','Remédio','',n()) + inp('f-time','Horário','',v('time')) + inp('f-inst','Instruções','',v('instructions')); break;
-            case 'health_food': title='Dieta'; html=`<div class="form-group"><textarea id="f-diet" class="form-control" style="height:200px" autocomplete="off">${v('text')}</textarea></div>`; break;
-            case 'menstrual_log': 
-                title = 'Ciclo'; 
-                const dateKey = editingId; 
-                const existingLog = state.items.find(i => i.type === 'menstrual_cycle' && i.content.date === dateKey);
-                const flow = existingLog ? existingLog.content.flow : '';
-                html = `<input type="hidden" id="f-mens-date" value="${dateKey}"><div style="text-align:center;margin-bottom:10px">${new Date(dateKey).toLocaleDateString()}</div><div class="form-group"><label>Fluxo</label><select id="f-mens-flow" class="form-control"><option value="">Nenhum</option><option value="Inicio" ${flow==='Inicio'?'selected':''}>Início</option><option value="Medio" ${flow==='Medio'?'selected':''}>Médio</option><option value="Intenso" ${flow==='Intenso'?'selected':''}>Intenso</option><option value="Leve" ${flow==='Leve'?'selected':''}>Leve</option></select></div><div class="form-group"><input type="checkbox" id="f-mens-sex" ${existingLog && existingLog.content.sex?'checked':''}> Sexo <input type="checkbox" id="f-mens-prot" ${existingLog && existingLog.content.protection?'checked':''}> Proteção</div><div class="form-group"><label>Notas</label><textarea id="f-mens-notes" class="form-control" autocomplete="off">${existingLog?existingLog.content.notes||'':''}</textarea></div>`;
-                break;
-            case 'menstrual_settings': 
-                 title = 'Perfil Mulher';
-                 const p = state.items.find(i=>i.type==='menstrual_profile')||{content:{}};
-                 html = `
-                    <div class="form-group">
-                        <label>Você utiliza algum método contraceptivo hormonal?</label>
-                        <select id="f-prof-hormonal" class="form-control" onchange="window.toggleMenstrualFields()" autocomplete="off">
-                            <option value="Nenhum" ${p.content.contraceptiveType === 'Nenhum' ? 'selected' : ''}>NÃO</option>
-                            <option value="Pílula" ${p.content.contraceptiveType === 'Pílula' ? 'selected' : ''}>SIM – Pílula anticoncepcional</option>
-                            <option value="Injeção" ${p.content.contraceptiveType === 'Injeção' ? 'selected' : ''}>SIM – Injeção anticoncepcional</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Nome</label>
-                        <input type="text" id="f-prof-name" class="form-control" value="${p.content.name || ''}" autocomplete="off">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Idade</label>
-                        <input type="number" id="f-prof-age" class="form-control" value="${p.content.age || ''}" autocomplete="off">
-                    </div>
-
-                    <div id="field-last-period" class="form-group" style="${p.content.contraceptiveType !== 'Nenhum' ? 'display:none' : 'block'}">
-                        <label>Data da Última Menstruação</label>
-                        <input type="date" id="f-prof-last" class="form-control" value="${p.content.lastPeriodDate||''}" autocomplete="off">
-                    </div>
-
-                    <div id="field-cycle-dur" class="form-group" style="${p.content.contraceptiveType !== 'Nenhum' ? 'display:none' : 'block'}">
-                        <label>Duração Média do Ciclo (dias)</label>
-                        <input type="number" id="f-prof-dur" class="form-control" value="${p.content.cycleDuration||28}" autocomplete="off">
-                    </div>
-
-                    <div id="field-contra-start" class="form-group" style="${p.content.contraceptiveType === 'Nenhum' ? 'display:none' : 'block'}">
-                        <label>Início da Cartela / Dose</label>
-                        <input type="date" id="f-prof-contradate" class="form-control" value="${p.content.contraceptiveStartDate||''}" autocomplete="off">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Duração do Fluxo (dias)</label>
-                        <input type="number" id="f-prof-flowdur" class="form-control" value="${p.content.flowDuration||5}" autocomplete="off">
-                    </div>
-
-                    <button class="btn-cancel" style="width:100%; margin: 10px 0; justify-content:center" onclick="window.openModal('menstrual_history_list')"><i data-lucide="list" style="width:16px"></i> Editar Histórico Completo</button>
-                    <hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee;">
-                    <button class="btn-add" style="width:100%; background:var(--danger); justify-content:center" onclick="window.resetCycle()"><i data-lucide="trash-2" style="width:16px"></i> Resetar Ciclo / Iniciar Novo</button>
-                 `;
-                 break;
-
-            case 'menstrual_history_list':
-                 title = 'Histórico Completo';
-                 const allLogs = state.items.filter(i => i.type === 'menstrual_cycle').sort((a,b) => new Date(b.content.date) - new Date(a.content.date));
-                 html = `<div style="max-height:400px; overflow-y:auto">`;
-                 if(allLogs.length === 0) {
-                     html += `<div style="text-align:center; padding:20px; opacity:0.5">Nenhum registro encontrado.</div>`;
-                 } else {
-                     html += allLogs.map(log => {
-                         const d = new Date(log.content.date).toLocaleDateString('pt-BR');
-                         return `<div style="display:flex; justify-content:space-between; align-items:center; padding:10px; border-bottom:1px solid #eee;">
-                                    <div><b>${d}</b> <small>(${log.content.flow || 'Sem fluxo'})</small></div>
-                                    <div style="display:flex; gap:10px">
-                                        <i data-lucide="edit-2" style="width:16px; cursor:pointer" onclick="window.openModal('menstrual_log', '${log.content.date}')"></i>
-                                        <i data-lucide="trash-2" style="width:16px; color:var(--danger); cursor:pointer" onclick="window.deleteMenstrualLog('${log.id}')"></i>
-                                    </div>
-                                 </div>`;
-                     }).join('');
-                 }
-                 html += `</div>`;
-                 break;
-
-            case 'icon_selector': title = 'Escolher Ícone'; html = renderIconSelector(); break;
+        if (type === 'weight_config') {
+            const w = state.items.find(i => i.type === 'health_weight')?.content || {};
+            html = `
+                <div class="form-group"><label>Peso Inicial (kg)</label><input type="number" id="w-start" class="form-control" value="${w.startWeight || ''}"></div>
+                <div class="form-group"><label>Meta Final (kg)</label><input type="number" id="w-target" class="form-control" value="${w.target || ''}"></div>
+                <div class="form-group"><label>Prazo (meses)</label><input type="number" id="w-months" class="form-control" value="${w.periodMonths || '12'}"></div>
+            `;
+            actionHtml += `<button class="btn-add" onclick="saveWeightConfig()">Salvar</button>`;
+        } else if (type === 'weight_register') {
+            html = `<div class="form-group"><label>Peso de Hoje (kg)</label><input type="number" step="0.1" id="w-current" class="form-control"></div>`;
+            actionHtml += `<button class="btn-add" onclick="saveWeightEntry()">Registrar</button>`;
+        } else if (type === 'menstrual_log') {
+            const date = extra || new Date().toISOString().split('T')[0];
+            const log = state.items.find(i => i.type === 'menstrual_cycle' && i.content.date === date)?.content || {};
+            html = `
+                <div class="form-group"><label>Data</label><input type="date" id="m-date" class="form-control" value="${date}"></div>
+                <div class="form-group" style="display:flex; gap:10px; align-items:center;">
+                    <input type="checkbox" id="m-period" ${log.isPeriod ? 'checked' : ''}> <label style="margin:0;">Estou menstruada</label>
+                </div>
+                <div class="form-group"><label>Sintomas / Notas</label><textarea id="m-notes" class="form-control">${log.symptoms || ''}</textarea></div>
+            `;
+            actionHtml += `<button class="btn-add" onclick="saveMenstrualLog()">Salvar</button>`;
         }
 
-        document.getElementById('modal-title').innerText = title;
         form.innerHTML = html;
-        if (type !== 'menstrual_history_list') {
-             actions.innerHTML = `<button class="btn-cancel" onclick="window.closeModal()">Cancelar</button><button class="btn-add" onclick="window.saveItem('${type}')">Salvar</button>`;
-        } else {
-             actions.innerHTML = `<button class="btn-cancel" style="width:100%" onclick="window.closeModal()">Fechar</button>`;
-        }
-        
-        overlay.style.display = 'flex'; setTimeout(() => { overlay.classList.add('open'); if(state.selectedIcon) document.getElementById(`icon-opt-${state.selectedIcon}`).classList.add('selected'); if(window.lucide) window.lucide.createIcons(); }, 10);
-    };
+        actions.innerHTML = actionHtml;
+    }
 
-    window.saveItem = async (type) => {
-        const parentId = state.path[state.path.length - 1];
-        const getVal = (id) => { const el = document.getElementById(id); return el ? el.value : ''; };
-        const getCheck = (id) => { const el = document.getElementById(id); return el ? el.checked : false; };
-        let data = { id: state.editingId || generateId(), parentId, type, createdAt: Date.now() };
-        if (state.selectedIcon) data.icon = state.selectedIcon;
+    function closeModal() { document.getElementById('modal-overlay').style.display = 'none'; }
 
-        const updateOrAdd = (newItem) => {
-            if (state.editingId) {
-                const idx = state.items.findIndex(i => i.id === state.editingId);
-                if (idx > -1) state.items[idx] = { ...state.items[idx], ...newItem };
-            } else {
-                state.items.push(newItem);
-            }
+    function saveWeightConfig() {
+        const data = {
+            startWeight: document.getElementById('w-start').value,
+            target: document.getElementById('w-target').value,
+            periodMonths: document.getElementById('w-months').value,
+            current: document.getElementById('w-start').value // Começa com o inicial
         };
+        const idx = state.items.findIndex(i => i.type === 'health_weight');
+        if (idx > -1) state.items[idx].content = data;
+        else state.items.push({ id: 'w1', type: 'health_weight', name: 'Controle de Peso', content: data });
+        saveData(); closeModal(); render();
+    }
 
-        try {
-            if (type === 'create_area') {
-                data = { id: generateId(), type: 'custom_area', name: getVal('f-name'), parentId: 'root', createdAt: Date.now(), icon: state.selectedIcon };
-                updateOrAdd(data);
-            } else if (type === 'rename') {
-                const idx = state.items.findIndex(i => i.id === state.editingId);
-                state.items[idx].name = getVal('f-name');
-            } else if (type === 'icon_selector') {
-                for(const id of state.selectedIds) {
-                    const idx = state.items.findIndex(i => i.id === id);
-                    if(idx > -1) state.items[idx].icon = state.selectedIcon;
-                }
-                window.toggleSelectionMode();
-            } else if (type === 'visionboard') {
-                data.name = getVal('f-name');
-                const files = document.getElementById('f-files').files;
-                
-                const loadedImages = [];
-                if(files.length > 0) {
-                    const promises = Array.from(files).map(file => new Promise((resolve) => {
-                        const reader = new FileReader();
-                        reader.onload = (e) => resolve({ data: e.target.result, caption: '' });
-                        reader.readAsDataURL(file);
-                    }));
-                    const results = await Promise.all(promises);
-                    loadedImages.push(...results);
-                }
-                
-                data.content = { 
-                    images: loadedImages.length > 0 ? loadedImages : (state.editingId ? state.items.find(i => i.id === state.editingId).content.images : []) 
-                };
-                updateOrAdd(data);
-            }
-            else if (type === 'file') {
-                 const fileInput = document.getElementById('f-file');
-                 const f = fileInput ? fileInput.files[0] : null;
-                 const caption = getVal('f-caption');
-                 const name = getVal('f-name');
-                 
-                 if(f) {
-                    const reader = new FileReader();
-                    reader.onload = async (e) => {
-                        const fileData = { id: state.editingId || generateId(), name: name || f.name, type: 'file', content: {data:e.target.result, fileType:f.type, caption: caption}, createdAt: Date.now(), parentId };
-                        updateOrAdd(fileData);
-                        saveData();
-                        state.editingId = null; window.closeModal(); window.showToast("Arquivo salvo!");
-                        render();
-                    };
-                    reader.readAsDataURL(f); return; // Return early for async read
-                 } else if (state.editingId) {
-                      const idx = state.items.findIndex(i => i.id === state.editingId);
-                      state.items[idx].name = name;
-                      state.items[idx].content.caption = caption;
-                 }
-            } 
-            else if (type === 'folder') { data.name = getVal('f-name'); updateOrAdd(data); }
-            else if (type === 'note') { data.name = getVal('f-name'); data.content = {text: getVal('f-text')}; updateOrAdd(data); }
-            else if (type.includes('checklist')) { data.name = getVal('f-name'); if(!state.editingId) data.content = { items: [] }; else { data.content = state.items.find(i=>i.id===state.editingId).content; } updateOrAdd(data); }
-            else if (type === 'bank') { data.name = getVal('f-name'); data.content = { holder: getVal('f-holder'), agency: getVal('f-ag'), account: getVal('f-cc'), pix: getVal('f-pix'), pass: getVal('f-pass') }; updateOrAdd(data); }
-            else if (type === 'social') { data.name = getVal('f-name'); data.content = { login: getVal('f-login'), pass: getVal('f-pass') }; updateOrAdd(data); }
-            else if (type === 'expense' || type === 'pendency' || type === 'income') {
-                const name = getVal('f-name');
-                const totalVal = parseFloat(getVal('f-val'));
-                const parcels = parseInt(getVal('f-par')) || 1;
-                const dueStr = getVal('f-due');
-                const parcelVal = totalVal / parcels;
-                for(let i=0; i<parcels; i++) {
-                    const date = new Date(dueStr + 'T12:00:00');
-                    date.setMonth(date.getMonth() + i);
-                    state.items.push({ id: generateId(), parentId, type, name: parcels > 1 ? `${name} (${i+1}/${parcels})` : name, createdAt: Date.now() + i, content: { value: parcelVal, due: date.toISOString().split('T')[0], paid: false } });
-                }
-            }
-            else if (type === 'piggy') {
-                data.name = getVal('f-name');
-                data.content = { target: getVal('f-target'), months: getVal('f-months'), saved: state.editingId ? state.items.find(i=>i.id===state.editingId).content.saved : 0 };
-                updateOrAdd(data);
-            }
-            else if(type === 'health_weight_config') {
-                 const startW = getVal('f-w-start'); const targetW = getVal('f-w-target');
-                 if(state.editingId) {
-                     const idx = state.items.findIndex(i => i.id === state.editingId);
-                     state.items[idx].content = {...state.items[idx].content, startWeight: startW, target: targetW, startDate: getVal('f-w-date'), periodMonths: getVal('f-w-period'), height: getVal('f-w-height')};
-                 } else {
-                     state.items.push({ id: generateId(), parentId: 'saude', type: 'health_weight', name: 'Peso', content: { current: startW, startWeight: startW, target: targetW, startDate: getVal('f-w-date'), periodMonths: getVal('f-w-period'), height: getVal('f-w-height'), history: [] } });
-                 }
-            }
-            else if(type === 'health_weight_register') { 
-                const regW = parseFloat(getVal('f-reg-weight'));
-                const wItem = state.items.find(i => i.type === 'health_weight');
-                wItem.content.current = regW;
-                wItem.content.history.push({ date: getVal('f-reg-date'), weight: regW });
-            }
-            else if(type === 'weight_history_edit') {
-                const wItem = state.items.find(i => i.type === 'health_weight');
-                let history = [...wItem.content.history].sort((a,b) => new Date(b.date) - new Date(a.date));
-                history[state.editingHistoryIndex] = { date: getVal('f-reg-date'), weight: parseFloat(getVal('f-reg-weight')) };
-                history.sort((a,b) => new Date(b.date) - new Date(a.date));
-                wItem.content.history = history;
-                wItem.content.current = history.length > 0 ? history[0].weight : wItem.content.startWeight;
-            }
-            else if(type === 'health_med') { data.name = getVal('f-name'); data.content = { time: getVal('f-time'), instructions: getVal('f-inst') }; updateOrAdd(data); }
-            else if(type === 'health_food') { 
-                const txt = getVal('f-diet'); const ex = state.items.find(i=>i.type==='health_food');
-                if(ex) ex.content.text = txt;
-                else state.items.push({id: generateId(), parentId:'saude', type:'health_food', name:'Dieta', content:{text:txt}});
-            }
-            else if(type === 'menstrual_log') {
-                const dateKey = getVal('f-mens-date');
-                const content = { date: dateKey, flow: getVal('f-mens-flow'), sex: getCheck('f-mens-sex'), protection: getCheck('f-mens-prot'), notes: getVal('f-mens-notes') };
-                const existing = state.items.find(i => i.type === 'menstrual_cycle' && i.content.date === dateKey);
-                if (existing) existing.content = content;
-                else state.items.push({ id: generateId(), parentId: 'saude', type: 'menstrual_cycle', name: 'Ciclo', content });
-            }
-            else if(type === 'menstrual_settings') {
-                const contraType = getVal('f-prof-hormonal');
-                const content = { 
-                    name: getVal('f-prof-name'), 
-                    age: getVal('f-prof-age'), 
-                    cycleDuration: getVal('f-prof-dur'), 
-                    flowDuration: getVal('f-prof-flowdur'), 
-                    contraceptiveType: contraType,
-                    lastPeriodDate: getVal('f-prof-last'), 
-                    contraceptiveStartDate: getVal('f-prof-contradate') 
-                };
-                const existing = state.items.find(i => i.type === 'menstrual_profile');
-                if(existing) existing.content = content;
-                else state.items.push({ id: generateId(), parentId: 'saude', type: 'menstrual_profile', name: 'Perfil Mulher', content });
-            }
+    function saveWeightEntry() {
+        const val = document.getElementById('w-current').value;
+        const item = state.items.find(i => i.type === 'health_weight');
+        if (item) {
+            item.content.current = val;
+            saveData(); closeModal(); render();
+        }
+    }
 
-            saveData(); // Trigger local save
-            window.showToast("Salvo!"); window.closeModal(); render();
-        } catch(e) { console.error(e); window.showToast("Erro: " + e.message, "error"); }
-    };
+    function saveMenstrualLog() {
+        const date = document.getElementById('m-date').value;
+        const isPeriod = document.getElementById('m-period').checked;
+        const symptoms = document.getElementById('m-notes').value;
+        
+        const idx = state.items.findIndex(i => i.type === 'menstrual_cycle' && i.content.date === date);
+        const logData = { date, isPeriod, symptoms };
+        
+        if (idx > -1) state.items[idx].content = logData;
+        else state.items.push({ id: 'm' + Date.now(), type: 'menstrual_cycle', content: logData });
+        
+        // Se for início de menstruação, atualizar perfil
+        if (isPeriod) {
+            const profile = state.items.find(i => i.type === 'menstrual_profile');
+            if (profile) profile.content.lastDate = date;
+            else state.items.push({id: 'mp', type: 'menstrual_profile', content: {cycleDuration: 28, flowDuration: 5, lastDate: date}});
+        }
+
+        saveData(); closeModal(); render();
+    }
+
+    document.getElementById('lock-pass').addEventListener('keypress', (e) => { if(e.key === 'Enter') checkAccess(); });
 
 </script>
+
 </body>
 </html>
